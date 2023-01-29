@@ -3,7 +3,9 @@ html{
 }
 
 body{
-    background-image: url("field.jpeg");
+    /* background-image: url("field.jpeg"); */
+    /* background-image: url("camas.jpg"); */
+    background-color: #9CB084;
     background-size: cover;
     margin-left: 13%;
     margin-right: 13%;
