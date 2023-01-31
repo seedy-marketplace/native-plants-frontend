@@ -49,7 +49,7 @@ async function accessBackend(req, res) {
                 'Accept': '*/*',
                 'Access-Control-Allow-Origin': '*',
                 'Accept-Encoding': 'gzip, deflate, br',
-                "Connection": "keep-alive",
+                // "Connection": "keep-alive",
                 "Authentication": process.env.DATABASE_KEY
             }
         });
