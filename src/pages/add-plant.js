@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import styles from '../components/Navbar.module.css'
+import * as XLSX from "xlsx";
 
 import useAPIRequest from '../hooks/useAPIRequest';
 
@@ -28,6 +29,40 @@ function Farms() {
         const resBody = await res.json();
         console.log(resBody);
     }
+
+    const [file, setFile] = useState();
+
+    const handleOnChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const handleOnSubmit = (e) => {
+        const fileReader = new FileReader();
+
+        e.preventDefault();
+
+        if (file) {
+            // console.log("File: ", file);
+            fileReader.onload = function (e) {
+            //     const csvOutput = event.target.result;
+            //     console.log("handleOnSubmit: ", csvOutput);
+                const bstr = e.target.result;
+                const wb = XLSX.read(bstr, {type:'binary'});
+                /* Get first worksheet */
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+                /* Convert array of arrays */
+                const data = XLSX.utils.sheet_to_csv(ws, {header:1});
+                /* Update state */
+                console.log("Data>>>"+data);
+            };
+            fileReader.readAsBinaryString(file);
+
+            // console.log(fileReader.readAsText(file));
+            
+                
+        }
+    };
 
     return (
         <Layout>
@@ -68,6 +103,26 @@ function Farms() {
                 <button>Add Plant</button>
             </div>
         </form>
+        
+        <div className="import-csv">
+            <h1>REACTJS CSV IMPORT EXAMPLE</h1>
+            <form>
+                <input
+                    type={"file"}
+                    id={"csvFileInput"}
+                    accept={".xlsx"}
+                    onChange={handleOnChange}
+                />
+                <button
+                    onClick={(e) => {
+                        handleOnSubmit(e);
+                    }}
+                >
+                    IMPORT CSV
+                </button>
+            </form>
+        </div>
+        
         </Layout>
     );
 }
