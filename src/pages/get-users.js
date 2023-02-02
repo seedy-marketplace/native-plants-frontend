@@ -22,7 +22,7 @@ function Farms() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                query: "Farms"
+                query: "Users"
             }
         )
         const resBody = await res.json();

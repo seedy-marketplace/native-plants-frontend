@@ -1,5 +1,8 @@
 import { getSession } from "next-auth/react"
 
+//const backend_url = "https://native-plants-backend.herokuapp.com"
+const backend_url = "http://localhost:8080"
+
 async function accessBackend(req, res) {
     const session = await getSession({ req })
     console.log("== Session:", session)
@@ -76,7 +79,8 @@ async function accessBackend(req, res) {
                 "Connection": "keep-alive"
             }
         }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-        await fetchGetRes("https://native-plants-backend.herokuapp.com/ig/" + query_string, {
+        //asdfasdf
+        await fetchGetRes(backend_url + "/ig/" + query_string, {
             method: "GET",
             headers: {
                 "Connection": "keep-alive",
@@ -111,7 +115,8 @@ async function accessBackend(req, res) {
             req.query.query_string = req.query.query_string.substring(0, 6) + " " + fin_fields + " " + req.query.query_string.substring(req.query.query_string.indexOf("FROM"), );
             console.log(req.query.query_string)
         }
-        await fetchGetRes("https://native-plants-backend.herokuapp.com/q/" + req.query.query_string).then(resBody => {
+        //asdfasdf
+        await fetchGetRes(backend_url + "/q/" + req.query.query_string).then(resBody => {
 //            console.log("== resBody:", resBody);
             res.status(200).send({
                 msg: "OK!",
@@ -145,7 +150,8 @@ async function accessBackend(req, res) {
                 "Connection": "keep-alive"
             }
         }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-        await fetchGetRes("https://native-plants-backend.herokuapp.com/ig/" + query_string).then(resBody => {
+        //asdfasdf
+        await fetchGetRes(backend_url + "/ig/" + query_string).then(resBody => {
             console.log("== resBody:", resBody);
             res.status(200).send({
                 msg: "OK!"
@@ -177,7 +183,8 @@ async function accessBackend(req, res) {
                 "Connection": "keep-alive"
             }
         }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-        await fetchGetRes("https://native-plants-backend.herokuapp.com/ig/" + query_string).then(resBody => {
+        //asdfasdf
+        await fetchGetRes(backend_url + "/ig/" + query_string).then(resBody => {
             console.log("== resBody:", resBody);
             res.status(200).send({
                 msg: "OK!"
@@ -208,7 +215,8 @@ async function accessBackend(req, res) {
             "Connection": "keep-alive"
         }
     }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-    await fetchGetRes("https://native-plants-backend.herokuapp.com/ig/" + query_string).then(resBody => {
+    //asdfasdf
+    await fetchGetRes(backend_url + "/ig/" + query_string).then(resBody => {
         console.log("== resBody:", resBody);
         res.status(200).send({
             msg: "OK!"
