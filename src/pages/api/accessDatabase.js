@@ -13,7 +13,9 @@ const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, thi
  *GET is replaced by SEARCH in the method type to allow for a request body
  *Expects a body with query_type and table_name fields
  *Allows for optional fields: columns, column_names, and values (all are explained below)
- *Below is an example of how to call */
+ *Below is an example of how to call 
+ */
+
 /*
 const res = await fetch("/api/accessDatabase",
 {
@@ -56,11 +58,15 @@ async function accessDatabase(req, res) {
         if(DEBUG) console.log("Getting from " + url);
         const res = await fetch(url, {//generated fetch request from url
             method: "GET",
+            mode: "no-cors",
+            cache: "no-cache",
+            redirect: "follow",
+            credentials: "include",
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': '*/*',
-                'Access-Control-Allow-Origin': '*',
-                'Accept-Encoding': 'gzip, deflate, br',
+                //'Access-Control-Allow-Origin': '*',
+                //'Accept-Encoding': 'gzip, deflate, br',
                 //"Connection": "keep-alive",
                 "Authentication": process.env.DATABASE_KEY
             }
@@ -139,10 +145,15 @@ async function accessDatabase(req, res) {
             }
             const baseURL = `${urlStart}/i/`//base url for INSERT requests
             //generating query string to match what the backend code expects
-            const query_string = `${query_type} INTO ${table_name} (${columns}) VALUES (${values.map(value => {return '%s'})})/${values}`
+            const query_string = `${query_type} INTO ${table_name} (${columns}) VALUES (${values.map(value => {return '%s'})})`///${values}`
             if(DEBUG) console.log(`== query_string: ${query_string}`)
+            //console.log(`==Values: ${values}`)
+            const body = {
+                values: values
+            }
+            if(DEBUG) console.log(`== body.values: ${body.values}`)
 
-            await fetchPostRes(baseURL + query_string).then(resBody => {//send query to backend
+            await fetchPostRes(baseURL + query_string, body).then(resBody => {//send query to backend
                 res.status(200).send({
                     msg: "OK!",
                     data: resBody
