@@ -1,9 +1,8 @@
 import { getSession } from "next-auth/react";
 
-const DEBUG = true; //Set true to get debug console outputs
-//const urlStart = "https://native-plants-backend.herokuapp.com";
-//const urlStart = "http://localhost:8080"
-const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
+const DEBUG = false; //Set true to get debug console outputs
+const urlStart = "https://native-plants-backend.herokuapp.com";
+//const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
 
 
 
@@ -137,18 +136,19 @@ async function accessDatabase(req, res) {
         }
         
         
-        //handles INSERT queries
+        //handles INSERT queries (Can not have any parameters in URL)
         else if(query_type === 'INSERT'){
-            if(!req.body.columns || !values){//columns and values are required for INSERT requests
+            if(!columns || !values || columns.length == 0 || values.length == 0){//columns and values are required for INSERT requests
                 res.status(405).send({err: "Expecting columns and values for INSERT request"})
                 return
+            }else if(columns.length != values.length){
+                res.status(405).send({err: "Expecting equal number of columns and values"})
+                return
             }
-            const baseURL = `${urlStart}/i/`//base url for INSERT requests
-            //generating query string to match what the backend code expects
-            const query_string = `${query_type} INTO ${table_name} (${columns}) VALUES (${values.map(value => {return '%s'})})`///${values}`
-            if(DEBUG) console.log(`== query_string: ${query_string}`)
-            //console.log(`==Values: ${values}`)
-            const body = {
+            const baseURL = `${urlStart}/i`//base url for INSERT requests
+            const body = {//generates request body
+                table_name: table_name,
+                columns: columns,
                 values: values
             }
             if(DEBUG) console.log(`== body.values: ${body.values}`)
