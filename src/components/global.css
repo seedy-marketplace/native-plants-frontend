@@ -3,21 +3,22 @@ html{
 }
 
 body{
-    /* background-image: url("field.jpeg"); */
     /* background-image: url("camas.jpg"); */
     background-color: #9CB084;
-    background-size: cover;
-    margin-left: 13%;
+    /* background-size: cover; */
+    /* margin-left: 13%;
     margin-right: 13%;
     margin-top: 0%;
-    margin-bottom: 0%;
+    margin-bottom: 0%; */
+    filter: none;
     height: 100%;
+    margin: 0;
   }
 
  #__next{
-    background-color: rgba(255, 255, 255, 0.74);
+    /* background-color: rgba(255, 255, 255, 0.74); */
     height: 100%;
-    backdrop-filter: blur(5px);
+    /* backdrop-filter: blur(5px); */
     overflow-y: scroll;
   }
 textarea{
