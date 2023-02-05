@@ -22,9 +22,14 @@ export default function Home() {
 
     return (
         <Layout>
-            <h1>Welcome to the PNW Plant Marketplace!</h1>
-            {user.name && <p>Name: {user.name}</p>}
-            {user.email && <p>Email: {user.email}</p>}
+            <div className="welcome-container">
+                <div className="welcome-text">
+                    <h1>Welcome to the PNW Plant Marketplace!</h1>
+                    {user.name && <p>Name: {user.name}</p>}
+                    {user.email && <p>Email: {user.email}</p>}
+                </div>
+            </div>
+            
         </Layout>
     );
 }
