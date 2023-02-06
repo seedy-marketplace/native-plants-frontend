@@ -1,6 +1,6 @@
 import { getSession } from "next-auth/react";
 
-const DEBUG = false; //Set true to get debug console outputs
+const DEBUG = true; //Set true to get debug console outputs
 const urlStart = "https://native-plants-backend.herokuapp.com";
 //const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
 
@@ -27,7 +27,8 @@ const res = await fetch("/api/accessDatabase",
         table_name: 'users', //Any table name here (Field is required)
         columns: ['name', 'email', 'user_name'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
         column_names: ['Name', 'Email', 'Username'], //array of column names for SELECT (Not required, uses default names otherwise) (must match order of columns)
-        values: ['Ryan Smith', 'smithry9@oregonstate.edu', 'smithry9']//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+        values: ['Ryan Smith', 'smithry9@oregonstate.edu', 'smithry9'],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+        where: ['name = Ryan Smith']//array of WHERE clauses for the SELECT, UPDATE, and DELETE queries (not required)
     })
 }
 )
@@ -99,13 +100,27 @@ async function accessDatabase(req, res) {
     if(!req || !req.method || !req.body.query_type || !req.body.table_name){//if missing required fields return error
         res.status(405).send({err: "Expecting method, query_type, and table_name fields"})
     }else{
-        const method = req.method
         const query_type = req.body.query_type//gets the query type (SELECT, INSERT, DELETE, etc)
         const table_name = "rev2." + req.body.table_name//Gets the passed table name and generates the full name
         const columns = req.body.columns ? req.body.columns : null//gets columns if passed, defaults to *
         const column_names = req.body.column_names ? req.body.column_names : null //gets column names if passed, defaults to null
-        const values = req.body.values ? req.body.values : null;// gets values if passed, defaults to null
-        
+        const values = req.body.values ? req.body.values : null// gets values if passed, defaults to null
+        const where_values = req.body.where ? req.body.where : null// gets array of WHERE clauses
+        var whereString = ""//string to fill with the WHERE clause
+        if(where_values){//generates WHERE if the value was passed
+            whereString = " WHERE "
+            for(var i = 0; i < where_values.length; i++){
+                const whereSplit = where_values[i].split(' ')
+                whereString += whereSplit[0] + whereSplit[1] + `'${whereSplit[2]}`
+                for(var j = 3; j < whereSplit.length; j++){
+                    whereString += ` ${whereSplit[j]}`
+                }
+                whereString += "'"
+                if(i < where_values.length - 1){
+                    whereString += " AND "
+                }
+            }
+        }
 
         //Handles SELECT queries
         if(query_type === 'SELECT'){
@@ -118,7 +133,7 @@ async function accessDatabase(req, res) {
                 }
             }
 
-            const query_string = `${query_type} ${return_columns ? return_columns : '*'} FROM ${table_name}`//generates the query string
+            const query_string = `${query_type} ${return_columns ? return_columns : '*'} FROM ${table_name}${whereString}`//generates the query string
             if(DEBUG) console.log(`== query_string: ${query_string}`)
 
             await fetchGetRes(baseURL + query_string).then(resBody => {//sends request to backend
@@ -153,7 +168,7 @@ async function accessDatabase(req, res) {
             }
             if(DEBUG) console.log(`== body.values: ${body.values}`)
 
-            await fetchPostRes(baseURL + query_string, body).then(resBody => {//send query to backend
+            await fetchPostRes(baseURL, body).then(resBody => {//send query to backend
                 res.status(200).send({
                     msg: "OK!",
                     data: resBody
