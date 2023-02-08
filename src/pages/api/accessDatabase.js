@@ -1,8 +1,8 @@
 import { getSession } from "next-auth/react";
 
 const DEBUG = true; //Set true to get debug console outputs
-const urlStart = "https://native-plants-backend.herokuapp.com";
-//const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
+//const urlStart = "https://native-plants-backend.herokuapp.com";
+const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
 
 
 
@@ -94,6 +94,24 @@ async function accessDatabase(req, res) {
         return resBody;
     }
 
+    async function fetchDeleteRes(url, body) {
+        if(DEBUG) console.log("Deleting: " + body.where)
+        const res = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'Access-Control-Allow-Origin': '*',
+                'Accept-Encoding': 'gzip, deflate, br',
+                //"Connection": "keep-alive",
+                "Authentication": process.env.DATABASE_KEY
+            },
+            body: JSON.stringify(body)
+        });
+        const resBody = await res.json()
+        return resBody
+    }
+
 
 
 
@@ -183,7 +201,29 @@ async function accessDatabase(req, res) {
         
         
         else if(query_type === 'DELETE'){//Coming soon
-            console.log("Delete")
+            if(!req.body.where || whereString == ""){
+                res.status(405).send({err: "Expecting WHERE clause for DELETE query"})
+                return
+            }
+
+            const baseURL = `${urlStart}/d`
+            const body = {
+                table_name: table_name,
+                where: whereString
+            }
+            if(DEBUG) console.log(`== body.where: ${body.where}`)
+
+            await fetchPostRes(baseURL, body).then(resBody => {
+                res.status(200).send({
+                    msg: "OK!",
+                    data: resBody
+                }).catch(err => {
+                    console.log("== err:", err)
+                    res.status(500).send({
+                        err: err
+                    })
+                })
+            })
         }
         
         
