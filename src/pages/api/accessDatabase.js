@@ -75,7 +75,7 @@ async function accessDatabase(req, res) {
         return resBody;
     }
 
-    //function to post to the database, takes a query url (I'm unsure what body is supposed to do, currently not using)
+    //function to post to the database, takes a query url and a body
     async function fetchPostRes(url, body) {
         if(DEBUG) console.log("Posting into " + url);
         const res = await fetch(url, {//generated post request from url
@@ -94,6 +94,7 @@ async function accessDatabase(req, res) {
         return resBody;
     }
 
+    //function used to delete from database. takes a query url and a body
     async function fetchDeleteRes(url, body) {
         if(DEBUG) console.log("Deleting: " + body.where)
         const res = await fetch(url, {
@@ -199,21 +200,21 @@ async function accessDatabase(req, res) {
             })
         }
         
-        
-        else if(query_type === 'DELETE'){//Coming soon
-            if(!req.body.where || whereString == ""){
+        //Handles DELETE queries
+        else if(query_type === 'DELETE'){
+            if(!req.body.where || whereString == ""){//DELETE requires a WHERE clause
                 res.status(405).send({err: "Expecting WHERE clause for DELETE query"})
                 return
             }
 
-            const baseURL = `${urlStart}/d`
-            const body = {
+            const baseURL = `${urlStart}/d`//the base url for delete
+            const body = {//only needs the table_name and where
                 table_name: table_name,
                 where: whereString
             }
             if(DEBUG) console.log(`== body.where: ${body.where}`)
 
-            await fetchPostRes(baseURL, body).then(resBody => {
+            await fetchPostRes(baseURL, body).then(resBody => {//await response
                 res.status(200).send({
                     msg: "OK!",
                     data: resBody
