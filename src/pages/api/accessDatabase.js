@@ -28,7 +28,7 @@ const res = await fetch("/api/accessDatabase",
         columns: ['name', 'email', 'user_name'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
         column_names: ['Name', 'Email', 'Username'], //array of column names for SELECT (Not required, uses default names otherwise) (must match order of columns)
         values: ['Ryan Smith', 'smithry9@oregonstate.edu', 'smithry9'],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
-        where: ['name = Ryan Smith']//array of WHERE clauses for the SELECT, UPDATE, and DELETE queries (not required)
+        where: ['name = Ryan Smith']//array of WHERE clauses for the SELECT, UPDATE, and DELETE queries (Eequired by DELETE and UPDATE)
     })
 }
 )
