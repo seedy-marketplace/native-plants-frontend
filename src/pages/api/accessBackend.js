@@ -1,4 +1,7 @@
 import { getSession } from "next-auth/react"
+//const urlStart = "https://native-plants-backend.herokuapp.com"
+const urlStart = "http://localhost:8080"
+
 
 async function accessBackend(req, res) {
     const session = await getSession({ req })
@@ -16,7 +19,7 @@ async function accessBackend(req, res) {
         res.status(401).send({"error": "You do not have permission to access this page!\nAsk an admin to approve your account."});
         return;
     }else {
-        console.log("== Logged in with these credentials:", session.user.username, session.user.password);
+        console.log("== Logged in with these credentials:", session.user.real_name, session.user.user_level);
         console.log("== Session:", session)
     } 
 
@@ -29,7 +32,7 @@ async function accessBackend(req, res) {
                 'Accept': '*/*',
                 'Access-Control-Allow-Origin': '*',
                 'Accept-Encoding': 'gzip, deflate, br',
-                "Connection": "keep-alive",
+                //"Connection": "keep-alive",
                 "Authentication": process.env.DATABASE_KEY
             },
             body: JSON.stringify(body)                
@@ -49,12 +52,11 @@ async function accessBackend(req, res) {
                 'Accept': '*/*',
                 'Access-Control-Allow-Origin': '*',
                 'Accept-Encoding': 'gzip, deflate, br',
-                "Connection": "keep-alive",
+                //"Connection": "keep-alive",
                 "Authentication": process.env.DATABASE_KEY
             }
         });
         const resBody = await res.json();
-//        console.log(resBody);
         return resBody;
     }
 
@@ -67,19 +69,19 @@ async function accessBackend(req, res) {
         }
         const query_fields = req.body.query_fields.join(", ");
         const query_values = req.body.query_values;
-        const format_holders = req.body.query_fields.map(_x => `%s`);
-        const query_string = "INSERT INTO " + table_name + "(" + query_fields + ") VALUES (" + format_holders.join(", ") + ")/" + query_values.join(",");
+        const format_holders = req.body.query_fields;//.map(_x => `%s`);
+        const query_string = "INSERT INTO " + table_name + "(" + query_fields + ") VALUES (" + query_values + ")";
         console.log("== query_string:", query_string);
-        await fetch("https://native-plants-backend.herokuapp.com/wake_me_up", {
+        await fetch(`${urlStart}/wake_me_up`, {
             method: "GET",
             headers: {
-                "Connection": "keep-alive"
+                //"Connection": "keep-alive"
             }
         }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-        await fetchGetRes("https://native-plants-backend.herokuapp.com/ig/" + query_string, {
+        await fetchGetRes(`${urlStart}/ig/` + query_string, {
             method: "GET",
             headers: {
-                "Connection": "keep-alive",
+                //"Connection": "keep-alive",
                 "Authentication": process.env.DATABASE_KEY
             }
         }).then(resBody => {
@@ -111,7 +113,7 @@ async function accessBackend(req, res) {
             req.query.query_string = req.query.query_string.substring(0, 6) + " " + fin_fields + " " + req.query.query_string.substring(req.query.query_string.indexOf("FROM"), );
             console.log(req.query.query_string)
         }
-        await fetchGetRes("https://native-plants-backend.herokuapp.com/q/" + req.query.query_string).then(resBody => {
+        await fetchGetRes(`${urlStart}/q/` + req.query.query_string).then(resBody => {
 //            console.log("== resBody:", resBody);
             res.status(200).send({
                 msg: "OK!",
@@ -139,13 +141,13 @@ async function accessBackend(req, res) {
         const format_holders = req.body.query_fields.map(_x => `%s`);
         const query_string = "DELETE FROM " + table_name + ` WHERE ${query_fields}=%s/` + query_values[0];
         console.log("== query_string:", query_string);
-        await fetch("https://native-plants-backend.herokuapp.com/wake_me_up", {
+        await fetch(`${urlStart}/wake_me_up`, {
             method: "GET",
             headers: {
                 "Connection": "keep-alive"
             }
         }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-        await fetchGetRes("https://native-plants-backend.herokuapp.com/ig/" + query_string).then(resBody => {
+        await fetchGetRes(`${urlStart}/ig/` + query_string).then(resBody => {
             console.log("== resBody:", resBody);
             res.status(200).send({
                 msg: "OK!"
@@ -171,13 +173,13 @@ async function accessBackend(req, res) {
         const format_holders = req.body.query_fields.map(_x => `%s`);
         const query_string = "UPDATE " + table_name + ` SET ${query_fields[0]}=%s WHERE ${query_fields[1]}=%s/` + query_values.join(",");
         console.log("== query_string:", query_string);
-        await fetch("https://native-plants-backend.herokuapp.com/wake_me_up", {
+        await fetch(`${urlStart}/wake_me_up`, {
             method: "GET",
             headers: {
                 "Connection": "keep-alive"
             }
         }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-        await fetchGetRes("https://native-plants-backend.herokuapp.com/ig/" + query_string).then(resBody => {
+        await fetchGetRes(`${urlStart}/ig/` + query_string).then(resBody => {
             console.log("== resBody:", resBody);
             res.status(200).send({
                 msg: "OK!"
@@ -202,13 +204,13 @@ async function accessBackend(req, res) {
     const format_holders = req.body.query_fields.map(_x => `%s`);
     const query_string = "UPDATE " + table_name + ` SET ${query_fields[0]}=%s WHERE ${query_fields[1]}=%s AND ${query_fields[2]}=%s AND ${query_fields[3]}=%s AND ${query_fields[4]}=%s/` + query_values.join(",");
     console.log("== query_string:", query_string);
-    await fetch("https://native-plants-backend.herokuapp.com/wake_me_up", {
+    await fetch(`${urlStart}/wake_me_up`, {
         method: "GET",
         headers: {
             "Connection": "keep-alive"
         }
     }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-    await fetchGetRes("https://native-plants-backend.herokuapp.com/ig/" + query_string).then(resBody => {
+    await fetchGetRes(`${urlStart}/ig/` + query_string).then(resBody => {
         console.log("== resBody:", resBody);
         res.status(200).send({
             msg: "OK!"
