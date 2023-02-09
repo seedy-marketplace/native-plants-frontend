@@ -16,9 +16,7 @@ body{
   }
 
  #__next{
-    /* background-color: rgba(255, 255, 255, 0.74); */
     height: 100%;
-    /* backdrop-filter: blur(5px); */
     overflow-y: scroll;
   }
 
@@ -121,14 +119,16 @@ form {
   margin-left: 13%;
   margin-right: 13%;
 }
+
 h1{
-  margin-left: 13%;
-  margin-top: 0%;
+  /* margin-left: 13%;
+  margin-top: 0%; */
+  margin: 0;
 }
 
 #hidden{
   visibility: hidden;
-  
+
 }
 
 .dropbtn {
@@ -245,17 +245,18 @@ iframe {
   border: 0;
 }
 
+/* Used to display the camas flower image behind the welcome message */
 .welcome-container {
   width: 100%;
   background-image: url("camas.jpg");
-  background-position: center center;
+  /* background-position: center, center; */
+  background-position: 75% 33%;
   /* padding: 30px 0; */
-  padding-top: 30px;
-  padding-bottom: 20px;
-
+  padding: 30px 0;
 }
 
+/* Used to add white background behind welcome message */
 .welcome-text {
-  background-color: white;
+  background-color: rgba(255,255,255,0.7);
   height: 100%;
 }
