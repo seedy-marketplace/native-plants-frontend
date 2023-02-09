@@ -66,63 +66,65 @@ function Farms() {
 
     return (
         <Layout>
-        <form onSubmit={postFarm} className={styles.container}>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Common name"
-                    onChange={e => setComname(e.target.value)}
-                    value={comname}
-                    />
-            </div>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Species"
-                    onChange={e => setSpecies(e.target.value)}
-                    value={species}
-                    />
-            </div>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Species Code"
-                    onChange={e => setSpecCode(e.target.value)}
-                    value={speccode}
-                    />
-            </div>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Genus"
-                    onChange={e => setGenus(e.target.value)}
-                    value={genus}
-                    />
-            </div>
-            <div>
-                <button>Add Plant</button>
-            </div>
-        </form>
-        
-        <div className="import-csv">
-            <h1>REACTJS CSV IMPORT EXAMPLE</h1>
-            <form>
-                <input
-                    type={"file"}
-                    id={"csvFileInput"}
-                    accept={".xlsx"}
-                    onChange={handleOnChange}
-                />
-                <button
-                    onClick={(e) => {
-                        handleOnSubmit(e);
-                    }}
-                >
-                    IMPORT CSV
-                </button>
+        <div className="input-page">
+            <form onSubmit={postFarm} className={styles.container}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Common name"
+                        onChange={e => setComname(e.target.value)}
+                        value={comname}
+                        />
+                </div>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Species"
+                        onChange={e => setSpecies(e.target.value)}
+                        value={species}
+                        />
+                </div>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Species Code"
+                        onChange={e => setSpecCode(e.target.value)}
+                        value={speccode}
+                        />
+                </div>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Genus"
+                        onChange={e => setGenus(e.target.value)}
+                        value={genus}
+                        />
+                </div>
+                <div>
+                    <button>Add Plant</button>
+                </div>
             </form>
+            
+            <div className="import-csv">
+                <h1>Bulk Import Plants</h1>
+                <h3>Import plants by selecting an excel file</h3>
+                <form>
+                    <input
+                        type={"file"}
+                        id={"csvFileInput"}
+                        accept={".xlsx"}
+                        onChange={handleOnChange}
+                    />
+                    <button
+                        onClick={(e) => {
+                            handleOnSubmit(e);
+                        }}
+                    >
+                        IMPORT CSV
+                    </button>
+                </form>
+            </div>
         </div>
-        
         </Layout>
     );
 }
