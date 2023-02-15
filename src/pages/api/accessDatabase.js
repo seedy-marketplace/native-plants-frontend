@@ -1,8 +1,8 @@
 import { getSession } from "next-auth/react";
 
 const DEBUG = true; //Set true to get debug console outputs
-//const urlStart = "https://native-plants-backend.herokuapp.com";
-const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
+const urlStart = "https://native-plants-backend.herokuapp.com";
+//const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
 
 
 
