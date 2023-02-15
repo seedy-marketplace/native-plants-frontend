@@ -10,6 +10,7 @@ const urlStart = "https://native-plants-backend.herokuapp.com";
  *This completely replaces the previous accessBackend file
  *GET is replaced by SEARCH in the method type to allow for a request body
  *Expects a body with query_type and table_name fields
+ *NOTE: Must escape special characters
  *Allows for optional fields: columns, column_names, and values (all are explained below)
  *Below is an example of how to call 
  */
@@ -27,7 +28,7 @@ const res = await fetch("/api/accessDatabase",
         columns: ['name', 'email', 'user_name'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
         column_names: ['Name', 'Email', 'Username'], //array of column names for SELECT (Not required, uses default names otherwise) (must match order of columns)
         values: ['Ryan Smith', 'smithry9@oregonstate.edu', 'smithry9'],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
-        where: "name = 'Ryan Smith' AND email = 'smithry9@oregonstate.edu'"//(Should be full WHERE string, excluding the word WHERE, with quotes around values) WHERE clause for the SELECT, UPDATE, and DELETE queries (Eequired by DELETE and UPDATE)
+        where: "name LIKE '%%Ryan%%' OR email = 'smithry9@oregonstate.edu'"//(Should be full WHERE string, excluding the word WHERE, with quotes around values) WHERE clause for the SELECT, UPDATE, and DELETE queries (Eequired by DELETE and UPDATE)
     })
 }
 )
@@ -53,10 +54,13 @@ async function accessDatabase(req, res) {
 
     
     //function to get data from database, takes a query url that is generated based off the request body
-    async function fetchGetRes(url) {
+    async function fetchGetRes(url, body) {
         if(DEBUG) console.log("Getting from " + url);
+        
+        // body.query = "SELECT * FROM rev2.plant WHERE common_name LIKE '%%Noble fir%%'"
+        if(DEBUG) console.log("query: ", body.query)
         const res = await fetch(url, {//generated fetch request from url
-            method: "GET",
+            method: "POST",
             mode: "no-cors",
             cache: "no-cache",
             redirect: "follow",
@@ -68,7 +72,8 @@ async function accessDatabase(req, res) {
                 //'Accept-Encoding': 'gzip, deflate, br',
                 //"Connection": "keep-alive",
                 "Authentication": process.env.DATABASE_KEY
-            }
+            },
+            body: JSON.stringify(body)
         });
         const resBody = await res.json();//gets the response and returns the body
         return resBody;
@@ -115,7 +120,7 @@ async function accessDatabase(req, res) {
     async function fetchUpdateRes(url, body) {
         if(DEBUG) console.log("Updating: " + body)
         const res = await fetch(url, {
-            method: "UPDATE",
+            method: "PATCH",
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': '*/*',
@@ -162,7 +167,7 @@ async function accessDatabase(req, res) {
 
         //Handles SELECT queries
         if(query_type === 'SELECT'){
-            const baseURL = `${urlStart}/q/`//creates the base url for get requests
+            const baseURL = `${urlStart}/q`//creates the base url for get requests
             const return_columns = columns;
 
             if(column_names && columns){//If the user supplied custom names for the columns, automatically specify in url
@@ -174,7 +179,11 @@ async function accessDatabase(req, res) {
             const query_string = `${query_type} ${return_columns ? return_columns : '*'} FROM ${table_name}${whereString}`//generates the query string
             if(DEBUG) console.log(`== query_string: ${query_string}`)
 
-            await fetchGetRes(baseURL + query_string).then(resBody => {//sends request to backend
+            const body = {
+                query: query_string
+            }
+
+            await fetchGetRes(baseURL, body).then(resBody => {//sends request to backend
                 res.status(200).send({
                     msg: "Got response from DB",
                     data: resBody

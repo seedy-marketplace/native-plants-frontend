@@ -41,7 +41,7 @@ function Plants() {
             body: JSON.stringify({
                 query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
                 table_name: 'plant', //Any table name here (Field is required)
-                where: `${comname ? `common_name = '${comname}'` : ""}`
+                where: `${comname ? `common_name LIKE '%%${comname}%%'` : ""}`
             })
         })
         const resBody = await res.json();
