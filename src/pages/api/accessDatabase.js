@@ -176,7 +176,7 @@ async function accessDatabase(req, res) {
 
             await fetchGetRes(baseURL + query_string).then(resBody => {//sends request to backend
                 res.status(200).send({
-                    msg: "OK!",
+                    msg: "Got response from DB",
                     data: resBody
                 })
             }).catch(err => {
@@ -208,7 +208,7 @@ async function accessDatabase(req, res) {
 
             await fetchPostRes(baseURL, body).then(resBody => {//send query to backend
                 res.status(200).send({
-                    msg: "OK!",
+                    msg: "Got response from DB",
                     data: resBody
                 })
             }).catch(err => {
@@ -235,7 +235,7 @@ async function accessDatabase(req, res) {
 
             await fetchDeleteRes(baseURL, body).then(resBody => {//await response
                 res.status(200).send({
-                    msg: "OK!",
+                    msg: "Got response from DB",
                     data: resBody
                 }).catch(err => {
                     console.log("== err:", err)
@@ -269,7 +269,7 @@ async function accessDatabase(req, res) {
 
             await fetchUpdateRes(baseURL, body).then(resBody => {
                 res.status(200).send({
-                    msg: "OK!",
+                    msg: "Got response from DB",
                     data: resBody
                 }).catch(err => {
                     console.log("== err:", err)
