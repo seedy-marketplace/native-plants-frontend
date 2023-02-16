@@ -14,27 +14,12 @@ function AddLab() {
             body: JSON.stringify( {
                 table_name: "plant",
                 query_type: "DELETE",
-                where: `common_name='${comname}'`
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        /*
-        const res = await fetch('/api/accessDatabase', {
-            method: 'PATCH',
-            body: JSON.stringify( {
-                table_name: "plant",
-                query_type: "UPDATE",
-                columns: ["genus"],
-                values: ["genus 2"],
                 where: [`common_name = ${comname}`]
             }),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        */
         const resBody = await res.json();
         console.log(resBody);
     }

@@ -1,16 +1,16 @@
 import { getSession } from "next-auth/react";
 
 const DEBUG = true; //Set true to get debug console outputs
-const urlStart = "https://native-plants-backend.herokuapp.com";
-//const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
+//const urlStart = "https://native-plants-backend.herokuapp.com";
+const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
 
 
 
 /*Function that allows requests to the database using the fetch api
  *This completely replaces the previous accessBackend file
+ *Can accept SELECT and INSERT requests so far
  *GET is replaced by SEARCH in the method type to allow for a request body
  *Expects a body with query_type and table_name fields
- *NOTE: Must escape special characters
  *Allows for optional fields: columns, column_names, and values (all are explained below)
  *Below is an example of how to call 
  */
@@ -18,17 +18,17 @@ const urlStart = "https://native-plants-backend.herokuapp.com";
 /*
 const res = await fetch("/api/accessDatabase",
 {
-    method: 'SEARCH', //HTTP method: SEARCH, POST, DELETE, PATCH  (NOT GET)
+    method: 'SEARCH', //SEARCH, POST, DELETE, UPDATE  (NOT GET)
     headers: {
          'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-        query_type: 'SELECT', //SQL Query type: SELECT, INSERT, UPDATE, DELETE. (Field is required)
+        query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
         table_name: 'users', //Any table name here (Field is required)
         columns: ['name', 'email', 'user_name'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
         column_names: ['Name', 'Email', 'Username'], //array of column names for SELECT (Not required, uses default names otherwise) (must match order of columns)
         values: ['Ryan Smith', 'smithry9@oregonstate.edu', 'smithry9'],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
-        where: "name LIKE '%%Ryan%%' OR email = 'smithry9@oregonstate.edu'"//(Should be full WHERE string, excluding the word WHERE, with quotes around values) WHERE clause for the SELECT, UPDATE, and DELETE queries (Eequired by DELETE and UPDATE)
+        where: ['name = Ryan Smith']//array of WHERE clauses for the SELECT, UPDATE, and DELETE queries (Eequired by DELETE and UPDATE)
     })
 }
 )
@@ -54,13 +54,10 @@ async function accessDatabase(req, res) {
 
     
     //function to get data from database, takes a query url that is generated based off the request body
-    async function fetchGetRes(url, body) {
+    async function fetchGetRes(url) {
         if(DEBUG) console.log("Getting from " + url);
-        
-        // body.query = "SELECT * FROM rev2.plant WHERE common_name LIKE '%%Noble fir%%'"
-        if(DEBUG) console.log("query: ", body.query)
         const res = await fetch(url, {//generated fetch request from url
-            method: "POST",
+            method: "GET",
             mode: "no-cors",
             cache: "no-cache",
             redirect: "follow",
@@ -72,8 +69,7 @@ async function accessDatabase(req, res) {
                 //'Accept-Encoding': 'gzip, deflate, br',
                 //"Connection": "keep-alive",
                 "Authentication": process.env.DATABASE_KEY
-            },
-            body: JSON.stringify(body)
+            }
         });
         const resBody = await res.json();//gets the response and returns the body
         return resBody;
@@ -117,40 +113,20 @@ async function accessDatabase(req, res) {
         return resBody
     }
 
-    async function fetchUpdateRes(url, body) {
-        if(DEBUG) console.log("Updating: " + body)
-        const res = await fetch(url, {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-                'Access-Control-Allow-Origin': '*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                //"Connection": "keep-alive",
-                "Authentication": process.env.DATABASE_KEY
-            },
-            body: JSON.stringify(body)
-        })
-        const resBody = await res.json()
-        return resBody
-    }
-
 
 
 
     if(!req || !req.method || !req.body.query_type || !req.body.table_name){//if missing required fields return error
         res.status(405).send({err: "Expecting method, query_type, and table_name fields"})
     }else{
-        
         const query_type = req.body.query_type//gets the query type (SELECT, INSERT, DELETE, etc)
         const table_name = "rev2." + req.body.table_name//Gets the passed table name and generates the full name
         const columns = req.body.columns ? req.body.columns : null//gets columns if passed, defaults to *
         const column_names = req.body.column_names ? req.body.column_names : null //gets column names if passed, defaults to null
         const values = req.body.values ? req.body.values : null// gets values if passed, defaults to null
-        //const where_values = req.body.where ? req.body.where : null// gets array of WHERE clauses
-        const whereString = req.body.where && req.body.where != "" ? ` WHERE ${req.body.where}` : ""
-        //var whereString = ""//string to fill with the WHERE clause
-        /*if(where_values){//generates WHERE if the value was passed
+        const where_values = req.body.where ? req.body.where : null// gets array of WHERE clauses
+        var whereString = ""//string to fill with the WHERE clause
+        if(where_values){//generates WHERE if the value was passed
             whereString = " WHERE "
             for(var i = 0; i < where_values.length; i++){
                 const whereSplit = where_values[i].split(' ')
@@ -163,11 +139,11 @@ async function accessDatabase(req, res) {
                     whereString += " AND "
                 }
             }
-        }*/
+        }
 
         //Handles SELECT queries
         if(query_type === 'SELECT'){
-            const baseURL = `${urlStart}/q`//creates the base url for get requests
+            const baseURL = `${urlStart}/q/`//creates the base url for get requests
             const return_columns = columns;
 
             if(column_names && columns){//If the user supplied custom names for the columns, automatically specify in url
@@ -179,13 +155,9 @@ async function accessDatabase(req, res) {
             const query_string = `${query_type} ${return_columns ? return_columns : '*'} FROM ${table_name}${whereString}`//generates the query string
             if(DEBUG) console.log(`== query_string: ${query_string}`)
 
-            const body = {
-                query: query_string
-            }
-
-            await fetchGetRes(baseURL, body).then(resBody => {//sends request to backend
+            await fetchGetRes(baseURL + query_string).then(resBody => {//sends request to backend
                 res.status(200).send({
-                    msg: "Got response from DB",
+                    msg: "OK!",
                     data: resBody
                 })
             }).catch(err => {
@@ -217,7 +189,7 @@ async function accessDatabase(req, res) {
 
             await fetchPostRes(baseURL, body).then(resBody => {//send query to backend
                 res.status(200).send({
-                    msg: "Got response from DB",
+                    msg: "OK!",
                     data: resBody
                 })
             }).catch(err => {
@@ -242,9 +214,9 @@ async function accessDatabase(req, res) {
             }
             if(DEBUG) console.log(`== body.where: ${body.where}`)
 
-            await fetchDeleteRes(baseURL, body).then(resBody => {//await response
+            await fetchPostRes(baseURL, body).then(resBody => {//await response
                 res.status(200).send({
-                    msg: "Got response from DB",
+                    msg: "OK!",
                     data: resBody
                 }).catch(err => {
                     console.log("== err:", err)
@@ -257,36 +229,7 @@ async function accessDatabase(req, res) {
         
         
         else if(query_type === 'UPDATE'){//Coming soon
-            if(!columns || !values || columns.length == 0 || values.length == 0){//columns and values are required for UPDATE requests
-                res.status(405).send({err: "Expecting columns and values for UPDATE request"})
-                return
-            }else if(columns.length != values.length){
-                res.status(405).send({err: "Expecting equal number of columns and values"})
-                return
-            }else if(!req.body.where || whereString == ""){//UPDATE requires a WHERE clause
-                res.status(405).send({err: "Expecting WHERE clause for UPDATE query"})
-                return
-            }
-            const baseURL = `${urlStart}/up`//the base url for delete
-            const body = {//only needs the table_name and where
-                table_name: table_name,
-                columns: columns,
-                values: values,
-                where: whereString
-            }
-            if(DEBUG) console.log(`== body.where: ${body.where}`)
-
-            await fetchUpdateRes(baseURL, body).then(resBody => {
-                res.status(200).send({
-                    msg: "Got response from DB",
-                    data: resBody
-                }).catch(err => {
-                    console.log("== err:", err)
-                    res.status(500).send({
-                        err: err
-                    })
-                })
-            })
+            console.log("Update")
         }
 
 
