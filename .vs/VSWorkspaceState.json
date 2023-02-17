@@ -1,10 +1,14 @@
 {
   "ExpandedNodes": [
     "",
+    "\\public",
+    "\\public\\maps",
     "\\src",
     "\\src\\components",
-    "\\src\\pages"
+    "\\src\\pages",
+    "\\src\\pages\\api",
+    "\\src\\pages\\api\\auth"
   ],
-  "SelectedNode": "\\src\\components\\global.css",
+  "SelectedNode": "\\src\\pages\\api\\auth",
   "PreviewInSolutionExplorer": false
 }
