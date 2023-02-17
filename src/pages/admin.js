@@ -8,48 +8,48 @@ export default function Forms() {
 
     return (
         <Layout>
-        <ul className={styles.list}>
-      <li className={styles.linkstyle}>
-        <Link href="/update-users">
-          <a>Update User</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/get-users">
-          <a>See users</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/delete-user">
-          <a>Del User</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/add-site">
-          <a>Add site</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/add-want-list">
-          <a>Add Request</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/get-want-list">
-          <a>Get Requests</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/delete-want-list">
-          <a>Delete Requests</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/delete">
-          <a>Delete</a>
-        </Link>
-      </li>
-    </ul>
+            <ul className="pagelist">
+                <li className="pagelist_item">
+                    <Link href="/update-users">
+                      <a>Update User</a>
+                    </Link>
+                </li>
+                <li className="pagelist_item">
+                    <Link href="/get-users">
+                      <a>See users</a>
+                    </Link>
+                </li>
+                <li className="pagelist_item">
+                    <Link href="/delete-user">
+                      <a>Del User</a>
+                    </Link>
+                </li>
+                <li className="pagelist_item">
+                    <Link href="/add-site">
+                      <a>Add site</a>
+                    </Link>
+                </li>
+                <li className="pagelist_item">
+                    <Link href="/add-want-list">
+                      <a>Add Request</a>
+                    </Link>
+                </li>
+                <li className="pagelist_item">
+                    <Link href="/get-want-list">
+                      <a>Get Requests</a>
+                    </Link>
+                </li>
+                <li className="pagelist_item">
+                    <Link href="/delete-want-list">
+                      <a>Delete Requests</a>
+                    </Link>
+                </li>
+                <li className="pagelist_item">
+                    <Link href="/delete">
+                      <a>Delete</a>
+                    </Link>
+                </li>
+            </ul>
         </Layout>
     );
 }

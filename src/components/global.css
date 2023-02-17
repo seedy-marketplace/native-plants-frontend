@@ -32,7 +32,7 @@ textarea{
     display: block;
 }
 
-ul {
+.pagelist {
   list-style: none;
   padding-top: 10px;
   margin-bottom: 0;
@@ -46,26 +46,26 @@ ul {
   margin-top: 0%;
 }
 
-ul * {
+.pagelist * {
   background-color: #d9d9d9;
   padding: 0;
   font-size: 30px;
   height: 100%;
 }
 
-li {
-  color: rgb(0, 0, 0);
-  background-color: rgb(255, 255, 255);
-  text-align: left;
-  font-family: Arial, Helvetica, sans-serif;
-  border-width: 2px;
-  border-color: black;
-  border-style: none;
-  border-radius: 5px;
-  display: inline;
+.pagelist_item {
+    color: rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    border-width: 2px;
+    border-color: black;
+    border-style: none;
+    border-radius: 5px;
+    display: inline;
 }
 
-li a{
+.pagelist_item a{
   padding-top: 13px;
   padding-bottom: 10px;
   padding-right: 20px;
@@ -75,7 +75,7 @@ li a{
   text-decoration: none;
 }
 
-li a:hover{
+.pagelist_item a:hover{
   filter: brightness(0.8);
   }
 
@@ -259,4 +259,132 @@ iframe {
 .welcome-text {
   background-color: rgba(255,255,255,0.7);
   height: 100%;
+}
+
+/*###################################  NAVBAR.JS CSS  #######################################*/
+#navmenu-icon {
+    cursor: pointer;
+    max-height: 40px;
+    min-height: 20px;
+    max-width: 40px;
+    min-width: 20px;
+    background-image: url(./menu_icon.png);
+    background-size: 100%;
+    border-style: none;
+    background-color: #fefcfe;
+}
+
+#top-navbar {
+    background-color: #fefcfe;
+}
+
+#navbar-container{
+    position: fixed;
+    background-color: #778b5f; 
+    height: 90%;
+    box-shadow: 5px 10px #888888
+}
+
+.nav-list{
+    list-style-type:none;
+    padding-left: 10px;
+    width: fit-content;
+}
+
+.nav-list-item a{
+    color: #ffff;
+    text-decoration: none;
+    font-family: sans-serif; 
+    line-height:40px;
+}
+
+.nav-list-item:hover a {
+    text-decoration: underline;
+}
+
+.navbar-title{
+    background-color: #fefcfe; 
+    padding: 0px 8px;
+}
+
+.navbar-title h2{
+    color: #121b07;
+    font-family: sans-serif;
+}
+
+#login-signoutButton {
+    border-style: none;
+    background-color: inherit;
+    position: fixed;
+    right: 15px;
+    top: 3px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#login-signoutButton:hover {
+    color: #ad5cdc;
+}
+
+
+    /*##########################################   LOGIN.JS CSS ############################# */
+    .loginContainer {
+        position: fixed;
+        background-color: #d6cfa2;
+        right: 10px;
+        padding: 20px 20px 30px;
+        box-shadow: 5px 10px #888888;
+        border-radius: 2px;
+    }
+
+#loginButton {
+    background-color: #ccb8e2;
+    border: 2px solid #615095;
+    color: #36421f;
+    font-family:sans-serif;
+    border-radius: 4px;
+    font-size: 17px;
+    padding: 5px 15px;
+    margin-bottom: 10px;
+    cursor:pointer;
+}
+
+#loginButton:hover{
+    text-decoration: underline;
+}
+
+.signupButton {
+    left: 30%;
+    position: absolute;
+    font-family: sans-serif;
+    font-size: 15px;
+    color: #36421f;
+}
+
+.signupButton:hover {
+    color: #ad5cdc;
+}
+
+/*#################################################   SIGNUP.JS CSS   ####################################################*/
+.i_signupInput{
+    background-color: #facdcd;
+} 
+
+#invalidSignupHeader {
+    font-family: sans-serif;
+    font-size:14px;
+    display:flex;
+    justify-content: center;
+    color: red;
+}
+
+#signupButton {
+    position: absolute;
+    right:45%;
+    bottom: -95px;
+    cursor: pointer
+}
+
+.SignupInputContainer {
+    padding-bottom:10px;
 }

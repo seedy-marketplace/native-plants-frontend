@@ -8,38 +8,38 @@ export default function Farm() {
 
     return (
         <Layout>
-        <ul className={styles.list}>
-        <li className={styles.linkstyle}>
-        <Link href="/add-farms">
-          <a>Add Farm</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/get-farms">
-          <a>See Farms</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/delete-farm">
-          <a>Delete Farm</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/update-farm">
-          <a>Update Farm</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/add-farm-amp">
-          <a>Add Amplification</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/get-farm-amp">
-          <a>See Amplification</a>
-        </Link>
-      </li>
-    </ul>
+            <ul className="pagelist">
+                    <li className="pagelist_item">
+                        <Link href="/add-farms">
+                          <a>Add Farm</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/get-farms">
+                          <a>See Farms</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/delete-farm">
+                          <a>Delete Farm</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/update-farm">
+                          <a>Update Farm</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/add-farm-amp">
+                          <a>Add Amplification</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/get-farm-amp">
+                          <a>See Amplification</a>
+                        </Link>
+                    </li>
+            </ul>
         </Layout>
     );
 }
