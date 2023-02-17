@@ -16,15 +16,30 @@ function Farms() {
         e.preventDefault();
         //const res3 = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /'+farmname,{
 
-        const res = await fetch('/api/accessBackend?query_string=SELECT name, email, user_name, phone_number, website, user_role_type FROM rev2.users',
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Farms"
-            }
-        )
+        // const res = await fetch('/api/accessBackend?query_string=SELECT name, email, user_name, phone_number, website, user_role_type FROM rev2.users',
+        //     {
+        //         method: 'GET',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         query: "Farms"
+        //     }
+        // )
+
+        const res = await fetch('api/accessDatabase',
+        {
+            method: 'SEARCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query_type: 'SELECT',
+                table_name: 'users',
+                columns: ['name', 'email', 'user_name', 'phone_number', 'website', 'user_role_type'],
+                column_names: ['Name', 'Email', 'Username', 'Phone Number', 'Website', 'Access Level']
+            })
+        })
+        console.log("made it past request")
         const resBody = await res.json();
         console.log(resBody);
         if (res.status >= 200 && res.status < 400) {
