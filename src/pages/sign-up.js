@@ -39,7 +39,7 @@ function Signup() {
             const resBody = await res.json();
             console.log(resBody);
             console.log("== document.cookie:", document.cookie);
-            // location.replace("/");
+            location.replace("/");
         } else {
             setValid(false);
         }
@@ -91,7 +91,7 @@ function Signup() {
                 </div>
                 <div className="SignupInputContainer">
                     <label htmlFor="phone">Phone number</label>
-                    <input className={styles.inputs}
+                    <input 
                         type="tel"
                         id="phone"
                         name="phone"
