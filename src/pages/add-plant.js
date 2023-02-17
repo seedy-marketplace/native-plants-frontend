@@ -56,32 +56,23 @@ function Farms() {
 
         e.preventDefault();
 
-        console.log("File:", file)
-
+        // Check for file
         if (file) {
-            // console.log("File: ", file);
             fileReader.onload = function (e) {
-            //     const csvOutput = event.target.result;
-            //     console.log("handleOnSubmit: ", csvOutput);
                 const bstr = e.target.result;
                 const wb = XLSX.read(bstr, {type:'binary'});
+
                 /* Get first worksheet */
                 const wsname = wb.SheetNames[0];
                 const ws = wb.Sheets[wsname];
+
                 /* Convert array of arrays */
                 const data = XLSX.utils.sheet_to_csv(ws, {header:1});
-                /* Update state */
-                console.log("Data>>>"+data);
-                console.log("Data:", data.toString().split("\n"))
-    
-                console.log(data.toString().split("\n").slice(1));
 
                 tempData = data.toString().split("\n").slice(1);
 
                 tempData.forEach(async(entry) => {
-                    console.log("For each entry: ", entry);
                     rowData = entry.split(",");
-                    console.log("For each entry: ", rowData);
 
                     const res = await fetch("/api/accessDatabase",
                         {
@@ -93,7 +84,6 @@ function Farms() {
                                 query_type: 'INSERT', //SQL Query type: SELECT, INSERT, UPDATE, DELETE. (Field is required)
                                 table_name: 'plant', //Any table name here (Field is required)
                                 columns: ['genus', 'species', 'common_name', 'species_code'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
-                                // values: [rowData],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
                                 values: [rowData[0], rowData[1], rowData[2], rowData[3]],
                                 
                             })
