@@ -61,15 +61,15 @@ async function accessDatabase(req, res) {
         if(DEBUG) console.log("query: ", body.query)
         const res = await fetch(url, {//generated fetch request from url
             method: "POST",
-            mode: "no-cors",
-            cache: "no-cache",
-            redirect: "follow",
-            credentials: "include",
+            //mode: "no-cors",
+            //cache: "no-cache",
+            //redirect: "follow",
+            //credentials: "include",
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': '*/*',
-                //'Access-Control-Allow-Origin': '*',
-                //'Accept-Encoding': 'gzip, deflate, br',
+                'Access-Control-Allow-Origin': '*',
+                'Accept-Encoding': 'gzip, deflate, br',
                 //"Connection": "keep-alive",
                 "Authentication": process.env.DATABASE_KEY
             },
