@@ -24,7 +24,7 @@ export default function Home() {
         <Layout>
             <div className="welcome-container">
                 <div className="welcome-text">
-                    <h1>Welcome to the PNW Plant Marketplace!</h1>
+                    <h1>Welcome to Seedy!</h1>
                 </div>
             </div>
             
