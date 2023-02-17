@@ -7,14 +7,6 @@ function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const { data: session } = useSession();
-    if (session) {
-        return (
-            <Layout>
-                <h1>You are logged in!</h1>
-                <button onClick={signOut}>Sign out</button>
-            </Layout>
-        );
-    }
 
     async function handleLogin(e) {
         e.preventDefault();
@@ -23,37 +15,16 @@ function Login() {
     }
 
     return (
-        <Layout>
-         <form onSubmit={handleLogin}>
-                {/*<div>
-                <a>Username</a>
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    />
+        <div className="loginContainer">
+            <div>
+                  <button id="loginButton" onClick={handleLogin}><a>Login</a></button>
             </div>
             <div>
-                <a>Password</a>
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    />
-            </div> */}
-            <div>
-                <button>Login</button>
+                <Link href="/sign-up">
+                    <a className="signupButton">Sign up</a>
+                </Link>
             </div>
-        </form> 
-        <h3>Click this button to Login</h3>
-        <div>
-            <Link href="/sign-up">
-            <a>Sign up</a>
-            </Link>
         </div>
-        </Layout>
     );
 }
 
