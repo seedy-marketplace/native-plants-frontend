@@ -8,23 +8,23 @@ export default function Forms() {
 
     return (
         <Layout>
-        <ul className={styles.list}>
-      <li className={styles.linkstyle}>
-        <Link href="/add-stand">
-          <a>Add Stand</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/add-stand-history">
-          <a>Add Stand History</a>
-        </Link>
-      </li>
-      <li className={styles.linkstyle}>
-        <Link href="/get-stand">
-          <a>See Stands</a>
-        </Link>
-      </li>
-    </ul>
+            <ul className="pagelist">
+                <li className="pagelist_item">
+                    <Link href="/add-stand">
+                      <a>Add Stand</a>
+                    </Link>
+                </li>
+                <li className="pagelist_item">
+                    <Link href="/add-stand-history">
+                      <a>Add Stand History</a>
+                    </Link>
+                </li>
+                <li className="pagelist_item">
+                    <Link href="/get-stand">
+                      <a>See Stands</a>
+                    </Link>
+                </li>
+            </ul>
         </Layout>
     );
 }
