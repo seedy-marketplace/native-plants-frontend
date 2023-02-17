@@ -51,8 +51,12 @@ function Farms() {
 
     const handleOnSubmit = (e) => {
         const fileReader = new FileReader();
+        var tempData;
+        var rowData;
 
         e.preventDefault();
+
+        console.log("File:", file)
 
         if (file) {
             // console.log("File: ", file);
@@ -68,11 +72,36 @@ function Farms() {
                 const data = XLSX.utils.sheet_to_csv(ws, {header:1});
                 /* Update state */
                 console.log("Data>>>"+data);
-            };
-            fileReader.readAsBinaryString(file);
+                console.log("Data:", data.toString().split("\n"))
+    
+                console.log(data.toString().split("\n").slice(1));
 
-            // console.log(fileReader.readAsText(file));
-            
+                tempData = data.toString().split("\n").slice(1);
+
+                tempData.forEach(async(entry) => {
+                    console.log("For each entry: ", entry);
+                    rowData = entry.split(",");
+                    console.log("For each entry: ", rowData);
+
+                    const res = await fetch("/api/accessDatabase",
+                        {
+                            method: 'POST', //HTTP method: SEARCH, POST, DELETE, PATCH  (NOT GET)
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                query_type: 'INSERT', //SQL Query type: SELECT, INSERT, UPDATE, DELETE. (Field is required)
+                                table_name: 'plant', //Any table name here (Field is required)
+                                columns: ['genus', 'species', 'common_name', 'species_code'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
+                                // values: [rowData],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                                values: [rowData[0], rowData[1], rowData[2], rowData[3]],
+                                
+                            })
+                        }
+                    )
+                })
+
+            };
                 
         }
     };
