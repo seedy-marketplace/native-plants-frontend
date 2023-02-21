@@ -1,228 +1,302 @@
-import { getSession } from "next-auth/react"
+import { getServerSession } from "next-auth/next";
 //const urlStart = "https://native-plants-backend.herokuapp.com"
-const urlStart = "http://localhost:8080"
-
+const urlStart = "http://localhost:8080";
 
 async function accessBackend(req, res) {
-    const session = await getSession({ req })
-    console.log("== Session:", session)
-    console.log("req:", req)
+  const session = await getServerSession(req, res);
 
-    if (!session) {
-        res.status(401).send({"error": "You are not logged in!"});
-        return;
-    } else if (session.user.user_level < 1) {
-        res.status(401).send({"error": "You do not have permission to access this page!\nAsk an admin to approve your account."});
-        return;
-    }else if (session.user.user_level < 2 && req.body.query_type && req.body.query_type =="UPDATE" && 
-    req.body.query_fields && req.body.query_fields.length > 0 && req.body.query_fields[0]=="user_role_type") {
-        res.status(401).send({"error": "You do not have permission to access this page!\nAsk an admin to approve your account."});
-        return;
-    }else {
-        console.log("== Logged in with these credentials:", session.user.real_name, session.user.user_level);
-        console.log("== Session:", session)
-    } 
+  if (!session) {
+    res.status(401).send({ error: "You are not logged in!" });
+    return;
+  } else if (session.user.user_level < 1) {
+    res
+      .status(401)
+      .send({
+        error:
+          "You do not have permission to access this page!\nAsk an admin to approve your account.",
+      });
+    return;
+  } else if (
+    session.user.user_level < 2 &&
+    req.body.query_type &&
+    req.body.query_type == "UPDATE" &&
+    req.body.query_fields &&
+    req.body.query_fields.length > 0 &&
+    req.body.query_fields[0] == "user_role_type"
+  ) {
+    res
+      .status(401)
+      .send({
+        error:
+          "You do not have permission to access this page!\nAsk an admin to approve your account.",
+      });
+    return;
+  } else {
+    console.log(
+      "== Logged in with these credentials:",
+      session.user.real_name,
+      session.user.user_level
+    );
+    console.log("== Session:", session);
+  }
 
-    async function fetchPostRes(url, body) {
-        console.log("Fetching from " + url);
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-                'Access-Control-Allow-Origin': '*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                //"Connection": "keep-alive",
-                "Authentication": process.env.DATABASE_KEY
-            },
-            body: JSON.stringify(body)                
-        });
-        console.log(res);
-        const resBody = await res.json();
-        console.log(resBody);
-        return resBody;
+  async function fetchPostRes(url, body) {
+    console.log("Fetching from " + url);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+        "Access-Control-Allow-Origin": "*",
+        "Accept-Encoding": "gzip, deflate, br",
+        //"Connection": "keep-alive",
+        Authentication: process.env.DATABASE_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+    console.log(res);
+    const resBody = await res.json();
+    console.log(resBody);
+    return resBody;
+  }
+
+  async function fetchGetRes(url) {
+    console.log("Fetching from " + url);
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+        "Access-Control-Allow-Origin": "*",
+        "Accept-Encoding": "gzip, deflate, br",
+        //"Connection": "keep-alive",
+        Authentication: process.env.DATABASE_KEY,
+      },
+    });
+    const resBody = await res.json();
+    return resBody;
+  }
+
+  if (req.method === "POST") {
+    console.log("query_values:", req.body.query_values);
+    const table_name = "rev2." + req.body.table_name;
+    const query_type = req.body.query_type;
+    if (query_type !== "INSERT") {
+      res.status(405).send({ err: "Only INSERT queries supported" });
     }
-
-    async function fetchGetRes(url) {
-        console.log("Fetching from " + url);
-        const res = await fetch(url, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-                'Access-Control-Allow-Origin': '*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                //"Connection": "keep-alive",
-                "Authentication": process.env.DATABASE_KEY
-            }
+    const query_fields = req.body.query_fields.join(", ");
+    const query_values = req.body.query_values;
+    const format_holders = req.body.query_fields; //.map(_x => `%s`);
+    const query_string =
+      "INSERT INTO " +
+      table_name +
+      "(" +
+      query_fields +
+      ") VALUES (" +
+      query_values +
+      ")";
+    console.log("== query_string:", query_string);
+    await fetch(`${urlStart}/wake_me_up`, {
+      method: "GET",
+      headers: {
+        //"Connection": "keep-alive"
+      },
+    }).then(() => {
+      console.log(`ready to push ${query_string} to backend`);
+    });
+    await fetchGetRes(`${urlStart}/ig/` + query_string, {
+      method: "GET",
+      headers: {
+        //"Connection": "keep-alive",
+        Authentication: process.env.DATABASE_KEY,
+      },
+    })
+      .then((resBody) => {
+        console.log("== resBody:", resBody);
+        res.status(200).send({
+          msg: "OK!",
         });
-        const resBody = await res.json();
-        return resBody;
-    }
-
-    if (req.method === "POST") {
-        console.log("query_values:", req.body.query_values);
-        const table_name = "rev2." + req.body.table_name;
-        const query_type = req.body.query_type;
-        if (query_type !== "INSERT") {
-            res.status(405).send({ err: "Only INSERT queries supported" })
-        }
-        const query_fields = req.body.query_fields.join(", ");
-        const query_values = req.body.query_values;
-        const format_holders = req.body.query_fields;//.map(_x => `%s`);
-        const query_string = "INSERT INTO " + table_name + "(" + query_fields + ") VALUES (" + query_values + ")";
-        console.log("== query_string:", query_string);
-        await fetch(`${urlStart}/wake_me_up`, {
-            method: "GET",
-            headers: {
-                //"Connection": "keep-alive"
-            }
-        }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-        await fetchGetRes(`${urlStart}/ig/` + query_string, {
-            method: "GET",
-            headers: {
-                //"Connection": "keep-alive",
-                "Authentication": process.env.DATABASE_KEY
-            }
-        }).then(resBody => {
-            console.log("== resBody:", resBody);
-            res.status(200).send({
-                msg: "OK!"
-            });
-        }).catch(err => {
-            console.log("== err:", err);
-            res.status(500).send({
-                err: "Error accessing backend"
-            });
+      })
+      .catch((err) => {
+        console.log("== err:", err);
+        res.status(500).send({
+          err: "Error accessing backend",
         });
-        // res.status(501).send({ err: "Something went wrong" });
-    } else if (req.method == "GET") {
-        console.log("== req.query:", req.query);
-        console.log("TYPE:", typeof(req.query.query_string))
-        if (req.query.query_string.substring(0, 6) === "SELECT" && !req.query.query_string.includes("*")) {
-            var fin_fields = []
-            var fields = req.query.query_string.substring(req.query.query_string.indexOf("FROM"), 8 + req.query.query_string.indexOf("WHERE")).split(",");
-            fields.map((field) => {
-                field = field.trim() + " AS \"" + (field.trim()).split("_").map((word) => {
-                    return word.charAt(0).toUpperCase() + word.slice(1);
-                }).join(" ") + "\"";
-                fin_fields.push(field)
+      });
+    // res.status(501).send({ err: "Something went wrong" });
+  } else if (req.method == "GET") {
+    console.log("== req.query:", req.query);
+    console.log("TYPE:", typeof req.query.query_string);
+    if (
+      req.query.query_string.substring(0, 6) === "SELECT" &&
+      !req.query.query_string.includes("*")
+    ) {
+      var fin_fields = [];
+      var fields = req.query.query_string
+        .substring(
+          req.query.query_string.indexOf("FROM"),
+          8 + req.query.query_string.indexOf("WHERE")
+        )
+        .split(",");
+      fields.map((field) => {
+        field =
+          field.trim() +
+          ' AS "' +
+          field
+            .trim()
+            .split("_")
+            .map((word) => {
+              return word.charAt(0).toUpperCase() + word.slice(1);
             })
-            console.log(fin_fields)
-            fin_fields = fin_fields.join(", ")
-            req.query.query_string = req.query.query_string.substring(0, 6) + " " + fin_fields + " " + req.query.query_string.substring(req.query.query_string.indexOf("FROM"), );
-            console.log(req.query.query_string)
-        }
-        await fetchGetRes(`${urlStart}/q/` + req.query.query_string).then(resBody => {
-//            console.log("== resBody:", resBody);
-            res.status(200).send({
-                msg: "OK!",
-                data: resBody
-            });
-        }).catch(err => {
-            console.log("== err:", err);
-            res.status(500).send({
-                err: "Error accessing backend"
-            });
+            .join(" ") +
+          '"';
+        fin_fields.push(field);
+      });
+      console.log(fin_fields);
+      fin_fields = fin_fields.join(", ");
+      req.query.query_string =
+        req.query.query_string.substring(0, 6) +
+        " " +
+        fin_fields +
+        " " +
+        req.query.query_string.substring(
+          req.query.query_string.indexOf("FROM")
+        );
+      console.log(req.query.query_string);
+    }
+    await fetchGetRes(`${urlStart}/q/` + req.query.query_string)
+      .then((resBody) => {
+        //            console.log("== resBody:", resBody);
+        res.status(200).send({
+          msg: "OK!",
+          data: resBody,
         });
-        
-
-
-    } else if (req.method === "DELETE") {
-        console.log("query_values:", req.body.query_values);
-        const table_name = "rev2." + req.body.table_name;
-        const query_type = req.body.query_type;
-        if (query_type !== "DELETE") {
-            res.status(405).send({ err: "Only DELETE queries supported" })
-        }
-        const query_fields = req.body.query_fields.join(", ");
-
-        const query_values = req.body.query_values;
-        const format_holders = req.body.query_fields.map(_x => `%s`);
-        const query_string = "DELETE FROM " + table_name + ` WHERE ${query_fields}=%s/` + query_values[0];
-        console.log("== query_string:", query_string);
-        await fetch(`${urlStart}/wake_me_up`, {
-            method: "GET",
-            headers: {
-                "Connection": "keep-alive"
-            }
-        }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-        await fetchGetRes(`${urlStart}/ig/` + query_string).then(resBody => {
-            console.log("== resBody:", resBody);
-            res.status(200).send({
-                msg: "OK!"
-            });
-        }).catch(err => {
-            console.log("== err:", err);
-            res.status(500).send({
-                err: "Error accessing backend"
-            });
+      })
+      .catch((err) => {
+        console.log("== err:", err);
+        res.status(500).send({
+          err: "Error accessing backend",
         });
-        // res.status(501).send({ err: "Something went wrong" });
-    } else if (req.method === "PATCH") {
-        console.log("query_values:", req.body.query_values);
-        const table_name = "rev2." + req.body.table_name;
-        const query_type = req.body.query_type;
-        if (query_type !== "UPDATE") {
-            res.status(405).send({ err: "Only UPDATE queries supported" })
-        }
-        const query_fields = req.body.query_fields;
-        const clauses = ""
-        
-        const query_values = req.body.query_values;
-        const format_holders = req.body.query_fields.map(_x => `%s`);
-        const query_string = "UPDATE " + table_name + ` SET ${query_fields[0]}=%s WHERE ${query_fields[1]}=%s/` + query_values.join(",");
-        console.log("== query_string:", query_string);
-        await fetch(`${urlStart}/wake_me_up`, {
-            method: "GET",
-            headers: {
-                "Connection": "keep-alive"
-            }
-        }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-        await fetchGetRes(`${urlStart}/ig/` + query_string).then(resBody => {
-            console.log("== resBody:", resBody);
-            res.status(200).send({
-                msg: "OK!"
-            });
-        }).catch(err => {
-            console.log("== err:", err);
-            res.status(500).send({
-                err: "Error accessing backend"
-            });
+      });
+  } else if (req.method === "DELETE") {
+    console.log("query_values:", req.body.query_values);
+    const table_name = "rev2." + req.body.table_name;
+    const query_type = req.body.query_type;
+    if (query_type !== "DELETE") {
+      res.status(405).send({ err: "Only DELETE queries supported" });
+    }
+    const query_fields = req.body.query_fields.join(", ");
+
+    const query_values = req.body.query_values;
+    const format_holders = req.body.query_fields.map((_x) => `%s`);
+    const query_string =
+      "DELETE FROM " +
+      table_name +
+      ` WHERE ${query_fields}=%s/` +
+      query_values[0];
+    console.log("== query_string:", query_string);
+    await fetch(`${urlStart}/wake_me_up`, {
+      method: "GET",
+      headers: {
+        Connection: "keep-alive",
+      },
+    }).then(() => {
+      console.log(`ready to push ${query_string} to backend`);
+    });
+    await fetchGetRes(`${urlStart}/ig/` + query_string)
+      .then((resBody) => {
+        console.log("== resBody:", resBody);
+        res.status(200).send({
+          msg: "OK!",
         });
-        // res.status(501).send({ err: "Something went wrong" });
-    }else if (req.method === "PUT") {
+      })
+      .catch((err) => {
+        console.log("== err:", err);
+        res.status(500).send({
+          err: "Error accessing backend",
+        });
+      });
+    // res.status(501).send({ err: "Something went wrong" });
+  } else if (req.method === "PATCH") {
     console.log("query_values:", req.body.query_values);
     const table_name = "rev2." + req.body.table_name;
     const query_type = req.body.query_type;
     if (query_type !== "UPDATE") {
-        res.status(405).send({ err: "Only UPDATE queries supported" })
+      res.status(405).send({ err: "Only UPDATE queries supported" });
+    }
+    const query_fields = req.body.query_fields;
+    const clauses = "";
+
+    const query_values = req.body.query_values;
+    const format_holders = req.body.query_fields.map((_x) => `%s`);
+    const query_string =
+      "UPDATE " +
+      table_name +
+      ` SET ${query_fields[0]}=%s WHERE ${query_fields[1]}=%s/` +
+      query_values.join(",");
+    console.log("== query_string:", query_string);
+    await fetch(`${urlStart}/wake_me_up`, {
+      method: "GET",
+      headers: {
+        Connection: "keep-alive",
+      },
+    }).then(() => {
+      console.log(`ready to push ${query_string} to backend`);
+    });
+    await fetchGetRes(`${urlStart}/ig/` + query_string)
+      .then((resBody) => {
+        console.log("== resBody:", resBody);
+        res.status(200).send({
+          msg: "OK!",
+        });
+      })
+      .catch((err) => {
+        console.log("== err:", err);
+        res.status(500).send({
+          err: "Error accessing backend",
+        });
+      });
+    // res.status(501).send({ err: "Something went wrong" });
+  } else if (req.method === "PUT") {
+    console.log("query_values:", req.body.query_values);
+    const table_name = "rev2." + req.body.table_name;
+    const query_type = req.body.query_type;
+    if (query_type !== "UPDATE") {
+      res.status(405).send({ err: "Only UPDATE queries supported" });
     }
     const query_fields = req.body.query_fields;
 
     const query_values = req.body.query_values;
-    const format_holders = req.body.query_fields.map(_x => `%s`);
-    const query_string = "UPDATE " + table_name + ` SET ${query_fields[0]}=%s WHERE ${query_fields[1]}=%s AND ${query_fields[2]}=%s AND ${query_fields[3]}=%s AND ${query_fields[4]}=%s/` + query_values.join(",");
+    const format_holders = req.body.query_fields.map((_x) => `%s`);
+    const query_string =
+      "UPDATE " +
+      table_name +
+      ` SET ${query_fields[0]}=%s WHERE ${query_fields[1]}=%s AND ${query_fields[2]}=%s AND ${query_fields[3]}=%s AND ${query_fields[4]}=%s/` +
+      query_values.join(",");
     console.log("== query_string:", query_string);
     await fetch(`${urlStart}/wake_me_up`, {
-        method: "GET",
-        headers: {
-            "Connection": "keep-alive"
-        }
-    }).then(() => {console.log(`ready to push ${query_string} to backend`)});
-    await fetchGetRes(`${urlStart}/ig/` + query_string).then(resBody => {
+      method: "GET",
+      headers: {
+        Connection: "keep-alive",
+      },
+    }).then(() => {
+      console.log(`ready to push ${query_string} to backend`);
+    });
+    await fetchGetRes(`${urlStart}/ig/` + query_string)
+      .then((resBody) => {
         console.log("== resBody:", resBody);
         res.status(200).send({
-            msg: "OK!"
+          msg: "OK!",
         });
-    }).catch(err => {
+      })
+      .catch((err) => {
         console.log("== err:", err);
         res.status(500).send({
-            err: "Error accessing backend"
+          err: "Error accessing backend",
         });
-    });
+      });
     // res.status(501).send({ err: "Something went wrong" });
-}
+  }
 }
 
 export default accessBackend;
