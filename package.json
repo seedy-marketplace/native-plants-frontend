@@ -8,6 +8,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "cookie": "^0.4.2",
     "isomorphic-unfetch": "^3.1.0",
     "next": "^12.3.3",
@@ -15,8 +17,8 @@
     "openid-client": "^5.3.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "xlsx": "^0.18.5",
-    "react-hook-form": "^7.42.1"
+    "react-hook-form": "^7.42.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "eslint": "8.9.0",

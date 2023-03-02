@@ -2,30 +2,32 @@ import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import styles from '../components/Navbar.module.css'
 import * as XLSX from "xlsx";
+import { css } from '@emotion/react'
+import styled from '@emotion/styled'
 
 import useAPIRequest from '../hooks/useAPIRequest';
+
+const ErrMessage = styled.div`
+    margin-top: 5px;
+    padding: 5px;
+    background: #ff7c7c;
+    color:
+`
 
 function Farms() {
     const [genus, setGenus] = useState("");
     const [speccode, setSpecCode] = useState("");
     const [species, setSpecies] = useState("");
     const [comname, setComname] = useState("");
+    const [file, setFile] = useState();
+    const [err, setErr] = useState(false);
+    const [lenErr, setLenErr] = useState(false);
+    const [rowErr, setRowErr] = useState(false);
+
+
     async function postFarm(e) {
         e.preventDefault();
-        //console.log("== Adding plant with these parameters:", genus, comname, speccode, species);
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name, contact_email) VALUES (%s) /'+farmname+', '+farmeamil,{
-        // const res = await fetch('/api/accessBackend', {
-        //     method: 'POST',
-        //     body: JSON.stringify( {
-        //         table_name: "plant",
-        //         query_type: "INSERT",
-        //         query_fields: ['genus','species','common_name','species_code'],
-        //         query_values: [genus, species,comname,speccode]
-        //     }),
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // })
+        console.log("== Adding plant with these parameters:", genus, comname, speccode, species);
         const res = await fetch('/api/accessDatabase',{
             method: 'POST',
             headers: {
@@ -42,8 +44,6 @@ function Farms() {
         console.log(resBody);
 
     }
-
-    const [file, setFile] = useState();
 
     const handleOnChange = (e) => {
         setFile(e.target.files[0]);
@@ -78,8 +78,37 @@ function Farms() {
 
             tempData = data.toString().split("\n").slice(1);
 
+            if (tempData.length < 1) {
+                setErr(true);
+                setLenErr(true);
+                setRowErr(false)
+                console.log("Setting length err")
+                return;
+            }
+
+            setErr(false);
+
             tempData.forEach(async(entry) => {
+                if (err == true) {
+                    return;
+                }
                 rowData = entry.split(",");
+                console.log("Data: ", rowData)
+
+                for (let i = 0; i < rowData.length; i++) {
+                    if (rowData[i].length < 1) {
+                        setErr(true);
+                        setRowErr(true);
+                        setLenErr(false)
+                        console.log("Setting row err")
+                        return;
+                    }
+                }
+
+                // setErr(false);
+
+                return;
+
 
                 const res = await fetch("/api/accessDatabase",
                     {
@@ -149,22 +178,30 @@ function Farms() {
             </form>
             
             <div className="import-csv">
-                <h1>Bulk Import Plants</h1>
-                <h3>Import plants by selecting an excel file</h3>
+                
                 <form>
+                    <h1>Bulk Import Plants</h1>
+                    <h3>Import plants by selecting an excel file</h3>
                     <input
                         type={"file"}
                         id={"csvFileInput"}
                         accept={".xlsx"}
                         onChange={handleOnChange}
                     />
-                    <button
-                        onClick={(e) => {
-                            handleOnSubmit(e);
-                        }}
-                    >
+                    <button onClick={(e) => {handleOnSubmit(e)}} >
                         IMPORT CSV
                     </button>
+                    { (err && lenErr) ? (<ErrMessage>
+                        <p>There are no rows with values in this file. (Hint: 
+                            make first row the description, write data starting in row 2)
+                        </p>
+                        </ErrMessage>) : null }
+                    { (err && rowErr) ? (
+                        <ErrMessage>
+                            <p>All sheets must have four full columns (in the order of) 
+                                common name, species, species code, and genus</p>
+                            </ErrMessage>
+                        ) : null }
                 </form>
             </div>
         </div>
