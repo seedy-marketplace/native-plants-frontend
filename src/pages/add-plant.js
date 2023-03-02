@@ -112,7 +112,7 @@ function Farms() {
 
                 // setErr(false);
 
-                return;
+                // return;
 
 
                 const res = await fetch("/api/accessDatabase",
