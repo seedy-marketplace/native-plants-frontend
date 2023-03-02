@@ -23,7 +23,7 @@ function Farms() {
     const [err, setErr] = useState(false);
     const [lenErr, setLenErr] = useState(false);
     const [rowErr, setRowErr] = useState(false);
-
+    const [fileErr, setFileErr] = useState(false);
 
     async function postFarm(e) {
         e.preventDefault();
@@ -60,7 +60,12 @@ function Farms() {
         // Check for file
         if (file) {
             fileReader.readAsBinaryString(file)
-                
+            setFileErr(false);
+        } else {
+            setFileErr(true);
+            setLenErr(false);
+            setRowErr(false);
+            return;
         }
 
         fileReader.onload = function (e) {
@@ -191,15 +196,20 @@ function Farms() {
                     <button onClick={(e) => {handleOnSubmit(e)}} >
                         IMPORT CSV
                     </button>
-                    { (err && lenErr) ? (<ErrMessage>
-                        <p>There are no rows with values in this file. (Hint: 
+                    { lenErr ? (<ErrMessage>
+                        <p>Error: There are no rows with values in this file. (Hint: 
                             make first row the description, write data starting in row 2)
                         </p>
                         </ErrMessage>) : null }
-                    { (err && rowErr) ? (
+                    { rowErr ? (
                         <ErrMessage>
-                            <p>All sheets must have four full columns (in the order of) 
+                            <p>Error: All sheets must have four full columns (in the order of) 
                                 common name, species, species code, and genus</p>
+                            </ErrMessage>
+                        ) : null }
+                    { fileErr ? (
+                        <ErrMessage>
+                            <p>Error: Invalid or missing file entry</p>
                             </ErrMessage>
                         ) : null }
                 </form>
