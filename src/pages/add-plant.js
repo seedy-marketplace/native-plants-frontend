@@ -50,7 +50,7 @@ function Farms() {
     };
 
     const handleOnSubmit = (e) => {
-        var name = file
+        var type = file
         const fileReader = new FileReader();
         var tempData;
         var rowData;
@@ -61,6 +61,16 @@ function Farms() {
         if (file) {
             fileReader.readAsBinaryString(file)
             setFileErr(false);
+            setLenErr(false);
+            setRowErr(false);
+
+            type = file.name.split('.').pop();
+            if (type !== 'xlsx' && type !== 'csv') {
+                setFileErr(true);
+                setLenErr(false);
+                setRowErr(false);
+                return;
+            }
         } else {
             setFileErr(true);
             setLenErr(false);
@@ -110,10 +120,7 @@ function Farms() {
                     }
                 }
 
-                // setErr(false);
-
                 // return;
-
 
                 const res = await fetch("/api/accessDatabase",
                     {
