@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import styles from '../components/Navbar.module.css'
 import * as XLSX from "xlsx";
-import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 
 import useAPIRequest from '../hooks/useAPIRequest';
