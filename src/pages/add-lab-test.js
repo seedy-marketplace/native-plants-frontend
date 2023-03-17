@@ -18,17 +18,18 @@ function SeedCol() {
     const [speccode, setSpecCode] = useState("");
 
     async function getData(){
-        const reqData = {}
-        let query = "/api/accessBackend?query_string=SELECT * from rev2.lab WHERE lab_name LIKE '" +labname+ "'"
-        let res = await fetch(query,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Labs"
-            }
-        )
+        
+        let res = await fetch('/api/accessDatabase',{
+            method: 'SEARCH', //SEARCH, POST, DELETE, UPDATE  (NOT GET)
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
+                table_name: 'lab', //Any table name here (Field is required)
+                where: `${`lab_name='${labname}'`}`
+            })
+        })
         if (res.status >= 200 && res.status < 400) {
             reqData.labData = await res.json();
             console.log(reqData.labData);
@@ -37,16 +38,18 @@ function SeedCol() {
             return {labData:NULL}
         }
 
-        query = "/api/accessBackend?query_string=SELECT * from rev2.seed_collection WHERE collection_site_name LIKE '" +collection+ "'"
-        res = await fetch(query,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Labs"
-            }
-        )
+        
+        res = await fetch('/api/accessDatabase',{
+            method: 'SEARCH', //SEARCH, POST, DELETE, UPDATE  (NOT GET)
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
+                table_name: 'seed_collection', //Any table name here (Field is required)
+                where: `${`collection_site_name='${collection}'`}`
+            })
+        })
         if (res.status >= 200 && res.status < 400) {
             reqData.colData = await res.json();
             console.log(reqData.colData);
@@ -60,13 +63,13 @@ function SeedCol() {
     async function postSeedCol(e) {
         e.preventDefault();
         const data = await getData()
-        const res = await fetch('/api/accessBackend', {
+        const res = await fetch('/api/accessDatabase', {
             method: 'POST',
             body: JSON.stringify( {
                 table_name: "testing_history",
                 query_type: "INSERT",
-                query_fields: ['invalidity_date', 'test_group', 'test_species_code', 'tested_collection','testing_lab', 'viability_test_method', 'viability_rate', 'is_measurement_of_pls', 'weight_of_collection', 'unmod_bulk_weight', 'purity'],
-                query_values: [invaliddate, testgroup, speccode, collection, data.labData.data.data[0].lab_id, method, rate, pls, weight, bulk, purity]
+                columns: ['invalidity_date', 'test_group', 'test_species_code', 'tested_collection','testing_lab', 'viability_test_method', 'viability_rate', 'is_measurement_of_pls', 'weight_of_collection', 'unmod_bulk_weight', 'purity'],
+                values: [invaliddate, testgroup, speccode, collection, data.labData.data.data[0].lab_id, method, rate, pls, weight, bulk, purity]
             }),
             headers: {
                 'Content-Type': 'application/json'

@@ -16,23 +16,19 @@ function Labs() {
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
     async function getLab(e) {
         e.preventDefault();
-        console.log("== Adding lab with these parameters:", labname, email);
-        let searchfront = '/api/accessBackend?query_string=SELECT '
-        let searchback = ' FROM rev2.lab'
-        var searchmid = '*'
-        if (labname !=""){
-            searchback = searchback + " Where lab_name LIKE '" + labname + "'"
-        }
-        let searchfinal = searchfront + searchmid + searchback
-        console.log("== searching this: ", searchfinal);
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /'+farmname,{
-        const res = await fetch(searchfinal,
+        
+        
+        const res = await fetch('./api/accessDatabase',
             {
-                method: 'GET',
+                method: 'SEARCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                query: "Labs"
+                body: JSON.stringify({
+                    query_type: 'SELECT',
+                    table_name: 'lab',
+                    where: `${labname ? `lab_name LIKE '%%${labname}%%'` : ""}`
+                })
             }
         )
         const resBody = await res.json();

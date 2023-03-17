@@ -17,21 +17,18 @@ function Plants() {
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
     async function getSeeds(e) {
         e.preventDefault();
-        let searchfront = '/api/accessBackend?query_string=SELECT '
-        let searchback = ' FROM rev2.testing_history'
-        var searchmid = '*'
-        if (speccode !=""){
-            searchback = searchback + " Where tested_collection = '" + speccode + "'"
-        }
-        let searchfinal = searchfront + searchmid + searchback
-        console.log("== searching this: ", searchfinal);
-        const res = await fetch(searchfinal,
+    
+        const res = await fetch('/api/accessDatabase',
             {
-                method: 'GET',
+                method: 'SEARCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                query: "Seeds"
+                body: {
+                    query_type: 'SELECT',
+                    table_name: 'testing_history',
+                    where: `tested_collection='${speccode}'`
+                }
             }
         )
         const resBody = await res.json();

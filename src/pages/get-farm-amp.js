@@ -16,24 +16,18 @@ function FarmAmps() {
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
     async function getNurses(e) {
         e.preventDefault();
-        let searchfront = '/api/accessBackend?query_string=SELECT '
-        let searchback = ' FROM rev2.farm_amplification'
-        var searchmid = '*'
-        if (farmName !=""){
-            searchback = searchback + " Where farm_name LIKE '" + farmName + "'"
-        }
-        let searchfinal = searchfront + searchmid + searchback
-        console.log("== searching this: ", searchfinal);
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /'+farmname,{
-        const res = await fetch(searchfinal,
-            {
-                method: 'GET',
+    
+        let res = await fetch('/api/accessDatabase',{
+                method: 'SEARCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                query: "Farm Amplpifications"
-            }
-        )
+                body: {
+                    query_type: "SELECT",
+                    table_name: "farm_amplification",
+                    where: `farm_name='${farmName}'`
+                }
+            })
         const resBody = await res.json();
         console.log(resBody);
         if (res.status >= 200 && res.status < 400) {
@@ -58,7 +52,7 @@ function FarmAmps() {
                     />
                 </div>
                 <div>
-                    <button>Get Farm Amplpifications</button>
+                    <button>Get Farm Amplifications</button>
                 </div>
             </form>
             {(farmAmpList && farmAmpList.data) ? <TableView data={farmAmpList.data} /> : <TableView data={[{ "Notice": "no data to display" }]} />}

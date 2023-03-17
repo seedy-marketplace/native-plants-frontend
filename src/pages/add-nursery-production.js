@@ -17,16 +17,18 @@ function NursePro() {
 
     async function getData(){
         const reqData = {}
-        let query = "/api/accessBackend?query_string=SELECT * from rev2.nurseries WHERE nursery_name LIKE '" +nurseName+ "'"
-        let res = await fetch(query,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Nurseries"
-            }
-        )
+        
+        let res = await fetch('/api/accessDatabase',{
+            method: 'SEARCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query_type: "SELECT",
+                table_name: "nurseries",
+                where: `nursery_name='${nurseName}'`
+            })
+        })
         if (res.status >= 200 && res.status < 400) {
             reqData.nurse = await res.json();
             console.log(reqData.nurse);
@@ -35,16 +37,18 @@ function NursePro() {
             return {nurse:NULL}
         }
 
-        query = "/api/accessBackend?query_string=SELECT * from rev2.users WHERE user_name LIKE '" +stockOwner+ "'"
-        res = await fetch(query,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Users"
-            }
-        )
+    
+        res = await fetch('/api/accessDatabase',{
+            method: 'SEARCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query_type: "SELECT",
+                table_name: "users",
+                where: `user_name='${stockOwner}'`
+            })
+        })
         if (res.status >= 200 && res.status < 400) {
             reqData.owner = await res.json();
             console.log(reqData.owner);
@@ -61,13 +65,13 @@ function NursePro() {
         if ((!data.owner)||(!data.nurse))
             return 
         console.log('here')
-        const res = await fetch('/api/accessBackend', {
+        const res = await fetch('/api/accessDatabase', {
             method: 'POST',
             body: JSON.stringify( {
                 table_name: "nursery_production",
                 query_type: "INSERT",
-                query_fields: ['nursery_name', 'date_started', 'years_in_container', 'container_type','quantity_available', 'year_ready', 'owner_of_stock', 'extra_nursery_notes'],
-                query_values: [nurseName, dateStart, containYears, conType, available, yearReady, stockOwner, notes]
+                columns: ['nursery_name', 'date_started', 'years_in_container', 'container_type','quantity_available', 'year_ready', 'owner_of_stock', 'extra_nursery_notes'],
+                values: [nurseName, dateStart, containYears, conType, available, yearReady, stockOwner, notes]
             }),
             headers: {
                 'Content-Type': 'application/json'

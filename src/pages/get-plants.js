@@ -16,23 +16,7 @@ function Plants() {
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
     async function getPlants(e) {
         e.preventDefault();
-        // let searchfront = '/api/accessBackend?query_string=SELECT '
-        // let searchback = ' FROM rev2.plant'
-        // var searchmid = '*'
-        // if (comname !=""){
-        //     searchback = searchback + " Where common_name LIKE '" + comname + "'"
-        // }
-        // let searchfinal = searchfront + searchmid + searchback
-        // console.log("== searching this: ", searchfinal);
-        // const res = await fetch(searchfinal,
-        //     {
-        //         method: 'GET',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         query: "Plants"
-        //     }
-        // )
+        
         const res = await fetch("/api/accessDatabase",{
             method: 'SEARCH', //SEARCH, POST, DELETE, UPDATE  (NOT GET)
             headers: {

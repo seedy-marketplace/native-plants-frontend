@@ -19,16 +19,17 @@ function SeedCol() {
 
     async function getData(){
         const reqData = {}
-        let query = "/api/accessBackend?query_string=SELECT * from rev2.plant WHERE species_code LIKE '" +speccode+ "'"
-        let res = await fetch(query,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Labs"
+        let res = await fetch('/api/accessDatabase',{
+            method: 'SEARCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: {
+                query_type: "SELECT",
+                table_name: "plant",
+                where: `species_code='${speccode}'`
             }
-        )
+        })
         if (res.status >= 200 && res.status < 400) {
             reqData.plantData = await res.json();
             console.log(reqData.plantData);
@@ -37,16 +38,18 @@ function SeedCol() {
             return {plantData:NULL}
         }
 
-        query = "/api/accessBackend?query_string=SELECT * from rev2.site WHERE collection_site_name LIKE '" +siteName+ "'"
-        res = await fetch(query,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Labs"
+    
+        res = await fetch('/api/accessDatabase',{
+            method: 'SEARCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: {
+                query_type: "SELECT",
+                table_name: "site",
+                where: `collection_site_name='${siteName}'`
             }
-        )
+        })
         if (res.status >= 200 && res.status < 400) {
             reqData.siteData = await res.json();
             console.log(reqData.siteData);
@@ -62,13 +65,13 @@ function SeedCol() {
         const data = await getData()
         if (idname == "")
             setIdName("NULL")
-        const res = await fetch('/api/accessBackend', {
+        const res = await fetch('/api/accessDatabase', {
             method: 'POST',
             body: JSON.stringify( {
                 table_name: "seed_collection",
                 query_type: "INSERT",
-                query_fields: ['col_species_code', 'cleaning_effectiveness', 'cleaned_weight', 'id_confidence','collected_date', 'id_method', 'col_provenance', 'owner_name', 'id_person_name'],
-                query_values: [speccode, clean, cleanWeight, confidence, date, method, data.siteData.data.data[0].site_id, username, idname]
+                columns: ['col_species_code', 'cleaning_effectiveness', 'cleaned_weight', 'id_confidence','collected_date', 'id_method', 'col_provenance', 'owner_name', 'id_person_name'],
+                values: [speccode, clean, cleanWeight, confidence, date, method, data.siteData.data.data[0].site_id, username, idname]
             }),
             headers: {
                 'Content-Type': 'application/json'

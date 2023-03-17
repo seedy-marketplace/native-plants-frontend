@@ -14,25 +14,19 @@ function Farms() {
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
     async function getFarm(e) {
         e.preventDefault();
-        console.log("== Adding farm with these parameters:", farmname, email);
-        let searchfront = '/api/accessBackend?query_string=SELECT '
-        let searchback = ' FROM rev2.farms'
-        var searchmid = '*'
-        if (farmname !=""){
-            searchback = searchback + " Where farm_name LIKE '" + farmname + "'"
-        }
-        let searchfinal = searchfront + searchmid + searchback
-        console.log("== searching this: ", searchfinal);
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /'+farmname,{
-        const res = await fetch(searchfinal,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Farms"
-            }
-        )
+        
+        const res = await fetch("/api/accessDatabase",{
+            method: 'SEARCH', //SEARCH, POST, DELETE, UPDATE  (NOT GET)
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
+                table_name: 'farms', //Any table name here (Field is required)
+                where: `${farmname ? `farm_name iLIKE '%%${farmname}%%'` : ""}`
+            })
+        })
+
         const resBody = await res.json();
         console.log(resBody);
         if(res.status >= 200 && res.status < 400) {
