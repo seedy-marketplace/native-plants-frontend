@@ -26,7 +26,8 @@ const res = await fetch("/api/accessDatabase",
         columns: ['name', 'email', 'user_name'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
         column_names: ['Name', 'Email', 'Username'], //array of column names for SELECT (Not required, uses default names otherwise) (must match order of columns)
         values: ['Ryan Smith', 'smithry9@oregonstate.edu', 'smithry9'],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
-        where: "name LIKE '%%Ryan%%' OR email = 'smithry9@oregonstate.edu'"//(Should be full WHERE string, excluding the word WHERE, with quotes around values) WHERE clause for the SELECT, UPDATE, and DELETE queries (Eequired by DELETE and UPDATE)
+        where: "name iLIKE '%%Ryan%%' OR email = 'smithry9@oregonstate.edu'",//(Should be full WHERE string, excluding the word WHERE, with quotes around values) WHERE clause for the SELECT, UPDATE, and DELETE queries (Eequired by DELETE and UPDATE)
+        join_string: "INNER JOIN rev2.plant ON seed_collection.col_species_code = plant.species_code"// should be full join statement. can include multiple joins
     })
 }
 )
@@ -45,7 +46,7 @@ async function accessDatabase(req, res) {
     //logged in but no security
     res.status(401).send({
       error:
-        "You do not have permission to access this page!\nAsk an admin to approve your account.",
+        "You do not have permission to access this page!\nAsk an admin to approve your account."
     });
     return;
   } else if (
@@ -59,7 +60,7 @@ async function accessDatabase(req, res) {
     //user is logged in, but does not have admin rights to update
     res.status(401).send({
       error:
-        "You do not have permission to access this page!\nAsk an admin to approve your account.",
+        "You do not have permission to access this page!\nAsk an admin to approve your account."
     });
     return;
   } else {
@@ -91,9 +92,9 @@ async function accessDatabase(req, res) {
         "Access-Control-Allow-Origin": "*",
         "Accept-Encoding": "gzip, deflate, br",
         //"Connection": "keep-alive",
-        Authentication: process.env.DATABASE_KEY,
+        Authentication: process.env.DATABASE_KEY
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     const resBody = await res.json(); //gets the response and returns the body
     return resBody;
@@ -111,9 +112,9 @@ async function accessDatabase(req, res) {
         "Access-Control-Allow-Origin": "*",
         "Accept-Encoding": "gzip, deflate, br",
         //"Connection": "keep-alive",
-        Authentication: process.env.DATABASE_KEY,
+        Authentication: process.env.DATABASE_KEY
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     const resBody = await res.json();
     return resBody;
@@ -130,9 +131,9 @@ async function accessDatabase(req, res) {
         "Access-Control-Allow-Origin": "*",
         "Accept-Encoding": "gzip, deflate, br",
         //"Connection": "keep-alive",
-        Authentication: process.env.DATABASE_KEY,
+        Authentication: process.env.DATABASE_KEY
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     const resBody = await res.json();
     return resBody;
@@ -148,9 +149,9 @@ async function accessDatabase(req, res) {
         "Access-Control-Allow-Origin": "*",
         "Accept-Encoding": "gzip, deflate, br",
         //"Connection": "keep-alive",
-        Authentication: process.env.DATABASE_KEY,
+        Authentication: process.env.DATABASE_KEY
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     const resBody = await res.json();
     return resBody;
@@ -171,167 +172,166 @@ async function accessDatabase(req, res) {
     const columns = req.body.columns ? req.body.columns : null; //gets columns if passed, defaults to *
     const column_names = req.body.column_names ? req.body.column_names : null; //gets column names if passed, defaults to null
     const values = req.body.values ? req.body.values : null; // gets values if passed, defaults to null
-    const whereString =
-      req.body.where && req.body.where != "" ? ` WHERE ${req.body.where}` : "";
+    const whereString = req.body.where && req.body.where != "" ? ` WHERE ${req.body.where}` : "";
+    const joinString =  req.body.join_string ? req.body.join_string : null;
 
 
     
     //Handles SELECT queries
-    if (query_type === "SELECT") {
-      const baseURL = `${urlStart}/q`; //creates the base url for get requests
-      const return_columns = columns;
+      if (query_type === "SELECT") {
+          const baseURL = `${urlStart}/q`; //creates the base url for get requests
+          const return_columns = columns;
 
-      if (column_names && columns) {
-        //If the user supplied custom names for the columns, automatically specify in url
-        for (var i = 0; i < column_names.length; i++) {
-          return_columns[i] = `${columns[i]} AS "${column_names[i]}"`;
-        }
+          if (column_names && columns) {
+              //If the user supplied custom names for the columns, automatically specify in url
+              for (var i = 0; i < column_names.length; i++) {
+                  return_columns[i] = `${columns[i]} AS "${column_names[i]}"`;
+              }
+          }
+
+          var temp = `${query_type} ${return_columns ? return_columns : "*"
+              } FROM ${table_name}${whereString}`;
+          temp += joinString ? joinString : "";
+          const query_string = temp; //generates the query string
+
+          const body = {
+              query: query_string
+          };
+
+          await fetchGetRes(baseURL, body)
+              .then((resBody) => {
+                  //sends request to backend
+                  res.status(200).send({
+                      msg: "Got response from DB",
+                      data: resBody
+                  });
+              })
+              .catch((err) => {
+                  console.log("== err:", err);
+                  res.status(500).send({
+                      err: err
+                  });
+              });
       }
 
-      const query_string = `${query_type} ${
-        return_columns ? return_columns : "*"
-      } FROM ${table_name}${whereString}`; //generates the query string
-      if (DEBUG) console.log(`== query_string: ${query_string}`);
+      //handles INSERT queries (Can not have any parameters in URL)
+      else if (query_type === "INSERT") {
+          if (!columns || !values || columns.length == 0 || values.length == 0) {
+              //columns and values are required for INSERT requests
+              res
+                  .status(405)
+                  .send({ err: "Expecting columns and values for INSERT request" });
+              return;
+          } else if (columns.length != values.length) {
+              res
+                  .status(405)
+                  .send({ err: "Expecting equal number of columns and values" });
+              return;
+          }
+          const baseURL = `${urlStart}/i`; //base url for INSERT requests
+          const body = {
+              //generates request body
+              table_name: table_name,
+              columns: columns,
+              values: values
+          };
+          if (DEBUG) console.log(`== body.values: ${body.values}`);
 
-      const body = {
-        query: query_string,
-      };
-
-      await fetchGetRes(baseURL, body)
-        .then((resBody) => {
-          //sends request to backend
-          res.status(200).send({
-            msg: "Got response from DB",
-            data: resBody,
-          });
-        })
-        .catch((err) => {
-          console.log("== err:", err);
-          res.status(500).send({
-            err: err,
-          });
-        });
-    }
-
-    //handles INSERT queries (Can not have any parameters in URL)
-    else if (query_type === "INSERT") {
-      if (!columns || !values || columns.length == 0 || values.length == 0) {
-        //columns and values are required for INSERT requests
-        res
-          .status(405)
-          .send({ err: "Expecting columns and values for INSERT request" });
-        return;
-      } else if (columns.length != values.length) {
-        res
-          .status(405)
-          .send({ err: "Expecting equal number of columns and values" });
-        return;
-      }
-      const baseURL = `${urlStart}/i`; //base url for INSERT requests
-      const body = {
-        //generates request body
-        table_name: table_name,
-        columns: columns,
-        values: values,
-      };
-      if (DEBUG) console.log(`== body.values: ${body.values}`);
-
-      await fetchPostRes(baseURL, body)
-        .then((resBody) => {
-          //send query to backend
-          res.status(200).send({
-            msg: "Got response from DB",
-            data: resBody,
-          });
-        })
-        .catch((err) => {
-          console.log("== err:", err);
-          res.status(500).send({
-            err: err,
-          });
-        });
-    }
-
-    //Handles DELETE queries
-    else if (query_type === "DELETE") {
-      if (!req.body.where || whereString == "") {
-        //DELETE requires a WHERE clause
-        res
-          .status(405)
-          .send({ err: "Expecting WHERE clause for DELETE query" });
-        return;
+          await fetchPostRes(baseURL, body)
+              .then((resBody) => {
+                  //send query to backend
+                  res.status(200).send({
+                      msg: "Got response from DB",
+                      data: resBody
+                  });
+              })
+              .catch((err) => {
+                  console.log("== err:", err);
+                  res.status(500).send({
+                      err: err
+                  });
+              });
       }
 
-      const baseURL = `${urlStart}/d`; //the base url for delete
-      const body = {
-        //only needs the table_name and where
-        table_name: table_name,
-        where: whereString,
-      };
-      if (DEBUG) console.log(`== body.where: ${body.where}`);
+      //Handles DELETE queries
+      else if (query_type === "DELETE") {
+          if (!req.body.where || whereString == "") {
+              //DELETE requires a WHERE clause
+              res
+                  .status(405)
+                  .send({ err: "Expecting WHERE clause for DELETE query" });
+              return;
+          }
 
-      await fetchDeleteRes(baseURL, body).then((resBody) => {
-        //await response
-        res
-          .status(200)
-          .send({
-            msg: "Got response from DB",
-            data: resBody,
-          })
-          .catch((err) => {
-            console.log("== err:", err);
-            res.status(500).send({
-              err: err,
-            });
+          const baseURL = `${urlStart}/d`; //the base url for delete
+          const body = {
+              //only needs the table_name and where
+              table_name: table_name,
+              where: whereString
+          };
+          if (DEBUG) console.log(`== body.where: ${body.where}`);
+
+          await fetchDeleteRes(baseURL, body).then((resBody) => {
+              //await response
+              res
+                  .status(200)
+                  .send({
+                      msg: "Got response from DB",
+                      data: resBody
+                  })
+                  .catch((err) => {
+                      console.log("== err:", err);
+                      res.status(500).send({
+                          err: err
+                      });
+                  });
           });
-      });
-    } else if (query_type === "UPDATE") {
-      //Coming soon
-      if (!columns || !values || columns.length == 0 || values.length == 0) {
-        //columns and values are required for UPDATE requests
-        res
-          .status(405)
-          .send({ err: "Expecting columns and values for UPDATE request" });
-        return;
-      } else if (columns.length != values.length) {
-        res
-          .status(405)
-          .send({ err: "Expecting equal number of columns and values" });
-        return;
-      } else if (!req.body.where || whereString == "") {
-        //UPDATE requires a WHERE clause
-        res
-          .status(405)
-          .send({ err: "Expecting WHERE clause for UPDATE query" });
-        return;
-      }
-      const baseURL = `${urlStart}/up`; //the base url for delete
-      const body = {
-        //only needs the table_name and where
-        table_name: table_name,
-        columns: columns,
-        values: values,
-        where: whereString,
-      };
-      if (DEBUG) console.log(`== body.where: ${body.where}`);
+      } else if (query_type === "UPDATE") {
+          //Coming soon
+          if (!columns || !values || columns.length == 0 || values.length == 0) {
+              //columns and values are required for UPDATE requests
+              res
+                  .status(405)
+                  .send({ err: "Expecting columns and values for UPDATE request" });
+              return;
+          } else if (columns.length != values.length) {
+              res
+                  .status(405)
+                  .send({ err: "Expecting equal number of columns and values" });
+              return;
+          } else if (!req.body.where || whereString == "") {
+              //UPDATE requires a WHERE clause
+              res
+                  .status(405)
+                  .send({ err: "Expecting WHERE clause for UPDATE query" });
+              return;
+          }
+          const baseURL = `${urlStart}/up`; //the base url for delete
+          const body = {
+              //only needs the table_name and where
+              table_name: table_name,
+              columns: columns,
+              values: values,
+              where: whereString
+          };
+          if (DEBUG) console.log(`== body.where: ${body.where}`);
 
-      await fetchUpdateRes(baseURL, body).then((resBody) => {
-        res
-          .status(200)
-          .send({
-            msg: "Got response from DB",
-            data: resBody,
-          })
-          .catch((err) => {
-            console.log("== err:", err);
-            res.status(500).send({
-              err: err,
-            });
+          await fetchUpdateRes(baseURL, body).then((resBody) => {
+              res
+                  .status(200)
+                  .send({
+                      msg: "Got response from DB",
+                      data: resBody
+                  })
+                  .catch((err) => {
+                      console.log("== err:", err);
+                      res.status(500).send({
+                          err: err
+                      });
+                  });
           });
       });
     } 
-
-  
 
   }
 }
