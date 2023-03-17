@@ -12,20 +12,7 @@ function Farms() {
     const [comname, setComname] = useState("");
     async function postFarm(e) {
         e.preventDefault();
-        //console.log("== Adding plant with these parameters:", genus, comname, speccode, species);
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name, contact_email) VALUES (%s) /'+farmname+', '+farmeamil,{
-        // const res = await fetch('/api/accessBackend', {
-        //     method: 'POST',
-        //     body: JSON.stringify( {
-        //         table_name: "plant",
-        //         query_type: "INSERT",
-        //         query_fields: ['genus','species','common_name','species_code'],
-        //         query_values: [genus, species,comname,speccode]
-        //     }),
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // })
+        
         const res = await fetch('/api/accessDatabase',{
             method: 'POST',
             headers: {
@@ -50,6 +37,7 @@ function Farms() {
     };
 
     const handleOnSubmit = (e) => {
+        var name = file
         const fileReader = new FileReader();
         var tempData;
         var rowData;
@@ -58,42 +46,52 @@ function Farms() {
 
         // Check for file
         if (file) {
-            fileReader.onload = function (e) {
-                const bstr = e.target.result;
-                const wb = XLSX.read(bstr, {type:'binary'});
-
-                /* Get first worksheet */
-                const wsname = wb.SheetNames[0];
-                const ws = wb.Sheets[wsname];
-
-                /* Convert array of arrays */
-                const data = XLSX.utils.sheet_to_csv(ws, {header:1});
-
-                tempData = data.toString().split("\n").slice(1);
-
-                tempData.forEach(async(entry) => {
-                    rowData = entry.split(",");
-
-                    const res = await fetch("/api/accessDatabase",
-                        {
-                            method: 'POST', //HTTP method: SEARCH, POST, DELETE, PATCH  (NOT GET)
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                query_type: 'INSERT', //SQL Query type: SELECT, INSERT, UPDATE, DELETE. (Field is required)
-                                table_name: 'plant', //Any table name here (Field is required)
-                                columns: ['genus', 'species', 'common_name', 'species_code'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
-                                values: [rowData[0], rowData[1], rowData[2], rowData[3]],
-                                
-                            })
-                        }
-                    )
-                })
-
-            };
+            fileReader.readAsBinaryString(file)
                 
         }
+
+        fileReader.onload = function (e) {
+
+            const bstr = e.target.result;
+
+            const wb = XLSX.read(bstr, {type: 'binary'});
+
+            /* Get first worksheet */
+            const wsname = wb.SheetNames[0];
+            const ws = wb.Sheets[wsname];
+
+            /* Convert array of arrays */
+            const data = XLSX.utils.sheet_to_csv(ws, {header:1});
+
+            tempData = data.toString().split("\n").slice(1);
+
+            tempData.forEach(async(entry) => {
+                rowData = entry.split(",");
+
+                const res = await fetch("/api/accessDatabase",
+                    {
+                        method: 'POST', //HTTP method: SEARCH, POST, DELETE, PATCH  (NOT GET)
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            query_type: 'INSERT', //SQL Query type: SELECT, INSERT, UPDATE, DELETE. (Field is required)
+                            table_name: 'plant', //Any table name here (Field is required)
+                            columns: ['genus', 'species', 'common_name', 'species_code'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
+                            values: [rowData[0], rowData[1], rowData[2], rowData[3]],
+                            
+                        })
+                    }
+                )
+                const resBody = await res.json();
+                console.log(resBody);
+
+                location.reload();
+            })
+
+
+
+        };
     };
 
     return (

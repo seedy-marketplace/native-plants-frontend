@@ -14,17 +14,7 @@ function Farms() {
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
     async function getUser(e) {
         e.preventDefault();
-        //const res3 = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /'+farmname,{
-
-        // const res = await fetch('/api/accessBackend?query_string=SELECT name, email, user_name, phone_number, website, user_role_type FROM rev2.users',
-        //     {
-        //         method: 'GET',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         query: "Farms"
-        //     }
-        // )
+        
 
         const res = await fetch('api/accessDatabase',
         {

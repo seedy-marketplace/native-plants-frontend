@@ -34,6 +34,7 @@ function Plants() {
 
         const res = await fetch("/api/accessDatabase", {
 
+
             method: 'SEARCH', //SEARCH, POST, DELETE, UPDATE  (NOT GET)
             headers: {
                 'Content-Type': 'application/json'

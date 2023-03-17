@@ -58,11 +58,8 @@ const Nav = () => (
                       <a>Login</a>
                     </Link>
             </li>
-            <li className="nav-list-item">
-                    <Link href="/stand-tab">
-                      <a>Stand</a>
-                    </Link>
-            </li>
+            
+            
             <li className="nav-list-item">
                     <Link href="/admin">
                       <a>Admin</a>
@@ -77,3 +74,10 @@ const Nav = () => (
            
     </div>
 )
+/*
+<li className="nav-list-item">
+  <Link href="/stand-tab">
+    <a>Stand</a>
+  </Link>
+</li>
+*/

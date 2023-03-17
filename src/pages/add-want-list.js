@@ -13,14 +13,13 @@ function Sites() {
     
     async function postWant(e) {
         e.preventDefault();
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name, contact_email) VALUES (%s) /'+farmname+', '+farmeamil,{
-        const res = await fetch('/api/accessBackend', {
+        const res = await fetch('/api/accessDatabase', {
             method: 'POST',
             body: JSON.stringify( {
                 table_name: "land_manager_want_list",
                 query_type: "INSERT",
-                query_fields: ['posted_date','posted_by','notes','wanted_quantity','wanted_species_code'],
-                query_values: [date, owner, notes, quantity, code],
+                columns: ['posted_date','posted_by','notes','wanted_quantity','wanted_species_code'],
+                values: [date, owner, notes, quantity, code],
                 has_point: true
             }),
             headers: {

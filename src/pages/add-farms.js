@@ -9,21 +9,22 @@ function Farms() {
     const [farmname, setFarmname] = useState("");
     const [farmemail, setFarmemail] = useState("");
     const [farmnumber, setFarmnumber] = useState("");
+    const [farmlocation, setFarmlocation] = useState("");
     async function postFarm(e) {
         e.preventDefault();
         console.log("== Adding farm with these parameters:", farmname, farmemail);
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name, contact_email) VALUES (%s) /'+farmname+', '+farmeamil,{
-        const res = await fetch('/api/accessBackend', {
+        
+        const res = await fetch('/api/accessDatabase',{
             method: 'POST',
-            body: JSON.stringify( {
-                table_name: "farms",
-                query_type: "INSERT",
-                query_fields: ['farm_name','contact_email','contact_phone_number'],
-                query_values: [farmname, farmemail,farmnumber]
-            }),
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({
+                query_type: 'INSERT', //SELECT, INSERT, etc. (Field is required)
+                table_name: 'farms', //Any table name here (Field is required)
+                columns: ['contact_email', 'contact_phone_number', 'farm_location', 'farm_name'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
+                values: [farmemail, farmnumber, null, farmname]//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+            })
         })
         const resBody = await res.json();
         console.log(resBody);

@@ -88,7 +88,7 @@ async function accessDatabase(req, res) {
       //credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Accept: "*/*",
+        "Accept": "*/*",
         "Access-Control-Allow-Origin": "*",
         "Accept-Encoding": "gzip, deflate, br",
         //"Connection": "keep-alive",
@@ -108,7 +108,7 @@ async function accessDatabase(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "*/*",
+        "Accept": "*/*",
         "Access-Control-Allow-Origin": "*",
         "Accept-Encoding": "gzip, deflate, br",
         //"Connection": "keep-alive",
@@ -127,7 +127,7 @@ async function accessDatabase(req, res) {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Accept: "*/*",
+        "Accept": "*/*",
         "Access-Control-Allow-Origin": "*",
         "Accept-Encoding": "gzip, deflate, br",
         //"Connection": "keep-alive",
@@ -145,7 +145,7 @@ async function accessDatabase(req, res) {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Accept: "*/*",
+        "Accept": "*/*",
         "Access-Control-Allow-Origin": "*",
         "Accept-Encoding": "gzip, deflate, br",
         //"Connection": "keep-alive",
@@ -157,22 +157,26 @@ async function accessDatabase(req, res) {
     return resBody;
   }
 
+
+
   if (!req || !req.method || !req.body.query_type || !req.body.table_name) {
     //if missing required fields return error
     res
       .status(405)
       .send({ err: "Expecting method, query_type, and table_name fields" });
   } else {
+    
     const query_type = req.body.query_type; //gets the query type (SELECT, INSERT, DELETE, etc)
+
     const table_name = "rev2." + req.body.table_name; //Gets the passed table name and generates the full name
     const columns = req.body.columns ? req.body.columns : null; //gets columns if passed, defaults to *
     const column_names = req.body.column_names ? req.body.column_names : null; //gets column names if passed, defaults to null
     const values = req.body.values ? req.body.values : null; // gets values if passed, defaults to null
-    //const where_values = req.body.where ? req.body.where : null// gets array of WHERE clauses
-    const whereString =
-          req.body.where && req.body.where != "" ? ` WHERE ${req.body.where}` : "";
+    const whereString = req.body.where && req.body.where != "" ? ` WHERE ${req.body.where}` : "";
     const joinString =  req.body.join_string ? req.body.join_string : null;
 
+
+    
     //Handles SELECT queries
       if (query_type === "SELECT") {
           const baseURL = `${urlStart}/q`; //creates the base url for get requests
@@ -326,7 +330,9 @@ async function accessDatabase(req, res) {
                       });
                   });
           });
-      } 
+      });
+    } 
+
   }
 }
 
