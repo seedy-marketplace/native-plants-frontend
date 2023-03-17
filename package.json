@@ -11,6 +11,8 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "cookie": "^0.4.2",
+    "elementtree": "^0.1.7",
+    "fs": "^0.0.1-security",
     "isomorphic-unfetch": "^3.1.0",
     "next": "^12.3.3",
     "next-auth": "^4.19.2",
