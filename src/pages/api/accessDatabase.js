@@ -119,6 +119,32 @@ async function accessDatabase(req, res) {
     return resBody;
   }
 
+  async function fetchITISConfirmation(url, body) {
+    if (DEBUG) console.log("Getting from " + url);
+    
+    // body.query = "SELECT * FROM rev2.plant WHERE common_name LIKE '%%Noble fir%%'"
+    if (DEBUG) console.log("query: ", body.query);
+    const res = await fetch(url, {
+      //generated fetch request from url
+      method: "POST",
+      //mode: "no-cors",
+      //cache: "no-cache",
+      //redirect: "follow",
+      //credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+        "Access-Control-Allow-Origin": "*",
+        "Accept-Encoding": "gzip, deflate, br",
+        //"Connection": "keep-alive",
+        Authentication: process.env.DATABASE_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+    const resBody = await res.json(); //gets the response and returns the body
+    return resBody;
+  }
+
   //function used to delete from database. takes a query url and a body
   async function fetchDeleteRes(url, body) {
     if (DEBUG) console.log("Deleting: " + body.where);
