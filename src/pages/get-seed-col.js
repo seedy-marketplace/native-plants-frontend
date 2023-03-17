@@ -16,23 +16,17 @@ function Plants() {
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
     async function getSeeds(e) {
         e.preventDefault();
-        let searchfront = '/api/accessBackend?query_string=SELECT '
-        let searchback = ' FROM rev2.seed_collection'
-        var searchmid = 'collection_id, cleaned_weight, cleaning_effectiveness, collected_date, col_species_code, id_method, id_confidence, id_person_name'
-        if (comname !=""){
-            searchback = searchback + " Where species_code LIKE '" + speccode + "'"
-        }
-        let searchfinal = searchfront + searchmid + searchback
-        console.log("== searching this: ", searchfinal);
-        const res = await fetch(searchfinal,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Seeds"
-            }
-        )
+        const res = await fetch("/api/accessDatabase",{
+            method: 'SEARCH', //SEARCH, POST, DELETE, UPDATE  (NOT GET)
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
+                table_name: 'seed_collection', //Any table name here (Field is required)
+                where: `${speccode ? `col_species_code LIKE '%%${speccode}%%'` : ""}`
+            })
+        })
         const resBody = await res.json();
         console.log(resBody);
         if (res.status >= 200 && res.status < 400) {
@@ -53,7 +47,7 @@ function Plants() {
                         type="text"
                         placeholder="Search by Species Code"
                         onChange={e => setSpecCode(e.target.value)}
-                        value={comname}
+                        value={speccode}
                     />
                 </div>
                 <div>

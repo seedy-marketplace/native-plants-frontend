@@ -20,7 +20,7 @@ function Signup() {
             // e.preventDefault();
             const usertype = 0
             console.log("== Adding user with these parameters:", username, email, password, website, bio);
-            //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name, contact_email) VALUES (%s) /'+farmname+', '+farmeamil,{
+        
             const res = await fetch('/api/registerUser', {
                 method: 'POST',
                 body: JSON.stringify({

@@ -9,14 +9,13 @@ function AddLab() {
     async function postLab(e) {
         e.preventDefault();
         console.log("== Deleting:", username, " from users");
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name, contact_email) VALUES (%s) /'+farmname+', '+farmeamil,{
-        const res = await fetch('/api/accessBackend', {
+
+        const res = await fetch('/api/accessDatabase', {
             method: 'DELETE',
             body: JSON.stringify( {
                 table_name: "users",
                 query_type: "DELETE",
-                query_fields: ['user_name'],
-                query_values: [username]
+                where: `user_name='${username}'`
             }),
             headers: {
                 'Content-Type': 'application/json'

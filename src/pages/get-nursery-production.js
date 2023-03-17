@@ -16,22 +16,18 @@ function FarmAmps() {
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
     async function getNurses(e) {
         e.preventDefault();
-        let searchfront = '/api/accessBackend?query_string=SELECT '
-        let searchback = ' FROM rev2.nursery_production'
-        var searchmid = '*'
-        if (nurseName !=""){
-            searchback = searchback + " Where nursery_name LIKE '" + nurseName + "'"
-        }
-        let searchfinal = searchfront + searchmid + searchback
-        console.log("== searching this: ", searchfinal);
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /'+farmname,{
-        const res = await fetch(searchfinal,
+        
+        const res = await fetch('/api/accessDatabase',
             {
-                method: 'GET',
+                method: 'SEARCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                query: "Nursery Production"
+                body:{
+                    query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
+                    table_name: 'nursery_production', //Any table name here (Field is required)
+                    where: `${nurseName ? `nursery_name LIKE '%%${nurseName}%%'` : ""}`
+                }
             }
         )
         const resBody = await res.json();
