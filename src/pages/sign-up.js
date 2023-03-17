@@ -10,108 +10,122 @@ function Signup() {
     const [website, setWebsite] = useState("");
     const [bio, setBio] = useState("");
     const [number, setNumber] = useState("");
+    const [valid, setValid] = React.useState(true);
 
     async function handleSignup(e) {
+
         e.preventDefault();
-        const usertype = 0
-        console.log("== Adding user with these parameters:", username, email, password, website, bio);
-        //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name, contact_email) VALUES (%s) /'+farmname+', '+farmeamil,{
-        const res = await fetch('/api/registerUser', {
-            method: 'POST',
-            body: JSON.stringify( {
-                username: username,
-                email: email,
-                name: name,
-                password: password,
-                bio: bio,
-                phone_number: number,
-                website: website
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const resBody = await res.json();
-        console.log(resBody);
-        console.log("== document.cookie:", document.cookie);
-        // window.localStorage.setItem('token', resBody.token)
+        if (username && name && email && number && password) {
+            setValid(true);
+            // e.preventDefault();
+            const usertype = 0
+            console.log("== Adding user with these parameters:", username, email, password, website, bio);
+            //const res = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name, contact_email) VALUES (%s) /'+farmname+', '+farmeamil,{
+            const res = await fetch('/api/registerUser', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: username,
+                    email: email,
+                    name: name,
+                    password: password,
+                    bio: bio,
+                    phone_number: number,
+                    website: website
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            const resBody = await res.json();
+            console.log(resBody);
+            console.log("== document.cookie:", document.cookie);
+            location.replace("/");
+        } else {
+            setValid(false);
+        }
     }
 
     return (
         <Layout>
-        <form onSubmit={handleSignup} className={styles.container}>
-            <div>
-                <a>Name</a>
-                <input
-                    type="text"
-                    placeholder="Jim McCain"
-                    value={name}
-                    className={styles.inputs}
-                    onChange={e => setName(e.target.value)}
+            {valid ? null : <InvalidIndicator />}
+            <form onSubmit={handleSignup} className={styles.container}>
+                <div className="SignupInputContainer">
+                    <a>Name</a>
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        value={name}
+                        className={!name && !valid ? "i_signupInput" : "v_signupInput"}
+                        onChange={e => setName(e.target.value)}
                     />
-            </div>
-            <div>
-                <a>Username</a>
-                <input
-                    type="text"
-                    placeholder="user_name"
-                    value={username}
-                    className={styles.inputs}
-                    onChange={e => setUsername(e.target.value)}
+                </div>
+                <div className="SignupInputContainer">
+                    <a>Username</a>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        className={!username && !valid ? "i_signupInput" : "v_signupInput"}
+                        onChange={e => setUsername(e.target.value)}
                     />
-            </div>
-            <div>
-                <a>Email</a>
-                <input
-                    type="text"
-                    placeholder="email"
-                    value={email}
-                    className={styles.inputs}
-                    onChange={e => setEmail(e.target.value)}
+                </div>
+                <div className="SignupInputContainer">
+                    <a>Email</a>
+                    <input
+                        type="text"
+                        placeholder="Email"
+                        value={email}
+                        className={!email && !valid ? "i_signupInput" : "v_signupInput"}
+                        onChange={e => setEmail(e.target.value)}
                     />
-            </div>
-            <div>
-                <a>Password</a>
-                <input
-                    type="password"
-                    placeholder="password"
-                    value={password}
-                    className={styles.inputs}
-                    onChange={e => setPassword(e.target.value)}
+                </div>
+                <div className="SignupInputContainer">
+                    <a>Password</a>
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        className={!password && !valid ? "i_signupInput" : "v_signupInput"}
+                        onChange={e => setPassword(e.target.value)}
                     />
-            </div>
-            <div>
-                <label htmlFor="phone">Enter your phone number:</label>
-                <input className={styles.inputs} 
-                    type="tel" 
-                    id="phone" 
-                    name="phone" 
-                    pattern="[0-9]{10,11}" 
-                    onChange={e => setNumber(e.target.value)}    
+                </div>
+                <div className="SignupInputContainer">
+                    <label htmlFor="phone">Phone number</label>
+                    <input 
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Format: 1234567890"
+                        pattern="[0-9]{10,11}"
+                        className={!number && !valid ? "i_signupInput" : "v_signupInput"}
+                        onChange={e => setNumber(e.target.value)}
                     />
-                <small>Format: 1234567890</small><br></br>
-            </div>
-            <div>
-                <a>Website (optional)</a>
-                <input
-                    type="text"
-                    placeholder="website"
-                    value={website}
-                    className={styles.inputs}
-                    onChange={e => setWebsite(e.target.value)}
+                </div>
+                <div className="SignupInputContainer">
+                    <a>Website (optional)</a>
+                    <input
+                        type="text"
+                        placeholder="website"
+                        value={website}
+                        className={styles.inputs}
+                        onChange={e => setWebsite(e.target.value)}
                     />
-            </div>
-            <div>
-                <label htmlFor="bio">Bio (optional)</label>
-                <textarea className={styles.textareas} id="bio" rows="4" cols="50" onChange={e => setBio(e.target.value)}>Enter Bio</textarea>
-                <br></br>
-            </div>
-            <div>
-                <button>Sign Up</button>
-            </div>
-        </form>
+                </div>
+                <div className="SignupInputContainer">
+                    <label htmlFor="bio">Bio (optional)</label>
+                    <textarea className={styles.textareas} id="bio" rows="4" cols="50" onChange={e => setBio(e.target.value)}>Enter Bio</textarea>
+                    <br></br>
+                </div>
+                <div>
+                    <button id="signupButton" >Sign Up</button>
+                </div>
+            </form>
         </Layout>
     );
 }
+
+const InvalidIndicator = () => (
+    <h3 id="invalidSignupHeader">Please complete all required fields</h3>
+);
 
 export default Signup;

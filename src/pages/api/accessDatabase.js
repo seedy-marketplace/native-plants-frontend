@@ -1,10 +1,8 @@
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
 
 const DEBUG = true; //Set true to get debug console outputs
 const urlStart = "https://native-plants-backend.herokuapp.com";
 //const urlStart = "http://127.0.0.1:8080"//my computer didn't like localhost, this is equivalant
-
-
 
 /*Function that allows requests to the database using the fetch api
  *This completely replaces the previous accessBackend file
@@ -12,7 +10,7 @@ const urlStart = "https://native-plants-backend.herokuapp.com";
  *Expects a body with query_type and table_name fields
  *NOTE: Must escape special characters
  *Allows for optional fields: columns, column_names, and values (all are explained below)
- *Below is an example of how to call 
+ *Below is an example of how to call
  */
 
 /*
@@ -34,123 +32,146 @@ const res = await fetch("/api/accessDatabase",
 )
 */
 async function accessDatabase(req, res) {
-    const session = await getSession({ req })
-    if (DEBUG) console.log("== Session:", session)
+  const session = await getServerSession(req, res);
 
-    //Check the session details to determine if a user is logged in and what level of security access their account has
-    if (!session) {//If no session the user isn't logged in at all
-        res.status(401).send({"error": "You are not logged in!"});
-        return;
-    } else if (session.user.user_level < 1) {//logged in but no security
-        res.status(401).send({"error": "You do not have permission to access this page!\nAsk an admin to approve your account."});
-        return;
-    }else if (session.user.user_level < 2 && req.body.query_type && req.body.query_type =="UPDATE" && 
-    req.body.query_fields && req.body.query_fields.length > 0 && req.body.query_fields[0]=="user_role_type") {//user is logged in, but does not have admin rights to update
-        res.status(401).send({"error": "You do not have permission to access this page!\nAsk an admin to approve your account."});
-        return;
-    }else {//user has admin rights
-        if(DEBUG) console.log("== Logged in with these credentials:", session.user.real_name, session.user.user_level);
-    } 
+  if (DEBUG) console.log("== Session:", session);
 
-    
-    //function to get data from database, takes a query url that is generated based off the request body
-    async function fetchGetRes(url, body) {
-        if(DEBUG) console.log("Getting from " + url);
-        
-        // body.query = "SELECT * FROM rev2.plant WHERE common_name LIKE '%%Noble fir%%'"
-        if(DEBUG) console.log("query: ", body.query)
-        const res = await fetch(url, {//generated fetch request from url
-            method: "POST",
-            mode: "no-cors",
-            cache: "no-cache",
-            redirect: "follow",
-            credentials: "include",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-                //'Access-Control-Allow-Origin': '*',
-                //'Accept-Encoding': 'gzip, deflate, br',
-                //"Connection": "keep-alive",
-                "Authentication": process.env.DATABASE_KEY
-            },
-            body: JSON.stringify(body)
-        });
-        const resBody = await res.json();//gets the response and returns the body
-        return resBody;
-    }
+  //Check the session details to determine if a user is logged in and what level of security access their account has
+  if (!session) {
+    //If no session the user isn't logged in at all
+    res.status(401).send({ error: "You are not logged in!" });
+    return;
+  } else if (session.user.user_level < 1) {
+    //logged in but no security
+    res.status(401).send({
+      error:
+        "You do not have permission to access this page!\nAsk an admin to approve your account.",
+    });
+    return;
+  } else if (
+    session.user.user_level < 2 &&
+    req.body.query_type &&
+    req.body.query_type == "UPDATE" &&
+    req.body.query_fields &&
+    req.body.query_fields.length > 0 &&
+    req.body.query_fields[0] == "user_role_type"
+  ) {
+    //user is logged in, but does not have admin rights to update
+    res.status(401).send({
+      error:
+        "You do not have permission to access this page!\nAsk an admin to approve your account.",
+    });
+    return;
+  } else {
+    //user has admin rights
+    if (DEBUG)
+      console.log(
+        "== Logged in with these credentials:",
+        session.user.real_name,
+        session.user.user_level
+      );
+  }
 
-    //function to post to the database, takes a query url and a body
-    async function fetchPostRes(url, body) {
-        if(DEBUG) console.log("Posting into " + url);
-        const res = await fetch(url, {//generated post request from url
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-                'Access-Control-Allow-Origin': '*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                //"Connection": "keep-alive",
-                "Authentication": process.env.DATABASE_KEY
-            },
-            body: JSON.stringify(body)
-        });
-        const resBody = await res.json();
-        return resBody;
-    }
+  //function to get data from database, takes a query url that is generated based off the request body
+  async function fetchGetRes(url, body) {
+    if (DEBUG) console.log("Getting from " + url);
 
-    //function used to delete from database. takes a query url and a body
-    async function fetchDeleteRes(url, body) {
-        if(DEBUG) console.log("Deleting: " + body.where)
-        const res = await fetch(url, {
-            method: "DELETE",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-                'Access-Control-Allow-Origin': '*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                //"Connection": "keep-alive",
-                "Authentication": process.env.DATABASE_KEY
-            },
-            body: JSON.stringify(body)
-        });
-        const resBody = await res.json()
-        return resBody
-    }
+    // body.query = "SELECT * FROM rev2.plant WHERE common_name LIKE '%%Noble fir%%'"
+    if (DEBUG) console.log("query: ", body.query);
+    const res = await fetch(url, {
+      //generated fetch request from url
+      method: "POST",
+      //mode: "no-cors",
+      //cache: "no-cache",
+      //redirect: "follow",
+      //credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+        "Access-Control-Allow-Origin": "*",
+        "Accept-Encoding": "gzip, deflate, br",
+        //"Connection": "keep-alive",
+        Authentication: process.env.DATABASE_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+    const resBody = await res.json(); //gets the response and returns the body
+    return resBody;
+  }
 
-    async function fetchUpdateRes(url, body) {
-        if(DEBUG) console.log("Updating: " + body)
-        const res = await fetch(url, {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*',
-                'Access-Control-Allow-Origin': '*',
-                'Accept-Encoding': 'gzip, deflate, br',
-                //"Connection": "keep-alive",
-                "Authentication": process.env.DATABASE_KEY
-            },
-            body: JSON.stringify(body)
-        })
-        const resBody = await res.json()
-        return resBody
-    }
+  //function to post to the database, takes a query url and a body
+  async function fetchPostRes(url, body) {
+    if (DEBUG) console.log("Posting into " + url);
+    const res = await fetch(url, {
+      //generated post request from url
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+        "Access-Control-Allow-Origin": "*",
+        "Accept-Encoding": "gzip, deflate, br",
+        //"Connection": "keep-alive",
+        Authentication: process.env.DATABASE_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+    const resBody = await res.json();
+    return resBody;
+  }
 
+  //function used to delete from database. takes a query url and a body
+  async function fetchDeleteRes(url, body) {
+    if (DEBUG) console.log("Deleting: " + body.where);
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+        "Access-Control-Allow-Origin": "*",
+        "Accept-Encoding": "gzip, deflate, br",
+        //"Connection": "keep-alive",
+        Authentication: process.env.DATABASE_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+    const resBody = await res.json();
+    return resBody;
+  }
 
+  async function fetchUpdateRes(url, body) {
+    if (DEBUG) console.log("Updating: " + body);
+    const res = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+        "Access-Control-Allow-Origin": "*",
+        "Accept-Encoding": "gzip, deflate, br",
+        //"Connection": "keep-alive",
+        Authentication: process.env.DATABASE_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+    const resBody = await res.json();
+    return resBody;
+  }
 
-
-    if(!req || !req.method || !req.body.query_type || !req.body.table_name){//if missing required fields return error
-        res.status(405).send({err: "Expecting method, query_type, and table_name fields"})
-    }else{
-        
-        const query_type = req.body.query_type//gets the query type (SELECT, INSERT, DELETE, etc)
-        const table_name = "rev2." + req.body.table_name//Gets the passed table name and generates the full name
-        const columns = req.body.columns ? req.body.columns : null//gets columns if passed, defaults to *
-        const column_names = req.body.column_names ? req.body.column_names : null //gets column names if passed, defaults to null
-        const values = req.body.values ? req.body.values : null// gets values if passed, defaults to null
-        //const where_values = req.body.where ? req.body.where : null// gets array of WHERE clauses
-        const whereString = req.body.where && req.body.where != "" ? ` WHERE ${req.body.where}` : ""
-        //var whereString = ""//string to fill with the WHERE clause
-        /*if(where_values){//generates WHERE if the value was passed
+  if (!req || !req.method || !req.body.query_type || !req.body.table_name) {
+    //if missing required fields return error
+    res
+      .status(405)
+      .send({ err: "Expecting method, query_type, and table_name fields" });
+  } else {
+    const query_type = req.body.query_type; //gets the query type (SELECT, INSERT, DELETE, etc)
+    const table_name = "rev2." + req.body.table_name; //Gets the passed table name and generates the full name
+    const columns = req.body.columns ? req.body.columns : null; //gets columns if passed, defaults to *
+    const column_names = req.body.column_names ? req.body.column_names : null; //gets column names if passed, defaults to null
+    const values = req.body.values ? req.body.values : null; // gets values if passed, defaults to null
+    //const where_values = req.body.where ? req.body.where : null// gets array of WHERE clauses
+    const whereString =
+      req.body.where && req.body.where != "" ? ` WHERE ${req.body.where}` : "";
+    //var whereString = ""//string to fill with the WHERE clause
+    /*if(where_values){//generates WHERE if the value was passed
             whereString = " WHERE "
             for(var i = 0; i < where_values.length; i++){
                 const whereSplit = where_values[i].split(' ')
@@ -165,132 +186,161 @@ async function accessDatabase(req, res) {
             }
         }*/
 
-        //Handles SELECT queries
-        if(query_type === 'SELECT'){
-            const baseURL = `${urlStart}/q`//creates the base url for get requests
-            const return_columns = columns;
+    //Handles SELECT queries
+    if (query_type === "SELECT") {
+      const baseURL = `${urlStart}/q`; //creates the base url for get requests
+      const return_columns = columns;
 
-            if(column_names && columns){//If the user supplied custom names for the columns, automatically specify in url
-                for(var i = 0; i < column_names.length; i++){
-                    return_columns[i] = `${columns[i]} AS "${column_names[i]}"`
-                }
-            }
-
-            const query_string = `${query_type} ${return_columns ? return_columns : '*'} FROM ${table_name}${whereString}`//generates the query string
-            if(DEBUG) console.log(`== query_string: ${query_string}`)
-
-            const body = {
-                query: query_string
-            }
-
-            await fetchGetRes(baseURL, body).then(resBody => {//sends request to backend
-                res.status(200).send({
-                    msg: "Got response from DB",
-                    data: resBody
-                })
-            }).catch(err => {
-                console.log("== err:", err);
-                res.status(500).send({
-                    err: err
-                })
-            })
-
+      if (column_names && columns) {
+        //If the user supplied custom names for the columns, automatically specify in url
+        for (var i = 0; i < column_names.length; i++) {
+          return_columns[i] = `${columns[i]} AS "${column_names[i]}"`;
         }
-        
-        
-        //handles INSERT queries (Can not have any parameters in URL)
-        else if(query_type === 'INSERT'){
-            if(!columns || !values || columns.length == 0 || values.length == 0){//columns and values are required for INSERT requests
-                res.status(405).send({err: "Expecting columns and values for INSERT request"})
-                return
-            }else if(columns.length != values.length){
-                res.status(405).send({err: "Expecting equal number of columns and values"})
-                return
-            }
-            const baseURL = `${urlStart}/i`//base url for INSERT requests
-            const body = {//generates request body
-                table_name: table_name,
-                columns: columns,
-                values: values
-            }
-            if(DEBUG) console.log(`== body.values: ${body.values}`)
+      }
 
-            await fetchPostRes(baseURL, body).then(resBody => {//send query to backend
-                res.status(200).send({
-                    msg: "Got response from DB",
-                    data: resBody
-                })
-            }).catch(err => {
-                console.log("== err:", err);
-                res.status(500).send({
-                    err: err
-                })
-            })
-        }
-        
-        //Handles DELETE queries
-        else if(query_type === 'DELETE'){
-            if(!req.body.where || whereString == ""){//DELETE requires a WHERE clause
-                res.status(405).send({err: "Expecting WHERE clause for DELETE query"})
-                return
-            }
+      const query_string = `${query_type} ${
+        return_columns ? return_columns : "*"
+      } FROM ${table_name}${whereString}`; //generates the query string
+      if (DEBUG) console.log(`== query_string: ${query_string}`);
 
-            const baseURL = `${urlStart}/d`//the base url for delete
-            const body = {//only needs the table_name and where
-                table_name: table_name,
-                where: whereString
-            }
-            if(DEBUG) console.log(`== body.where: ${body.where}`)
+      const body = {
+        query: query_string,
+      };
 
-            await fetchDeleteRes(baseURL, body).then(resBody => {//await response
-                res.status(200).send({
-                    msg: "Got response from DB",
-                    data: resBody
-                }).catch(err => {
-                    console.log("== err:", err)
-                    res.status(500).send({
-                        err: err
-                    })
-                })
-            })
-        }
-        
-        
-        else if(query_type === 'UPDATE'){//Coming soon
-            if(!columns || !values || columns.length == 0 || values.length == 0){//columns and values are required for UPDATE requests
-                res.status(405).send({err: "Expecting columns and values for UPDATE request"})
-                return
-            }else if(columns.length != values.length){
-                res.status(405).send({err: "Expecting equal number of columns and values"})
-                return
-            }else if(!req.body.where || whereString == ""){//UPDATE requires a WHERE clause
-                res.status(405).send({err: "Expecting WHERE clause for UPDATE query"})
-                return
-            }
-            const baseURL = `${urlStart}/up`//the base url for delete
-            const body = {//only needs the table_name and where
-                table_name: table_name,
-                columns: columns,
-                values: values,
-                where: whereString
-            }
-            if(DEBUG) console.log(`== body.where: ${body.where}`)
-
-            await fetchUpdateRes(baseURL, body).then(resBody => {
-                res.status(200).send({
-                    msg: "Got response from DB",
-                    data: resBody
-                }).catch(err => {
-                    console.log("== err:", err)
-                    res.status(500).send({
-                        err: err
-                    })
-                })
-            })
-        }
-
-
+      await fetchGetRes(baseURL, body)
+        .then((resBody) => {
+          //sends request to backend
+          res.status(200).send({
+            msg: "Got response from DB",
+            data: resBody,
+          });
+        })
+        .catch((err) => {
+          console.log("== err:", err);
+          res.status(500).send({
+            err: err,
+          });
+        });
     }
+
+    //handles INSERT queries (Can not have any parameters in URL)
+    else if (query_type === "INSERT") {
+      if (!columns || !values || columns.length == 0 || values.length == 0) {
+        //columns and values are required for INSERT requests
+        res
+          .status(405)
+          .send({ err: "Expecting columns and values for INSERT request" });
+        return;
+      } else if (columns.length != values.length) {
+        res
+          .status(405)
+          .send({ err: "Expecting equal number of columns and values" });
+        return;
+      }
+      const baseURL = `${urlStart}/i`; //base url for INSERT requests
+      const body = {
+        //generates request body
+        table_name: table_name,
+        columns: columns,
+        values: values,
+      };
+      if (DEBUG) console.log(`== body.values: ${body.values}`);
+
+      await fetchPostRes(baseURL, body)
+        .then((resBody) => {
+          //send query to backend
+          res.status(200).send({
+            msg: "Got response from DB",
+            data: resBody,
+          });
+        })
+        .catch((err) => {
+          console.log("== err:", err);
+          res.status(500).send({
+            err: err,
+          });
+        });
+    }
+
+    //Handles DELETE queries
+    else if (query_type === "DELETE") {
+      if (!req.body.where || whereString == "") {
+        //DELETE requires a WHERE clause
+        res
+          .status(405)
+          .send({ err: "Expecting WHERE clause for DELETE query" });
+        return;
+      }
+
+      const baseURL = `${urlStart}/d`; //the base url for delete
+      const body = {
+        //only needs the table_name and where
+        table_name: table_name,
+        where: whereString,
+      };
+      if (DEBUG) console.log(`== body.where: ${body.where}`);
+
+      await fetchDeleteRes(baseURL, body).then((resBody) => {
+        //await response
+        res
+          .status(200)
+          .send({
+            msg: "Got response from DB",
+            data: resBody,
+          })
+          .catch((err) => {
+            console.log("== err:", err);
+            res.status(500).send({
+              err: err,
+            });
+          });
+      });
+    } else if (query_type === "UPDATE") {
+      //Coming soon
+      if (!columns || !values || columns.length == 0 || values.length == 0) {
+        //columns and values are required for UPDATE requests
+        res
+          .status(405)
+          .send({ err: "Expecting columns and values for UPDATE request" });
+        return;
+      } else if (columns.length != values.length) {
+        res
+          .status(405)
+          .send({ err: "Expecting equal number of columns and values" });
+        return;
+      } else if (!req.body.where || whereString == "") {
+        //UPDATE requires a WHERE clause
+        res
+          .status(405)
+          .send({ err: "Expecting WHERE clause for UPDATE query" });
+        return;
+      }
+      const baseURL = `${urlStart}/up`; //the base url for delete
+      const body = {
+        //only needs the table_name and where
+        table_name: table_name,
+        columns: columns,
+        values: values,
+        where: whereString,
+      };
+      if (DEBUG) console.log(`== body.where: ${body.where}`);
+
+      await fetchUpdateRes(baseURL, body).then((resBody) => {
+        res
+          .status(200)
+          .send({
+            msg: "Got response from DB",
+            data: resBody,
+          })
+          .catch((err) => {
+            console.log("== err:", err);
+            res.status(500).send({
+              err: err,
+            });
+          });
+      });
+    }
+  }
 }
 
-export default accessDatabase
+export default accessDatabase;
