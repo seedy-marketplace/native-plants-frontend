@@ -330,7 +330,7 @@ async function accessDatabase(req, res) {
                       });
                   });
           });
-      });
+      
     } 
 
   }
