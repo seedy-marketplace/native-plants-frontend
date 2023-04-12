@@ -1,5 +1,6 @@
 
 export default async function (req, res) {
+    console.log("Inside accessItis.js")
     if (req.method === 'SEARCH') {
         var ret = await accessItis(req.body["species_name"], req.body["tsn"])
         res.status(200).send({
@@ -10,7 +11,9 @@ export default async function (req, res) {
 
 async function accessItis(species_name, tsn){
     // var url = "https://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey="+species_name
-    var url = "https://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=procera"
+    // var url = "https://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=procera"
+    // var url = "https://services.itis.gov/"
+    var url = "https://services.itis.gov/?q=tsn:182662"
     
     // var XMLHttpRequest = require('xhr2');
     // const req = new XMLHttpRequest();
@@ -26,35 +29,27 @@ async function accessItis(species_name, tsn){
       
 
     fetch((url), {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         // 'mode': 'no-cors',
                     },
-                    credentials: 'include',
+                    // credentials: 'include',
                     // mode: 'no-cors',
 
                 })
-                    .then((res) => {
-                        // var retVal = res.json()
-                        console.log("Res: ", res)
+                
+                .then((res) => {
+                    // console.log("Json: ", res.json())
+                    // return (res.json())
+                    console.log("Initial res", res);
+                    var text = res.text()
+                    console.log("Res text", text)
+                    // console.log("Call returns ", res.text());
+                    // console.log("Call returns ", JSON.parse(text));
 
-                        var et = require('elementtree'); 
-                        var XML = et.XML;
-                        var ElementTree = et.ElementTree;
-                        var element = et.Element;
-                        var subElement = et.SubElement;
-
-                        var data, etree;
-                        data = res.headers.toString();
-
-                        // data = res.content.toString();
-                        // data = res;
-                        console.log("Stringified data:", data)
-                        etree = et.parse(data);
-
-                        console.log("Parsed data:", etree);
-                        return res
-                    })
+                    // return res;
+                })
                     // .then(
                     //     (result) => {
                     //         console.log("Results:", result)
