@@ -3,8 +3,10 @@ export default async function (req, res) {
     console.log("Inside accessItis.js")
     if (req.method === 'SEARCH') {
         var ret = await accessItis(req.body["species_name"], req.body["tsn"])
+        console.log("Inside top itis access, ret is", ret)
         res.status(200).send({
             ret:ret
+            // data: ret
         })
     }
 }
@@ -26,43 +28,36 @@ async function accessItis(species_name, tsn){
     //   };
 
     console.log("AccessItis arguments: species_name=",species_name," tsn=", tsn)
+    const fetch = require("node-fetch");
       
 
-    fetch((url), {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 'mode': 'no-cors',
-                    },
-                    // credentials: 'include',
-                    // mode: 'no-cors',
+    // const response = await fetch(url, {
+    const response = await fetch(url, {
 
-                })
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+            redirect: 'follow',
+        })
+    // const response = await fetch(url)
+        // .then((res) => {
+        //             // console.log("Json: ", res.json())
+        //             // return (res.json())
+        //             console.log("Initial res", res);
+        //             var text = res.json()
+        //             console.log("Res text", text)
+        //             // console.log("Call returns ", res.text());
+        //             // console.log("Call returns ", JSON.parse(text));
+
+        //             return res;
+        //         })
+
+        .then(res=>res.json())
                 
-                .then((res) => {
-                    // console.log("Json: ", res.json())
-                    // return (res.json())
-                    console.log("Initial res", res);
-                    var text = res.text()
-                    console.log("Res text", text)
-                    // console.log("Call returns ", res.text());
-                    // console.log("Call returns ", JSON.parse(text));
-
-                    // return res;
-                })
-                    // .then(
-                    //     (result) => {
-                    //         console.log("Results:", result)
-                    //     //   setIsLoaded(true);
-                    //     //   setItems(result);
-                    //     },
-                    //     // Note: it's important to handle errors here
-                    //     // instead of a catch() block so that we don't swallow
-                    //     // exceptions from actual bugs in components.
-                    //     (error) => {
-                    //     //   setIsLoaded(true);
-                    //       console.log("Error with accessing ITIS, ", error)
-                    //     }
-                    // )
-
+    console.log("Response outside fetch:", response)
+    console.log("Type of data: ", typeof response)
+    // const responseJson = await response.json
+    // console.log("Response json:", responseJson)
+    return response
 }

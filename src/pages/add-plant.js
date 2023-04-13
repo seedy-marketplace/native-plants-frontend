@@ -152,9 +152,15 @@ function BulkAdd({isLoading, setIsLoading}) {
                     }
                 )
 
-                // const resBody = await res.json();
+                const resBody = await res.json();
+                console.log("Found:", resBody)
+                // if (resBody.response.numFound > 0) {
+                if (resBody.ret.response.numFound > 0) {
+
+                    console.log("Enough found", resBody.ret.response)
+                }
                 res.status.send
-                console.log(resBody)
+                // console.log(resBody)
 
                 // const resBody = await res.json();
                 // console.log(resBody);
@@ -169,7 +175,7 @@ function BulkAdd({isLoading, setIsLoading}) {
 
             // setIsLoading(false);
 
-            // return;
+            return;
             tempData.forEach(async(entry) => {
                 const res = await fetch("/api/accessDatabase",
                         {
@@ -190,7 +196,7 @@ function BulkAdd({isLoading, setIsLoading}) {
                 console.log(resBody);
             })
             setIsLoading(false);
-            location.reload();
+            // location.reload();
 
 
 
