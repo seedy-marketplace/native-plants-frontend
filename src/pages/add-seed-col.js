@@ -121,7 +121,7 @@ function SeedCol() {
             </div>
             <ul>
             <li>
-            <Link href="/get-plants">
+            <Link legacyBehavior href="/get-plants">
                 <a target="_blank">Click here to see all plants/codes in new tab</a>
             </Link>
             </li>

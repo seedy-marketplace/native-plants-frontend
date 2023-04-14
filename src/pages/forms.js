@@ -10,42 +10,42 @@ export default function Forms() {
         <Layout>
         <ul className={styles.list}>
         <li className={styles.linkstyle}>
-        <Link href="/sign-up">
+        <Link legacyBehavior href="/sign-up">
           <a>Sign up</a>
         </Link>
       </li>
       <li className={styles.linkstyle}>
-        <Link href="/add-farms">
+        <Link legacyBehavior href="/add-farms">
           <a>Add Farm</a>
         </Link>
       </li>
       <li className={styles.linkstyle}>
-        <Link href="/add-lab">
+        <Link legacyBehavior href="/add-lab">
           <a>Add Lab</a>
         </Link>
       </li>
       <li className={styles.linkstyle}>
-        <Link href="/login">
+        <Link legacyBehavior href="/login">
           <a>Add stock</a>
         </Link>
       </li>
       <li className={styles.linkstyle}>
-        <Link href="/add-nursery" className={styles.linkstyle}>
+        <Link legacyBehavior href="/add-nursery" className={styles.linkstyle}>
           <a>Add nursery</a>
         </Link>
       </li>
       <li className={styles.linkstyle}>
-        <Link href="/get-plants">
+        <Link legacyBehavior href="/get-plants">
           <a>Get Plants</a>
         </Link>
       </li>
       <li className={styles.linkstyle}>
-        <Link href="/forms">
+        <Link legacyBehavior href="/forms">
           <a>Forms</a>
         </Link>
       </li>
       <li className={styles.linkstyle}>
-        <Link href="/get-users">
+        <Link legacyBehavior href="/get-users">
           <a>Users</a>
         </Link>
       </li>

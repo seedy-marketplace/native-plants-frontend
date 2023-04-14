@@ -29,44 +29,44 @@ const Nav = () => (
         </div>
         <ul class="nav-list">
             <li className="nav-list-item" >
-                    <Link href="/">
+                    <Link legacyBehavior href="/">
                       <a>Home</a>
                     </Link>
             </li>
             <li className="nav-list-item">
-                    <Link href="/farm-tab">
+                    <Link legacyBehavior href="/farm-tab">
                       <a>Farm</a>
                     </Link>
             </li>
             <li className="nav-list-item">
-                    <Link href="/lab-tab" className={styles.linkstyle}>
+                    <Link legacyBehavior href="/lab-tab" className={styles.linkstyle}>
                       <a>Lab</a>
                     </Link>
             </li>
             <li className="nav-list-item">
-                    <Link href="/plant-tab">
+                    <Link legacyBehavior href="/plant-tab">
                       <a>Plants</a>
                     </Link>
             </li>
             <li className="nav-list-item">
-                    <Link href="/nursery-tab">
+                    <Link legacyBehavior href="/nursery-tab">
                       <a>Nursery</a>
                     </Link>
             </li>
             <li className="nav-list-item">
-                    <Link href="/login">
+                    <Link legacyBehavior href="/login">
                       <a>Login</a>
                     </Link>
             </li>
             
             
             <li className="nav-list-item">
-                    <Link href="/admin">
+                    <Link legacyBehavior href="/admin">
                       <a>Admin</a>
                     </Link>
             </li>
             <li className="nav-list-item">
-                    <Link href="/map">
+                    <Link legacyBehavior href="/map">
                       <a>Map</a>
                     </Link>
             </li>
@@ -76,7 +76,7 @@ const Nav = () => (
 )
 /*
 <li className="nav-list-item">
-  <Link href="/stand-tab">
+  <Link legacyBehavior href="/stand-tab">
     <a>Stand</a>
   </Link>
 </li>

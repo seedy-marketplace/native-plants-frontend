@@ -95,7 +95,7 @@ function NursePro() {
             </div>
             <ul>
             <li>
-            <Link href="/get-nursery">
+            <Link legacyBehavior href="/get-nursery">
                 <a target="_blank">Click here to see all nurseries in new tab</a>
             </Link>
             </li>
@@ -174,7 +174,7 @@ function NursePro() {
             </div>
             <ul>
             <li>
-            <Link href="/get-users">
+            <Link legacyBehavior href="/get-users">
                 <a target="_blank">Click here to see all users in new tab</a>
             </Link>
             </li>

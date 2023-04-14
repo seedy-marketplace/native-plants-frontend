@@ -94,7 +94,7 @@ function Stand() {
             </div>
             <ul>
             <li>
-            <Link href="/get-stand">
+            <Link legacyBehavior href="/get-stand">
                 <a target="_blank">Click here to see all stands in new tab</a>
             </Link>
             </li>
@@ -110,7 +110,7 @@ function Stand() {
             </div>
             <ul>
             <li>
-            <Link href="/get-plants">
+            <Link legacyBehavior href="/get-plants">
                 <a target="_blank">Click here to see all plants/codes in new tab</a>
             </Link>
             </li>

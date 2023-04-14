@@ -10,17 +10,17 @@ export default function Forms() {
         <Layout>
             <ul className="pagelist">
                 <li className="pagelist_item">
-                    <Link href="/add-stand">
+                    <Link legacyBehavior href="/add-stand">
                       <a>Add Stand</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/add-stand-history">
+                    <Link legacyBehavior href="/add-stand-history">
                       <a>Add Stand History</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/get-stand">
+                    <Link legacyBehavior href="/get-stand">
                       <a>See Stands</a>
                     </Link>
                 </li>

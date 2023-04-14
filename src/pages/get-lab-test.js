@@ -56,7 +56,7 @@ function Plants() {
                 </div>
                 <ul>
             <li>
-            <Link href="/get-seed-col">
+            <Link legacyBehavior href="/get-seed-col">
                 <a target="_blank">Click here to see all seed collecitons in new tab</a>
             </Link>
             </li>

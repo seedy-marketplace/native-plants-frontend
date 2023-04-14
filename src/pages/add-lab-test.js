@@ -102,7 +102,7 @@ function SeedCol() {
             </div>
             <ul>
             <li>
-            <Link href="/get-seed-col">
+            <Link legacyBehavior href="/get-seed-col">
                 <a target="_blank">Click here to see all seed collecitons in new tab</a>
             </Link>
             </li>
@@ -118,7 +118,7 @@ function SeedCol() {
             </div>
             <ul>
             <li>
-            <Link href="/get-labs">
+            <Link legacyBehavior href="/get-labs">
                 <a target="_blank">Click here to see all labs in new tab</a>
             </Link>
             </li>
@@ -134,7 +134,7 @@ function SeedCol() {
             </div>
             <ul>
             <li>
-            <Link href="/get-plants">
+            <Link legacyBehavior href="/get-plants">
                 <a target="_blank">Click here to see all plants/codes in new tab</a>
             </Link>
             </li>

@@ -10,42 +10,42 @@ export default function Forms() {
         <Layout>
             <ul className="pagelist">
                 <li className="pagelist_item">
-                    <Link href="/update-users">
+                    <Link legacyBehavior href="/update-users">
                       <a>Update User</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/get-users">
+                    <Link legacyBehavior href="/get-users">
                       <a>See users</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/delete-user">
+                    <Link legacyBehavior href="/delete-user">
                       <a>Del User</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/add-site">
+                    <Link legacyBehavior href="/add-site">
                       <a>Add site</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/add-want-list">
+                    <Link legacyBehavior href="/add-want-list">
                       <a>Add Request</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/get-want-list">
+                    <Link legacyBehavior href="/get-want-list">
                       <a>Get Requests</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/delete-want-list">
+                    <Link legacyBehavior href="/delete-want-list">
                       <a>Delete Requests</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/delete">
+                    <Link legacyBehavior href="/delete">
                       <a>Delete</a>
                     </Link>
                 </li>

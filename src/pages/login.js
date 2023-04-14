@@ -20,7 +20,7 @@ function Login() {
                   <button id="loginButton" onClick={handleLogin}><a>Login</a></button>
             </div>
             <div>
-                <Link href="/sign-up">
+                <Link legacyBehavior href="/sign-up">
                     <a className="signupButton">Sign up</a>
                 </Link>
             </div>

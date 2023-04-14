@@ -10,27 +10,27 @@ export default function Lab() {
         <Layout>
             <ul className="pagelist">
                 <li className="pagelist_item">
-                    <Link href="/add-lab">
+                    <Link legacyBehavior href="/add-lab">
                       <a>Add Lab</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/get-labs">
+                    <Link legacyBehavior href="/get-labs">
                       <a>See Labs</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/delete-lab">
+                    <Link legacyBehavior href="/delete-lab">
                       <a>Delete Lab</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/add-lab-test">
+                    <Link legacyBehavior href="/add-lab-test">
                       <a>Add Lab Test</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/get-lab-test">
+                    <Link legacyBehavior href="/get-lab-test">
                       <a>Get Lab Test</a>
                     </Link>
                 </li>

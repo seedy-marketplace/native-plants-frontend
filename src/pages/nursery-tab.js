@@ -10,27 +10,27 @@ export default function Farm() {
         <Layout>
             <ul className="pagelist">
                 <li className="pagelist_item">
-                    <Link href="/add-nursery">
+                    <Link legacyBehavior href="/add-nursery">
                       <a>Add Nursery</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/get-nursery">
+                    <Link legacyBehavior href="/get-nursery">
                       <a>See Nurseries</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/delete-nursery">
+                    <Link legacyBehavior href="/delete-nursery">
                       <a>Delete Nursery</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/add-nursery-production">
+                    <Link legacyBehavior href="/add-nursery-production">
                       <a>Add Production</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
-                    <Link href="/get-nursery-production">
+                    <Link legacyBehavior href="/get-nursery-production">
                       <a>See Production</a>
                     </Link>
                 </li>

@@ -94,7 +94,7 @@ function FarmAmp() {
             </div>
             <ul>
             <li>
-            <Link href="/get-farms">
+            <Link legacyBehavior href="/get-farms">
                 <a target="_blank">Click here to see all farms in new tab</a>
             </Link>
             </li>
@@ -155,7 +155,7 @@ function FarmAmp() {
             </div>
             <ul>
             <li>
-            <Link href="/get-users">
+            <Link legacyBehavior href="/get-users">
                 <a target="_blank">Click here to see all users in new tab</a>
             </Link>
             </li>

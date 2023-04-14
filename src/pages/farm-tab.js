@@ -10,32 +10,32 @@ export default function Farm() {
         <Layout>
             <ul className="pagelist">
                     <li className="pagelist_item">
-                        <Link href="/add-farms">
+                        <Link legacyBehavior href="/add-farms">
                           <a>Add Farm</a>
                         </Link>
                     </li>
                     <li className="pagelist_item">
-                        <Link href="/get-farms">
+                        <Link legacyBehavior href="/get-farms">
                           <a>See Farms</a>
                         </Link>
                     </li>
                     <li className="pagelist_item">
-                        <Link href="/delete-farm">
+                        <Link legacyBehavior href="/delete-farm">
                           <a>Delete Farm</a>
                         </Link>
                     </li>
                     <li className="pagelist_item">
-                        <Link href="/update-farm">
+                        <Link legacyBehavior href="/update-farm">
                           <a>Update Farm</a>
                         </Link>
                     </li>
                     <li className="pagelist_item">
-                        <Link href="/add-farm-amp">
+                        <Link legacyBehavior href="/add-farm-amp">
                           <a>Add Amplification</a>
                         </Link>
                     </li>
                     <li className="pagelist_item">
-                        <Link href="/get-farm-amp">
+                        <Link legacyBehavior href="/get-farm-amp">
                           <a>See Amplification</a>
                         </Link>
                     </li>
