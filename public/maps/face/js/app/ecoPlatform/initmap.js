@@ -15,7 +15,7 @@ function initMap() {
 		zoomLevel: result.map.zoomLevel,
 		maxZoom: result.map.maxZoom,
 		minZoom: result.map.minZoom,
-		mapDiv: 'map'
+		mapDiv: 'oldMap'
 	};
 	
 	// // ol.source.XYZ Add layers of Tile Map
