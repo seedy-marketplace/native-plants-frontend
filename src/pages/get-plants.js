@@ -6,12 +6,36 @@ import useAPIRequest from '../hooks/useAPIRequest';
 
 import TableView from '../components/TableView';
 import Map from '../components/Map';
-const DEFAULT_CENTER = [38.907132, -77.036546]
+// import westCoastEco from '@/data/map/west-coast-eco.json';
+const DEFAULT_CENTER = [43.8, -120.55]
 // import dynamic from 'next/dynamic';
 
 // const LeafletMap = dynamic(() => import('../components/Map/LeafletMap'), {
 //   ssr: false
 // });
+// const MyData = () => {
+//     // create state variable to hold data when it is fetched
+//     const [data, setData] = React.useState();
+  
+//     // useEffect to fetch data on mount
+//     useEffect(() => {
+//       // async function!
+//       const getData = async () => {
+//         // 'await' the data
+//         const response = await axios.get("url");
+//         // save data to state
+//         setData(response.data);
+//       };
+//       getData();
+//     }, []);
+  
+//     // render react-leaflet GeoJSON when the data is ready
+//     if (data) {
+//       return <GeoJSON data={data} />;
+//     } else {
+//       return null;
+//     }
+//   };
 
 
 function Plants() {
@@ -20,6 +44,7 @@ function Plants() {
     const [species, setSpecies] = useState("")
     const [email, setEmail] = useState("");
     const [plantList, setPlantList] = useState([]);
+    const [displayMode, setDisplayMode] = useState("Table");
 
 
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /${farmname_to_send}`, "POST");
@@ -63,6 +88,37 @@ function Plants() {
         }
     }
 
+    const handleOnChange = (e) => {
+        setDisplayMode(e.target.value);
+    };
+
+    const displayData = () => {
+        if(!plantList || plantList.data){
+            return <TableView data={[{ "Notice": "no data to display" }]} />
+        }
+
+        if (displayMode === "Table") {
+            return <TableView data={plantList} />
+        } else {
+            return <Map width="800" height="400" center={DEFAULT_CENTER} zoom={6}>
+                        {({ TileLayer, Marker, Popup, GeoJSON }) => (
+                        <>
+                            <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                            />
+                            {/* <GeoJSON data={westCoastEco} /> */}
+                            <Marker position={DEFAULT_CENTER}>
+                            <Popup>
+                                A pretty CSS3 popup. <br /> Easily customizable.
+                            </Popup>
+                            </Marker>
+                        </>
+                        )}
+                    </Map>
+        }
+    }
+
     return (
         <>
         <Layout>
@@ -95,21 +151,27 @@ function Plants() {
                 </div>
             </form>
             {(plantList && plantList.data) ? <TableView data={plantList.data} /> : <TableView data={[{ "Notice": "no data to display" }]} />}
-            <Map width="800" height="400" center={DEFAULT_CENTER} zoom={12}>
-                {({ TileLayer, Marker, Popup }) => (
+            <Map width="800" height="400" center={DEFAULT_CENTER} zoom={7}>
+                {({ TileLayer, Marker, Popup, GeoJSON }) => (
                 <>
-                    <TileLayer
+                    {/* <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                    /> */}
+                    <TileLayer
+                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+                    attribution="Tiles © <a href='https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer'>ArcGIS</a>"
                     />
-                    <Marker position={DEFAULT_CENTER}>
-                    <Popup>
-                        A pretty CSS3 popup. <br /> Easily customizable.
-                    </Popup>
-                    </Marker>
+                    {/* <GeoJSON data={westCoastEco} /> */}
                 </>
                 )}
             </Map>
+            {/* <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}} onChange={handleOnChange}>
+                <input type="radio" value="Table" name="Table" /> Table
+                <input type="radio" value="Map" name="Map" /> Map
+            </div>
+            { displayData() } */}
+
         </Layout>
         </>
     );
