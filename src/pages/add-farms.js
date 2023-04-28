@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import styles from '../components/Navbar.module.css'
 import * as XLSX from "xlsx";
@@ -32,7 +32,10 @@ function Farms() {
 
     const [file, setFile] = useState();
 
-    const fileReader = new FileReader();
+    useEffect(() => {
+        const fileReader = new FileReader();
+    })
+    //const fileReader = new FileReader();
 
     const handleOnChange = (e) => {
         setFile(e.target.files[0]);
