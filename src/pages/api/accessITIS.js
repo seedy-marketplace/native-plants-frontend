@@ -3,8 +3,6 @@ export default async function (req, res) {
     var err = [];
 
     console.log("Inside accessItis.js")
-    //console.log("Req is", req)
-    //console.log("Res is", res)
     if (req.method === 'SEARCH') {
         var ret = await accessItis(req.body["species_name"], req.body["tsn"], err)
         console.log("Inside top itis access, ret is", ret)
@@ -21,7 +19,7 @@ export default async function (req, res) {
 }
 
 async function accessItis(species_name, tsn, errList){
-    var test = true;
+    var test = false;
 
     if (test) {
         // tsn = 0
@@ -30,21 +28,14 @@ async function accessItis(species_name, tsn, errList){
         // species_name = "no"
     }
 
-    var url = "https://services.itis.gov/?q=tsn:566578"
-    //var tsnUrl = "https://services.itis.gov/?q=tsn:" + tsn
-    // var tsnUrl = "https://services.itis.gov/?q=tsn:" + 123
     var tsnUrl = "https://services.itis.gov/?q=tsn:" + tsn
-
-    var tsnName = "https://services.itis.gov/?q=nameWOInd:"+species_name
 
     console.log("TSN URL:", tsnUrl)
 
-    console.log("replacing nameUrl")
     var nameUrl = "https://services.itis.gov/?q=nameWOInd:" + species_name
     nameUrl = nameUrl.replaceAll(" ", "\\\%20")
 
 
-    console.log("AccessItis arguments: species_name=",species_name," tsn=", tsn)
     const fetch = require("node-fetch");
       
 
@@ -93,12 +84,6 @@ async function accessItis(species_name, tsn, errList){
             console.log ("Error: both name of species is invalid and doesn't match TSN")
         }
     }
-    // if (response.docs) {
-    //     console.log("Yup")
-    // }
-                
-    // console.log("Response outside fetch:", response.docs)
-    // console.log("Type of data: ", typeof response)
-    // return response
+    
     return jsonData
 }
