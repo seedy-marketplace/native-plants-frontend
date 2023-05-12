@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import '../components/Navbar'
 
@@ -17,8 +17,10 @@ function Plants() {
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /${farmname_to_send}`, "POST");
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
     async function getPlants(e) {
-        e.preventDefault();
-        var onVar = 'plant.species_code = seed_collection.col_species_code';
+        if (e) {
+            e.preventDefault();
+        }
+        var onVar = 'plant.species_id = seed_collection.col_species_id';
         if (comname) {
             onVar += ` AND plant.common_name iLIKE '%%${comname}%%'`;
         }
@@ -50,10 +52,14 @@ function Plants() {
         console.log(resBody);
         if (res.status >= 200 && res.status < 400) {
             setPlantList(resBody.data)
+            console.log("plantlistdata")
+            console.log(plantList.data)
         } else {
             alert("Error: \n" + resBody.error)
         }
     }
+
+    useEffect(() => {getPlants()})
 
     return (
         <Layout>
