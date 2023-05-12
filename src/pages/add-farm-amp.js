@@ -17,16 +17,18 @@ function FarmAmp() {
 
     async function getData(){
         const reqData = {}
-        let query = "/api/accessBackend?query_string=SELECT * from rev2.users WHERE user_name LIKE '" +harvestOwner+ "'"
-        let res = await fetch(query,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Users"
-            }
-        )
+        
+        let res = await fetch('/api/accessDatabase',{
+            method: 'SEARCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
+                table_name: 'users', //Any table name here (Field is required)
+                where: `user_name='${harvestOwner}'`
+            })
+        })
         if (res.status >= 200 && res.status < 400) {
             reqData.owner = await res.json();
             console.log(reqData.owner);
@@ -35,16 +37,18 @@ function FarmAmp() {
             return {owner:NULL}
         }
 
-        query = "/api/accessBackend?query_string=SELECT * from rev2.farms WHERE farm_name LIKE '" +farmName+ "'"
-        res = await fetch(query,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                query: "Farms"
-            }
-        )
+       
+        res = await fetch('/api/accessDatabase',{
+            method: 'SEARCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query_type: 'INSERT', //SELECT, INSERT, etc. (Field is required)
+                table_name: 'farms', //Any table name here (Field is required)
+                where: `farm_name='${farmName}'`
+            })
+        })
         if (res.status >= 200 && res.status < 400) {
             reqData.farmData = await res.json();
             console.log(reqData.farmData);
@@ -60,17 +64,13 @@ function FarmAmp() {
         const data = await getData()
         if ((!data.owner)||(!data.farmData))
             return 
-        console.log('here')
-        const FNAME = "'" +farmName + "'"
-        const HOWNER = "'" +harvestOwner+ "'"
-        const NOTE = "'" +notes+ "'"
-        const res = await fetch('/api/accessBackend', {
+        const res = await fetch('/api/accessDatabase', {
             method: 'POST',
             body: JSON.stringify( {
                 table_name: "farm_amplification",
                 query_type: "INSERT",
-                query_fields: ['farm_name', 'year_sown', 'field_size', 'estimated_harvest_per_year','year_harvested', 'generation_of_seed', 'owner_of_harvest', 'extra_farm_notes'],
-                query_values: [farmName, yearSown, fieldSize, estHarvest, yearHarvest, seedGen, harvestOwner, notes]
+                columns: ['farm_name', 'year_sown', 'field_size', 'estimated_harvest_per_year','year_harvested', 'generation_of_seed', 'owner_of_harvest', 'extra_farm_notes'],
+                values: [farmName, yearSown, fieldSize, estHarvest, yearHarvest, seedGen, harvestOwner, notes]
             }),
             headers: {
                 'Content-Type': 'application/json'
