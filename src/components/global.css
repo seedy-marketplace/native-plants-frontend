@@ -88,13 +88,12 @@ input {
 
 table {
   border-collapse: collapse;
-  width: 74%;
-  margin-left: 13%;
-  margin-right: 13%;
+  width: 95%;
   background-color: white;
 }
 #responseTable{
-  max-height: 600px;
+  display:flex;
+  justify-content: center;
 }
 
 table tr:nth-child(even) {
