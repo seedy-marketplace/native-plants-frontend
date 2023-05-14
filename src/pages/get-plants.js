@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Layout from '../components/Layout';
 import '../components/Navbar'
 
@@ -6,37 +6,85 @@ import useAPIRequest from '../hooks/useAPIRequest';
 
 import TableView from '../components/TableView';
 import Map from '../components/Map';
-// import westCoastEco from '@/data/map/west-coast-eco.json';
-const DEFAULT_CENTER = [43.8, -120.55]
-// import dynamic from 'next/dynamic';
+import { Icon } from "leaflet";
 
-// const LeafletMap = dynamic(() => import('../components/Map/LeafletMap'), {
-//   ssr: false
-// });
-// const MyData = () => {
-//     // create state variable to hold data when it is fetched
-//     const [data, setData] = React.useState();
-  
-//     // useEffect to fetch data on mount
-//     useEffect(() => {
-//       // async function!
-//       const getData = async () => {
-//         // 'await' the data
-//         const response = await axios.get("url");
-//         // save data to state
-//         setData(response.data);
-//       };
-//       getData();
-//     }, []);
-  
-//     // render react-leaflet GeoJSON when the data is ready
-//     if (data) {
-//       return <GeoJSON data={data} />;
-//     } else {
-//       return null;
+// const styles = StyleSheet.create({
+//     container: {
+//       flex: 1,
+//       flexDirection: 'row',
+//       flexWrap: 'wrap',
+//       alignItems: 'flex-start' // if you want to fill rows left to right
+//     },
+//     item: {
+//       width: '50%' // is 50% of container width
 //     }
-//   };
+//   })
 
+import mapMarker from '../components/Map/data/marker-icon-2x-green.png'
+import exCollections from '../components/Map/data/ex_collections.json';
+import exCollection2 from '../components/Map/data/ex_collections2.json';
+import exCollection5 from '../components/Map/data/ex_collection5.json';
+import westCoastEco from '../components/Map/data/west_coast_eco_l4.json';
+import managedMeadowHabitat from '../components/Map/data/OSB_Managed_Meadow_Habitat.json';
+import managedMeadow from '../components/Map/data/OSB_Managed_Meadow.json';
+
+const DEFAULT_CENTER = [43.8, -120.55]
+var greenIcon = new L.Icon({
+    iconUrl: '/leaflet/images/marker-icon-2x-green.png',
+    shadowUrl: 'leaflet/images/marker-shadow-stretch.png',
+    iconSize: [15, 25],
+    iconAnchor: [15, 5],
+    popupAnchor: [1, -4],
+    shadowSize: [15, 25]
+  });
+
+const SEARCH_PLANTS =
+    [
+        {
+            "key" : 1,
+            "genus"  : "Genus",
+            "species": "Species",
+            "common_name" : "Common Name", 
+            "collected_date" : "12/03/22",
+            "email" : "Collector email",
+            "phone_number": "503-867-5309",
+            "plantLat": 43.8,
+            "plantLong": -120.55,
+        },
+        {
+            "key" : 2,
+            "genus"  : "Genus",
+            "species": "Species",
+            "common_name" : "Common Name", 
+            "collected_date" : "12/03/22",
+            "email" : "Collector email",
+            "phone_number": "503-867-5309",
+            "plantLat": 44.4,
+            "plantLong": -120.55,
+        },
+        {
+            "key" : 3,
+            "genus"  : "Genus",
+            "species": "Species",
+            "common_name" : "Common Name", 
+            "collected_date" : "12/03/22",
+            "email" : "Collector email",
+            "phone_number": "503-867-5309",
+            "plantLat": 43.8,
+            "plantLong": -121.25,
+        },
+        {
+            "key" : 4,
+            "genus"  : "Genus",
+            "species": "Species",
+            "common_name" : "Common Name", 
+            "collected_date" : "12/03/22",
+            "email" : "Collector email",
+            "phone_number": "503-867-5309",
+            "plantLat": 43.8,
+            "plantLong": -119.35,
+        }
+];
 
 function Plants() {
     const [comname, setComname] = useState("");
@@ -46,6 +94,48 @@ function Plants() {
     const [plantList, setPlantList] = useState([]);
     const [displayMode, setDisplayMode] = useState("Table");
 
+    const mapRef = useRef();
+
+    useEffect(() => {
+        const { current = {} } = mapRef;
+        const { leafletElement: map } = current;
+    
+        if ( !map ) return;
+    
+        const parkIcon = new L.Icon({
+          iconUrl: mapMarker,
+          iconSize: [26, 26],
+          popupAnchor: [0, -15],
+          shadowAnchor: [13, 28]
+        });
+
+        const esri = L.esri.featureLayer({
+            url: "https://geodata.epa.gov/arcgis/rest/services/ORD/USEPA_Ecoregions_Level_III_and_IV/MapServer/0",
+            style: function () {
+              return { color: "#70ca49", weight: 2 };
+            }
+           });
+
+        esri.addTo(map)
+    
+        const parksGeojson = new L.GeoJSON(exCollection5, {
+          pointToLayer: (feature, latlng) => {
+            return L.marker(latlng, {
+              icon: parkIcon
+            });
+          },
+          onEachFeature: (feature = {}, layer) => {
+            const { properties = {} } = feature;
+            const { site_name } = properties;
+    
+            if ( !site_name ) return;
+    
+            layer.bindPopup(`<p>${site_name}</p>`);
+          }
+        });
+    
+        parksGeojson.addTo(map);
+      }, [])
 
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /${farmname_to_send}`, "POST");
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
@@ -92,36 +182,37 @@ function Plants() {
         setDisplayMode(e.target.value);
     };
 
-    const displayData = () => {
-        if(!plantList || plantList.data){
-            return <TableView data={[{ "Notice": "no data to display" }]} />
-        }
+    // const displayData = () => {
+    //     if(!plantList || plantList.data){
+    //         return <TableView data={[{ "Notice": "no data to display" }]} />
+    //     }
 
-        if (displayMode === "Table") {
-            return <TableView data={plantList} />
-        } else {
-            return <Map width="800" height="400" center={DEFAULT_CENTER} zoom={6}>
-                        {({ TileLayer, Marker, Popup, GeoJSON }) => (
-                        <>
-                            <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                            />
-                            {/* <GeoJSON data={westCoastEco} /> */}
-                            <Marker position={DEFAULT_CENTER}>
-                            <Popup>
-                                A pretty CSS3 popup. <br /> Easily customizable.
-                            </Popup>
-                            </Marker>
-                        </>
-                        )}
-                    </Map>
-        }
-    }
+    //     if (displayMode === "Table") {
+    //         return <TableView data={plantList} />
+    //     } else {
+    //         return <Map width="800" height="400" center={DEFAULT_CENTER} zoom={6}>
+    //                     {({ TileLayer, Marker, Popup }) => (
+    //                     <>
+    //                         <TileLayer
+    //                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    //                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+    //                         />
+    //                         {/* <GeoJSON data={westCoastEco} /> */}
+    //                         <Marker position={DEFAULT_CENTER}>
+    //                         <Popup>
+    //                             A pretty CSS3 popup. <br /> Easily customizable.
+    //                         </Popup>
+    //                         </Marker>
+    //                     </>
+    //                     )}
+    //                 </Map>
+    //     }
+    // }
 
     return (
-        <>
         <Layout>
+        <div class="row">
+            <div class="column">
             <form onSubmit={getPlants}>
                 <div>
                     <a>Type here to filter, leave blank for no filter</a>
@@ -150,30 +241,52 @@ function Plants() {
                     <button>Get Plants</button>
                 </div>
             </form>
-            {(plantList && plantList.data) ? <TableView data={plantList.data} /> : <TableView data={[{ "Notice": "no data to display" }]} />}
+            </div>
+            <div class="columnWide">
             <Map width="800" height="400" center={DEFAULT_CENTER} zoom={7}>
                 {({ TileLayer, Marker, Popup, GeoJSON }) => (
                 <>
-                    {/* <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                    /> */}
                     <TileLayer
                     url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
                     attribution="Tiles © <a href='https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer'>ArcGIS</a>"
                     />
-                    {/* <GeoJSON data={westCoastEco} /> */}
+                    {/* <GeoJSON data={exCollections} /> */}
+                    {/* <GeoJSON data={exCollection2} /> */}
+                    <GeoJSON data={exCollection5} />
+                    {/* <GeoJSON data={managedMeadow} />
+                    <GeoJSON data={managedMeadowHabitat} /> */}
+                    <GeoJSON data={westCoastEco} />
+                    {
+                        SEARCH_PLANTS.map((plant) => {
+                            return (
+                                <Marker
+                                    position={[plant.plantLat, plant.plantLong]}
+                                    icon={greenIcon}
+                                    key={plant.key}
+                                    >
+                                    <Popup>
+                                        <div>
+                                            <h2>{plant.common_name}</h2>
+                                            <h3>{plant.genus} {plant.species}</h3>
+                                            <h4>Collected on {plant.collected_date}</h4>
+                                            <h4>Collected by {plant.email} or {plant.phone_number}</h4>
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            )
+                        })
+                    }
                 </>
                 )}
             </Map>
-            {/* <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}} onChange={handleOnChange}>
-                <input type="radio" value="Table" name="Table" /> Table
-                <input type="radio" value="Map" name="Map" /> Map
             </div>
-            { displayData() } */}
-
-        </Layout>
-        </>
+            </div>
+            <div class="row">
+                <div class="columnFull">
+                {(plantList && plantList.data) ? <TableView data={plantList.data} /> : <TableView data={[{ "Notice": "no data to display" }]} />}
+                </div>
+            </div>
+            </Layout>
     );
 }
 

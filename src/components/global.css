@@ -391,3 +391,19 @@ iframe {
 .SignupInputContainer {
     padding-bottom:10px;
 }
+
+.row {
+  display: flex;
+}
+
+.column {
+  flex: 40%;
+}
+
+.columnWide {
+  flex: 60%;
+}
+
+.columnFull {
+  flex: 100%;
+}
