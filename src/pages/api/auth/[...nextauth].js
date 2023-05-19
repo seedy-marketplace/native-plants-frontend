@@ -24,7 +24,7 @@ export default NextAuth({
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-
+        let user;
         console.log(credentials);
         const res = await fetch(
           "https://native-plants-backend.herokuapp.com/u/login",
@@ -40,7 +40,10 @@ export default NextAuth({
             }),
           }
         );
-        const user = await res.json();
+        let userArr = await res;
+        console.log(userArr)
+        user = userArr;
+        console.log(`user: ${user}`)
 
         // If no error and we have user data, return it
         if (res.ok && user) {
@@ -54,6 +57,7 @@ export default NextAuth({
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
+        //console.log(`user: ${user}`)
         token.user = user;
       }
       return token;

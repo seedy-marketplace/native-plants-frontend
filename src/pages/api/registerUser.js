@@ -8,7 +8,8 @@ const registerUser = async function(req, res){
             password: req.body.password,
             bio: req.body.bio,
             phone_number: req.body.number,
-            website: req.body.website
+            website: req.body.website,
+            related_org_id: req.body.related_org_id
         }),
         headers: { 
             "Content-Type": "application/json",

@@ -34,7 +34,7 @@ const res = await fetch("/api/accessDatabase",
 */
 async function accessDatabase(req, res) {
   const session = await getServerSession(req, res);
-
+  session ? console.log(`==Session Username: ${session.user.username}`) : console.log("no session")
   if (DEBUG) console.log("== Session:", session);
 
   //Check the session details to determine if a user is logged in and what level of security access their account has

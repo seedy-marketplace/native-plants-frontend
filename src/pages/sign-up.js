@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import styles from '../components/Navbar.module.css'
+import react from 'react';
 
 function Signup() {
     const [username, setUsername] = useState("");
@@ -11,6 +12,7 @@ function Signup() {
     const [bio, setBio] = useState("");
     const [number, setNumber] = useState("");
     const [valid, setValid] = React.useState(true);
+    const [organizationID, setOrganizationID] = useState("")
 
     async function handleSignup(e) {
 
@@ -30,7 +32,8 @@ function Signup() {
                     password: password,
                     bio: bio,
                     phone_number: number,
-                    website: website
+                    website: website,
+                    related_org_id: organizationID
                 }),
                 headers: {
                     'Content-Type': 'application/json'
@@ -109,6 +112,16 @@ function Signup() {
                         value={website}
                         className={styles.inputs}
                         onChange={e => setWebsite(e.target.value)}
+                    />
+                </div>
+                <div className="SignupInputContainer">
+                    <a>Organization ID (optional)</a>
+                    <input
+                        type="number"
+                        placeholder="organization id"
+                        value={organizationID}
+                        className={styles.inputs}
+                        onChange={e => setOrganizationID(e.target.value)}
                     />
                 </div>
                 <div className="SignupInputContainer">
