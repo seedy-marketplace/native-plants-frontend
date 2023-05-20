@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth/next";
+import { getSession } from "next-auth/react";
 
 const DEBUG = true; //Set true to get debug console outputs
 const urlStart = "https://native-plants-backend.herokuapp.com";
@@ -33,7 +34,8 @@ const res = await fetch("/api/accessDatabase",
 )
 */
 async function accessDatabase(req, res) {
-  const session = await getServerSession(req, res);
+  //const session = await getServerSession(req, res);
+  const session = await getSession({req})
   session ? console.log(`==Session Username: ${session.user.username}`) : console.log("no session")
   if (DEBUG) console.log("== Session:", session);
 

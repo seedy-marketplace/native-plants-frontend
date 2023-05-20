@@ -25,7 +25,7 @@ export default NextAuth({
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
         let user;
-        console.log(credentials);
+        //console.log(credentials);
         const res = await fetch(
           "https://native-plants-backend.herokuapp.com/u/login",
           {
@@ -34,16 +34,13 @@ export default NextAuth({
               "Content-Type": "application/json",
               Authentication: process.env.DATABASE_KEY,
             },
-            body: JSON.stringify({
-              username: credentials.username,
-              password: credentials.password,
-            }),
+            body: JSON.stringify(credentials),
           }
         );
-        let userArr = await res;
-        console.log(userArr)
+        const userArr = await res.json();
+        //console.log(userArr)
         user = userArr;
-        console.log(`user: ${user}`)
+        //console.log(user)
 
         // If no error and we have user data, return it
         if (res.ok && user) {
@@ -58,13 +55,17 @@ export default NextAuth({
     jwt: async ({ token, user }) => {
       if (user) {
         //console.log(`user: ${user}`)
+        //token.accessToken = user.accessToken
         token.user = user;
+        console.log(token.user)
       }
       return token;
     },
     session: async ({ session, token }) => {
       if (token && token.user) {
+        //session.accessToken = token.accessToken
         session.user = token.user;
+        console.log(session.user)
       }
       return session;
     },
