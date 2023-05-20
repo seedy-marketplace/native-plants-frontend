@@ -44,33 +44,35 @@ async function accessDatabase(req, res) {
     //If no session the user isn't logged in at all
     res.status(401).send({ error: "You are not logged in!" });
     return;
-  } else if (session.user.user_level < 1) {
-    //logged in but no security
-    res.status(401).send({
-      error:
-        "You do not have permission to access this page!\nAsk an admin to approve your account."
-    });
-    return;
-  } else if (
-    session.user.user_level < 2 &&
-    req.body.query_type &&
-    req.body.query_type == "UPDATE" &&
-    req.body.query_fields &&
-    req.body.query_fields.length > 0 &&
-    req.body.query_fields[0] == "user_role_type"
-  ) {
-    //user is logged in, but does not have admin rights to update
-    res.status(401).send({
-      error:
-        "You do not have permission to access this page!\nAsk an admin to approve your account."
-    });
-    return;
-  } else {
+  }
+  // } else if (session.user.user_level < 1) {
+  //   //logged in but no security
+  //   res.status(401).send({
+  //     error:
+  //       "You do not have permission to access this page!\nAsk an admin to approve your account."
+  //   });
+  //   return;
+  // } else if (
+  //   session.user.user_level < 2 &&
+  //   req.body.query_type &&
+  //   req.body.query_type == "UPDATE" &&
+  //   req.body.query_fields &&
+  //   req.body.query_fields.length > 0 &&
+  //   req.body.query_fields[0] == "user_role_type"
+  // ) {
+  //   //user is logged in, but does not have admin rights to update
+  //   res.status(401).send({
+  //     error:
+  //       "You do not have permission to access this page!\nAsk an admin to approve your account."
+  //   });
+  //   return;
+  // } else {
+  else{
     //user has admin rights
     if (DEBUG)
       console.log(
         "== Logged in with these credentials:",
-        session.user.real_name,
+        session.user.username,
         session.user.user_level
       );
   }
@@ -185,7 +187,7 @@ async function accessDatabase(req, res) {
     return resBody;
   }
 
-
+  
 
   if (!req || !req.method || !req.body.query_type || !req.body.table_name) {
     //if missing required fields return error
@@ -193,7 +195,41 @@ async function accessDatabase(req, res) {
       .status(405)
       .send({ err: "Expecting method, query_type, and table_name fields" });
   } else {
+    const required_org = req.body.required_org ? req.body.required_org : null
+    const required_level = req.body.required_level ? req.body.required_level : null
+    var userOrgID = 0
+
+    //Fetch request to get the data of the logged in user
+    const userFetch = await fetchGetRes(`${urlStart}/q`, {
+      query: `SELECT related_org_id FROM rev2.users WHERE user_name='${session.user.username}'`
+    })
+    const userOrgJson = await userFetch.data[0]
     
+    if (userOrgJson) {
+      userOrgID = userOrgJson.related_org_id
+      console.log("User Org: ", userOrgID)
+  } else {
+      res.status(500).send({error: "Couldn't find logged in user in database"})
+      return
+  }
+
+    if(required_org){
+      if(userOrgID != required_org && session.user.user_level != 2){
+        res.status(401).send({error: "User is not part of the required organization"})
+        return
+      }
+    }
+
+    if(required_level){
+      if(session.user.user_level != required_level && session.user.user_level != 2){
+        res.status(401).send({error: "This action requires a higher access level"})
+        return
+      }
+    }
+
+    
+
+
     const query_type = req.body.query_type; //gets the query type (SELECT, INSERT, DELETE, etc)
 
     const table_name = "rev2." + req.body.table_name; //Gets the passed table name and generates the full name
