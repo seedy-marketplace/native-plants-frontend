@@ -46,6 +46,7 @@ function FarmAmps() {
                     query_type: 'SELECT',
                     table_name: 'farm_amplification FA',
                     columns: ['plant.genus', 'plant.species', 'plant.common_name', 'FA.field_size', 'FA.year_sown', 'FA.year_harvested', 'FA.generation_of_seed', 'FA.cleaned_weight', 'FA.cleaning_effectiveness','FA.extra_farm_notes','farms.farm_name','farms.contact_email','farms.contact_phone_number','farms.farm_location','farms.farm_website'],
+                    column_names: ['Genus', 'Species', 'Common Name', 'Field Size', 'Year Sown', 'Year Harvested', 'Generation of Seen', 'Cleaned Weight', 'Cleaning Effectiveness', 'Notes', 'Farm Name', 'Email', 'Phone Number', 'Location', 'Website'],
                     join_string: onVar ? ' INNER JOIN rev2.farms ON ' + onVar : null
                 })
             }
