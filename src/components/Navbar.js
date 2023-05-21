@@ -38,11 +38,7 @@ const Nav = () => (
                       <a>Farm</a>
                     </Link>
             </li>
-            <li className="nav-list-item">
-                    <Link href="/lab-tab" className={styles.linkstyle}>
-                      <a>Lab</a>
-                    </Link>
-            </li>
+            
             <li className="nav-list-item">
                     <Link href="/plant-tab">
                       <a>Plants</a>
@@ -84,3 +80,10 @@ const Nav = () => (
                     </Link>
             </li>
             */
+/*
+<li className="nav-list-item">
+                    <Link href="/lab-tab" className={styles.linkstyle}>
+                      <a>Lab</a>
+                    </Link>
+            </li>
+*/
