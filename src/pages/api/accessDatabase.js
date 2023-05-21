@@ -235,9 +235,18 @@ async function accessDatabase(req, res) {
     const table_name = "rev2." + req.body.table_name; //Gets the passed table name and generates the full name
     const columns = req.body.columns ? req.body.columns : null; //gets columns if passed, defaults to *
     const column_names = req.body.column_names ? req.body.column_names : null; //gets column names if passed, defaults to null
+    const ordered_names = []
+    if(column_names){
+      
+      for(let i = 0; i < column_names.length; i++){
+        ordered_names.push(`${i}${column_names[i]}`)
+      }
+    }
     const values = req.body.values ? req.body.values : null; // gets values if passed, defaults to null
     const whereString = req.body.where && req.body.where != "" ? ` WHERE ${req.body.where}` : "";
     const joinString =  req.body.join_string ? req.body.join_string : null;
+    
+    
 
 
     
@@ -249,7 +258,7 @@ async function accessDatabase(req, res) {
           if (column_names && columns) {
               //If the user supplied custom names for the columns, automatically specify in url
               for (var i = 0; i < column_names.length; i++) {
-                  return_columns[i] = `${columns[i]} AS "${column_names[i]}"`;
+                  return_columns[i] = `${columns[i]} AS "${ordered_names[i]}"`;
               }
           }
 
@@ -265,6 +274,14 @@ async function accessDatabase(req, res) {
           await fetchGetRes(baseURL, body)
               .then((resBody) => {
                   //sends request to backend
+                  console.log("resBodyInAccess", resBody)
+                  if(column_names){
+                    console.log("Changing headers")
+                    resBody.headers = column_names
+                  }else{
+                    resBody.headers = Object.keys(resBody.data[0])
+                  }
+                 
                   res.status(200).send({
                       msg: "Got response from DB",
                       data: resBody

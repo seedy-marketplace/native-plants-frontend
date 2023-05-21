@@ -1,8 +1,8 @@
 import styles from './Navbar.module.css';
 
 export default function TableView(props) {
-    console.log(props)
-    const dataList = props.data
+    console.log("props",props)
+    const dataList = props.data.data
     if (dataList === undefined){
         return <div></div>
     }
@@ -11,7 +11,8 @@ export default function TableView(props) {
         console.log("here")
         return <div>Cannot Find Results Matching Search Criteria</div>
     } 
-    const headerList = Object.keys(props.data[0])
+    const headerList = props.data.headers//Object.keys(props.data[0])
+    console.log("Header list", headerList)
     const firstRow = dataList[0]
     Object.values(firstRow).map(value => {
         console.log(value)

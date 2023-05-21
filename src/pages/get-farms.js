@@ -28,9 +28,15 @@ function Farms() {
         })
 
         const resBody = await res.json();
-        console.log(resBody);
+        // console.log("resBody", resBody);
+        // console.log("data.headers", resBody.data.headers)
+        //resBody.data.headers = orderNames
+        // console.log("data.headers", resBody.data.headers)
+        // console.log("resBody", resBody);
+
         if(res.status >= 200 && res.status < 400) {
-            setFarmList(resBody.data)
+            setFarmList(resBody)
+            console.log(farmList)
         }else {
             alert("Error: \n" + resBody.error)
         }
