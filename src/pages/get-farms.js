@@ -22,7 +22,8 @@ function Farms() {
             },
             body: JSON.stringify({
                 query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
-                table_name: 'farms', //Any table name here (Field is required)
+                table_name: 'farms', //Any table name here (Field is required),
+                columns: ['farm_name', 'contact_email', 'farm_website'],
                 where: `${farmname ? `farm_name iLIKE '%%${farmname}%%'` : ""}`
             })
         })

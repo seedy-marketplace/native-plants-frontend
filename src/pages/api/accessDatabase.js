@@ -205,7 +205,7 @@ async function accessDatabase(req, res) {
     })
     const userOrgJson = await userFetch.data[0]
     
-    if (userOrgJson) {
+  if (userOrgJson) {
       userOrgID = userOrgJson.related_org_id
       console.log("User Org: ", userOrgID)
   } else {
@@ -239,7 +239,7 @@ async function accessDatabase(req, res) {
     if(column_names){
       
       for(let i = 0; i < column_names.length; i++){
-        ordered_names.push(`${i}${column_names[i]}`)
+        ordered_names.push(`${String.fromCharCode(97+i)}${column_names[i]}`)
       }
     }
     const values = req.body.values ? req.body.values : null; // gets values if passed, defaults to null
