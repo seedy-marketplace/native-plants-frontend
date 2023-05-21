@@ -5,6 +5,7 @@ import '../components/Navbar'
 import useAPIRequest from '../hooks/useAPIRequest';
 
 import TableView from '../components/TableView';
+import { getSession } from 'next-auth/react';
 
 function Plants() {
     const [comname, setComname] = useState("");
@@ -60,7 +61,9 @@ function Plants() {
         }
     }
 
-    useEffect(() => {getPlants()})
+    useEffect(() => {
+        getPlants()
+    })
 
     return (
         <Layout>
