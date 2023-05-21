@@ -22,6 +22,7 @@ function BulkAdd({isLoading, setIsLoading}) {
     const [fileErr, setFileErr] = useState(false);
     const [errITIS, setErrITIS] = useState([]);
     const [contentErr, setContentErr] = useState(false);
+    // var errItis = ""
 
     const handleOnChange = (e) => {
         setFile(e.target.files[0]);
@@ -71,18 +72,20 @@ function BulkAdd({isLoading, setIsLoading}) {
             const data = XLSX.utils.sheet_to_csv(ws, {header:1});
 
             tempData = data.toString().split("\n").slice(1);
+            setContentErr(false);
 
             if (tempData.length < 1) {
                 setErr(true);
                 setLenErr(true);
                 setRowErr(false)
                 console.log("Setting length err")
+
                 return;
             }
 
             setErr(false);
 
-            tempData.forEach(async(entry) => {
+            tempData.forEach(async(entry, index) => {
                 if (err == true) {
                     return;
                 }
@@ -140,6 +143,10 @@ function BulkAdd({isLoading, setIsLoading}) {
                 //         }
                 //     )
 
+                // for (let i = 0; i < 5; i++) {
+
+                // }
+
                 const res = await fetch("./api/accessITIS",
                     {
                         method: 'SEARCH',
@@ -160,11 +167,21 @@ function BulkAdd({isLoading, setIsLoading}) {
                     if (resBody.ret.response.numFound > 0) {
 
                         console.log("Enough found", resBody.ret.response)
-                        setContentErr(false);
                     }
                     res.status.send
                 } else {
                     setContentErr(true);
+                    if (index > 0) {
+                        setErrITIS(errITIS.concat("\n"))
+                    }
+                    setErrITIS(errITIS.concat("Error on row ", index, ": ", resBody.error))
+                    // errItis.concat(": ", resBody.error)
+                    console.log("Error: ", errITIS)
+                    console.log("Error is: ", resBody)
+
+
+                    
+
                 }
                 
                 // console.log(resBody)
@@ -243,7 +260,7 @@ function BulkAdd({isLoading, setIsLoading}) {
                     ) : null }
                 { contentErr ? (
                     <ErrMessage>
-                        <p> Error: Invalid entry on line _____ </p>
+                        <p> {errITIS} </p>
                     </ErrMessage>
                     ) : null
 
