@@ -7,7 +7,7 @@ export default async function (req, res) {
         var ret = await accessItis(req.body["species_name"], req.body["tsn"], err)
         console.log("Inside top itis access, ret is", ret)
         if (err.length > 0) {
-            res.status(401).send({ error: err[0] });
+            res.status(403).send({ error: err[0] });
         } else {
             res.status(200).send({
                 ret:ret
@@ -57,11 +57,11 @@ async function accessItis(species_name, tsn, errList){
         if (jsonData.response.docs[0].nameWOInd == species_name) {
             console.log(species_name, "matches", jsonData.response.docs[0].nameWInd);
         } else {
-            errList.push("Error: name of species is invalid and doesn't match TSN")
+            errList.push("Name of species is invalid and doesn't match TSN")
             console.log ("Error: name of species is invalid and doesn't match TSN")
         }
     } else {
-        errList.push("Error: TSN doesn't exist")
+        errList.push("TSN doesn't exist")
         console.log("Error: TSN doesn't exist");
         console.log("Name url:", nameUrl)
 
@@ -80,7 +80,7 @@ async function accessItis(species_name, tsn, errList){
             console.log("TSN is invalid for but valid name", jsonData2.response.docs[0].nameWInd,". Did you mean tsn=", jsonData2.response.docs[0].tsn,"?")
 
         } else {
-            errList.push("Error: name of species is invalid and doesn't match TSN")
+            errList.push("Name of species is invalid and doesn't match TSN")
             console.log ("Error: both name of species is invalid and doesn't match TSN")
         }
     }
