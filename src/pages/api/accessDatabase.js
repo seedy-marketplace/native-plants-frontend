@@ -205,7 +205,7 @@ async function accessDatabase(req, res) {
     })
     const userOrgJson = await userFetch.data[0]
     
-    if (userOrgJson) {
+  if (userOrgJson) {
       userOrgID = userOrgJson.related_org_id
       console.log("User Org: ", userOrgID)
   } else {
