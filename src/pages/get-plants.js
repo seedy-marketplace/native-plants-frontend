@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { BasemapLayer, FeatureLayer } from "react-esri-leaflet";
 import Layout from '../components/Layout';
 import '../components/Navbar'
 
@@ -247,15 +248,9 @@ function Plants() {
                 {({ TileLayer, Marker, Popup, GeoJSON }) => (
                 <>
                     <TileLayer
-                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
-                    attribution="Tiles © <a href='https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer'>ArcGIS</a>"
+                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+                        attribution="Tiles © <a href='https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer'>ArcGIS</a>"
                     />
-                    {/* <GeoJSON data={exCollections} /> */}
-                    {/* <GeoJSON data={exCollection2} /> */}
-                    <GeoJSON data={exCollection5} />
-                    {/* <GeoJSON data={managedMeadow} />
-                    <GeoJSON data={managedMeadowHabitat} /> */}
-                    <GeoJSON data={westCoastEco} />
                     {
                         SEARCH_PLANTS.map((plant) => {
                             return (
