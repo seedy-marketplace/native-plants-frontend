@@ -7,7 +7,7 @@ export default async function (req, res) {
         var ret = await accessItis(req.body["species_name"], req.body["tsn"], err)
         console.log("Inside top itis access, ret is", ret)
         if (err.length > 0) {
-            res.status(401).send({ error: err[0] });
+            res.status(403).send({ error: err[0] });
         } else {
             res.status(200).send({
                 ret:ret

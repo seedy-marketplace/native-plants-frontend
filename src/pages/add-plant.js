@@ -21,6 +21,7 @@ function BulkAdd({isLoading, setIsLoading}) {
     const [rowErr, setRowErr] = useState(false);
     const [fileErr, setFileErr] = useState(false);
     const [errITIS, setErrITIS] = useState([]);
+    const [contentErr, setContentErr] = useState(false);
 
     const handleOnChange = (e) => {
         setFile(e.target.files[0]);
@@ -155,11 +156,17 @@ function BulkAdd({isLoading, setIsLoading}) {
                 const resBody = await res.json();
                 console.log("Found:", resBody)
                 // if (resBody.response.numFound > 0) {
-                if (resBody.ret.response.numFound > 0) {
+                if (resBody.res) {
+                    if (resBody.ret.response.numFound > 0) {
 
-                    console.log("Enough found", resBody.ret.response)
+                        console.log("Enough found", resBody.ret.response)
+                        setContentErr(false);
+                    }
+                    res.status.send
+                } else {
+                    setContentErr(true);
                 }
-                res.status.send
+                
                 // console.log(resBody)
 
                 // const resBody = await res.json();
@@ -234,6 +241,13 @@ function BulkAdd({isLoading, setIsLoading}) {
                         <p>Error: Invalid or missing file entry</p>
                         </ErrMessage>
                     ) : null }
+                { contentErr ? (
+                    <ErrMessage>
+                        <p> Error: Invalid entry on line _____ </p>
+                    </ErrMessage>
+                    ) : null
+
+                }
             </form>
         </div>
     )
