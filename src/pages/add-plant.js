@@ -21,6 +21,8 @@ function BulkAdd({isLoading, setIsLoading}) {
     const [rowErr, setRowErr] = useState(false);
     const [fileErr, setFileErr] = useState(false);
     const [errITIS, setErrITIS] = useState([]);
+    const [contentErr, setContentErr] = useState(false);
+    // var errItis = ""
 
     const handleOnChange = (e) => {
         setFile(e.target.files[0]);
@@ -70,18 +72,20 @@ function BulkAdd({isLoading, setIsLoading}) {
             const data = XLSX.utils.sheet_to_csv(ws, {header:1});
 
             tempData = data.toString().split("\n").slice(1);
+            setContentErr(false);
 
             if (tempData.length < 1) {
                 setErr(true);
                 setLenErr(true);
                 setRowErr(false)
                 console.log("Setting length err")
+
                 return;
             }
 
             setErr(false);
 
-            tempData.forEach(async(entry) => {
+            tempData.forEach(async(entry, index) => {
                 if (err == true) {
                     return;
                 }
@@ -139,6 +143,10 @@ function BulkAdd({isLoading, setIsLoading}) {
                 //         }
                 //     )
 
+                // for (let i = 0; i < 5; i++) {
+
+                // }
+
                 const res = await fetch("./api/accessITIS",
                     {
                         method: 'SEARCH',
@@ -155,11 +163,27 @@ function BulkAdd({isLoading, setIsLoading}) {
                 const resBody = await res.json();
                 console.log("Found:", resBody)
                 // if (resBody.response.numFound > 0) {
-                if (resBody.ret.response.numFound > 0) {
+                if (resBody.res) {
+                    if (resBody.ret.response.numFound > 0) {
 
-                    console.log("Enough found", resBody.ret.response)
+                        console.log("Enough found", resBody.ret.response)
+                    }
+                    res.status.send
+                } else {
+                    setContentErr(true);
+                    if (index > 0) {
+                        setErrITIS(errITIS.concat("\n"))
+                    }
+                    setErrITIS(errITIS.concat("Error on row ", index, ": ", resBody.error))
+                    // errItis.concat(": ", resBody.error)
+                    console.log("Error: ", errITIS)
+                    console.log("Error is: ", resBody)
+
+
+                    
+
                 }
-                res.status.send
+                
                 // console.log(resBody)
 
                 // const resBody = await res.json();
@@ -234,6 +258,13 @@ function BulkAdd({isLoading, setIsLoading}) {
                         <p>Error: Invalid or missing file entry</p>
                         </ErrMessage>
                     ) : null }
+                { contentErr ? (
+                    <ErrMessage>
+                        <p> {errITIS} </p>
+                    </ErrMessage>
+                    ) : null
+
+                }
             </form>
         </div>
     )
