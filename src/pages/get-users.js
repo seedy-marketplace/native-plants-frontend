@@ -24,9 +24,9 @@ function Farms() {
             },
             body: JSON.stringify({
                 query_type: 'SELECT',
-                table_name: 'users',
-                columns: ['name', 'email', 'user_name', 'phone_number', 'website', 'user_role_type'],
-                column_names: ['Name', 'Email', 'Username', 'Phone Number', 'Website', 'Access Level']
+                table_name: 'users'//,
+                //columns: ['name', 'email', 'user_name', 'phone_number', 'website', 'user_role_type'],
+                //column_names: ['Name', 'Email', 'Username', 'Phone Number', 'Website', 'Access Level']
             })
         })
         console.log("made it past request")
