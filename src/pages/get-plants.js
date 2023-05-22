@@ -237,7 +237,7 @@ function Plants() {
     return (
         <Layout>
         <div class="row">
-            <div class="column">
+            <div class="columnFull">
             <form onSubmit={getPlants}>
                 <div>
                     <a>Type here to filter, leave blank for no filter</a>
@@ -267,43 +267,45 @@ function Plants() {
                 </div>
             </form>
             </div>
-            <div class="columnWide">
-            <Map width="800" height="400" center={DEFAULT_CENTER} zoom={7}>
-                {({ TileLayer, Marker, Popup, GeoJSON }) => (
-                <>
-                    <TileLayer
-                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
-                        attribution="Tiles © <a href='https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer'>ArcGIS</a>"
-                    />
-                    { (ecoregions) ? <GeoJSON data={ecoregions} /> : null }
-                    {
-                        SEARCH_PLANTS.map((plant) => {
-                            return (
-                                <Marker
-                                    position={[plant.plantLat, plant.plantLong]}
-                                    icon={greenIcon}
-                                    key={plant.key}
-                                    >
-                                    <Popup>
-                                        <div>
-                                            <h2>{plant.common_name}</h2>
-                                            <h3>{plant.genus} {plant.species}</h3>
-                                            <h4>Collected on {plant.collected_date}</h4>
-                                            <h4>Collected by {plant.email} or {plant.phone_number}</h4>
-                                        </div>
-                                    </Popup>
-                                </Marker>
-                            )
-                        })
-                    }
-                </>
-                )}
-            </Map>
-            </div>
             </div>
             <div class="row">
                 <div class="columnFull">
                 {(plantList && plantList.data) ? <TableView data={plantList.data} /> : <TableView data={[{ "Notice": "no data to display" }]} />}
+                </div>
+            </div>
+            <div class="row">
+                <div class="columnFull">
+                <Map width="800" height="400" center={DEFAULT_CENTER} zoom={7}>
+                    {({ TileLayer, Marker, Popup, GeoJSON }) => (
+                    <>
+                        <TileLayer
+                            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+                            attribution="Tiles © <a href='https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer'>ArcGIS</a>"
+                        />
+                        { (ecoregions) ? <GeoJSON data={ecoregions} /> : null }
+                        {
+                            SEARCH_PLANTS.map((plant) => {
+                                return (
+                                    <Marker
+                                        position={[plant.plantLat, plant.plantLong]}
+                                        icon={greenIcon}
+                                        key={plant.key}
+                                        >
+                                        <Popup>
+                                            <div>
+                                                <h2>{plant.common_name}</h2>
+                                                <h3>{plant.genus} {plant.species}</h3>
+                                                <h4>Collected on {plant.collected_date}</h4>
+                                                <h4>Collected by {plant.email} or {plant.phone_number}</h4>
+                                            </div>
+                                        </Popup>
+                                    </Marker>
+                                )
+                            })
+                        }
+                    </>
+                    )}
+                </Map>
                 </div>
             </div>
             </Layout>
