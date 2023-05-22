@@ -21,7 +21,7 @@ export default function Home() {
     useEffect(() => {
         async function fetchEcoregion() {
             try {
-                const res = await fetch("https://geodata.epa.gov/arcgis/rest/services/ORD/USEPA_Ecoregions_Level_III_and_IV/MapServer/7/query?where=&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=xmin%3A-126%2C+xmax%3A-115%2C+ymin%3A32%2C+ymax%3A49.1&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=8540.47801304919&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson");
+                const res = await fetch("https://geodata.epa.gov/arcgis/rest/services/ORD/USEPA_Ecoregions_Level_III_and_IV/MapServer/7/query?where=&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=-125%2C20%2C-115%2C49&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=STATE_NAME%2C+US_L4NAME&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=0.1&geometryPrecision=10&outSR=4326&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=geojson")
                 const data = await res.json();
                 console.log("****DATA RETRIEVED****");
                 console.log(data);
@@ -31,7 +31,7 @@ export default function Home() {
             }
         }
         fetchEcoregion();
-     }, []);
+     },[]);
 
      useEffect(() => {
         if(ecoregions){
