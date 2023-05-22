@@ -25,7 +25,8 @@ function Sites() {
                 table_name: "site",
                 query_type: "INSERT",
                 columns: ['owner_name','owner_contact','collection_site_name','accession_code','region_code','collection_site_lat_long','approx_diameter'],
-                values: [ownername,owneremail, sitename,aCode,rCode, point, diam]
+                values: [ownername,owneremail, sitename,aCode,rCode, point, diam],
+                required_level: 1
             }),
             headers: {
                 'Content-Type': 'application/json'
