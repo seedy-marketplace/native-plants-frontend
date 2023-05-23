@@ -268,6 +268,12 @@ iframe {
 .welcome-text {
   background-color: rgba(255,255,255,0.7);
   height: 100%;
+  font-size: 40px;
+  /* color: #3b2663; */
+  color: #212a17;
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
 }
 
 /*###################################  NAVBAR.JS CSS  #######################################*/
