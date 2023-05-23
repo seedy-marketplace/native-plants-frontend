@@ -117,7 +117,14 @@ form {
   padding: 20px;
   margin-left: 13%;
   margin-right: 13%;
+  margin-top: 10px;
+  padding-top: 10px;
 }
+
+
+/* .input-page form {
+  margin-bottom: 20px;
+} */
 
 h1{
   /* margin-left: 13%;
