@@ -2,6 +2,8 @@
 
 This is the repository for the frontend & Next.js served middle-end
 
+[Project Backlog](https://github.com/orgs/seedy-marketplace/projects/1/views/1)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).  The first time you run it, don't forget to install needed dependencies by running `npm install`.  Then, you can run the development server like so:
 ```bash
 npm run dev
