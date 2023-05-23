@@ -51,6 +51,7 @@ textarea{
     background-color: #e9e3f4;
     /* padding-bottom: 10px; */
     padding: 0;
+    margin-top: 0;
 }
 
     .pagelist * {
@@ -67,14 +68,21 @@ textarea{
    padding: 10px;
    color: #36421f;
 }
-
+    .pagelistTitle {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        margin-top: 10px;
+        width: 100%;
+        background-color: white;
+    }
+    .pagelistTitle h2 {
+        margin: 10px;
+    }
     .pagelist_item a {
         padding-top: 13px;
         padding-bottom: 10px;
-        /* padding-right: 200px; */
-        /* padding-right: calc(100% - this.width()); */
         padding-right: min(300px, 40%);
-
         /* max-width: 100%; */
         padding-left: 20px;
         font-size: large;
