@@ -108,12 +108,26 @@ input {
 
 table {
   border-collapse: collapse;
-  width: 95%;
+  /* width: 90%; */
   background-color: white;
+  /* overflow-y: scroll; */
 }
 #responseTable{
   display:flex;
   justify-content: center;
+  /* max-width: 95%; */
+  /* width: 90% !important; */
+  /* overflow-y: scroll; */
+  /* margin: 0; */
+  max-height: 600px;
+  margin-top: 20px;
+}
+
+.table-styling-div {
+  max-width: 95%;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 10%;
 }
 
 table tr:nth-child(even) {
