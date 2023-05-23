@@ -60,5 +60,6 @@ List of unrealized features:
 * Bulk import seed collection
 * Enable users to update user info
 * Set up organizations
+* Nursery search
 
 Code used by the previous team and is unused in final product has been marked with a comment saying "archived code". We did not wish to removing it. 
