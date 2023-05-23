@@ -56,7 +56,8 @@ List of unrealized features:
 * User edditing of organizations and their properties
 * Mapping & Search through Map
 * Interaction tracking
-* Lab involvement
-* bulk import seed collection
+* Implement Lab data interfaces
+* Bulk import seed collection
+* Enable users to update user info
 
 Code used by the previous team and is unused in final product has been marked with a comment saying "archived code". We did not wish to removing it. 
