@@ -84,7 +84,9 @@ function SeedCol() {
                 table_name: "seed_collection",
                 query_type: "INSERT",
                 columns: ['collected_date', 'col_provenance', 'id_method', 'id_person_name', 'id_confidence', 'cleaning_effectiveness', 'cleaned_weight', 'owning_org', 'for_trade', 'col_species_id', 'col_location', 'col_contact_user'],//['col_species_code', 'cleaning_effectiveness', 'cleaned_weight', 'id_confidence','collected_date', 'id_method', 'col_provenance', 'owner_name', 'id_person_name'],
-                values: [collecteddate, colprovenance, idmethod, idpersonname, idconfidence, cleaningeffectiveness, cleanedweight, owningorg, fortrade, colspeciesid, collocation, colcontactuser]//[speccode, clean, cleanWeight, confidence, date, method, data.siteData.data.data[0].site_id, username, idname]
+                values: [collecteddate, colprovenance, idmethod, idpersonname, idconfidence, cleaningeffectiveness, cleanedweight, owningorg, fortrade, colspeciesid, point, colcontactuser],//[speccode, clean, cleanWeight, confidence, date, method, data.siteData.data.data[0].site_id, username, idname]
+                required_level: 1,
+                required_org: owningorg
             }),
             headers: {
                 'Content-Type': 'application/json'
