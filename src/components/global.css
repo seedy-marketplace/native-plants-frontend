@@ -118,13 +118,12 @@ form {
   margin-left: 13%;
   margin-right: 13%;
   margin-top: 10px;
-  padding-top: 10px;
 }
 
-
-/* .input-page form {
-  margin-bottom: 20px;
-} */
+form h3 {
+  margin-top: 5px;
+  font-weight: normal;
+}
 
 h1{
   /* margin-left: 13%;

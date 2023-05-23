@@ -237,7 +237,7 @@ function BulkAdd({isLoading, setIsLoading}) {
         <div className="import-csv">
             <InputForm>
                 <form>
-                    <h3>Bulk import plants by selecting an excel file</h3>
+                    <h3>Bulk import plants by selecting a CSV or excel file</h3>
                     <input
                         type={"file"}
                         id={"csvFileInput"}
@@ -416,7 +416,7 @@ function Farms() {
         <div className="input-page">
             <InputForm>
             <form onSubmit={postFarm} className={styles.container}>
-                <h3>Enter individual plant data</h3>
+                <h3>Manually enter individual plant data</h3>
 
                 <div>
                     <input

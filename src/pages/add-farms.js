@@ -72,6 +72,7 @@ function Farms() {
     return (
         <Layout>
         <form onSubmit={postFarm} className={styles.container}>
+            <h3>Manually enter individual farm data</h3>
             <div>
                 <input
                     type="text"
@@ -103,8 +104,9 @@ function Farms() {
         </form>
 
         <div className="import-csv">
-            <h1>REACTJS CSV IMPORT EXAMPLE</h1>
             <form>
+                <h3>Bulk import farms by selecting a CSV or excel file</h3>
+
                 <input
                     type={"file"}
                     id={"csvFileInput"}
