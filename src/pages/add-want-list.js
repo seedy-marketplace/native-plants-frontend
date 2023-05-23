@@ -9,7 +9,8 @@ function Sites() {
     const [owner, setOwner] = useState("");
     const [notes, setNotes] = useState("");
     const [quantity, setQuantity] = useState("");
-    const [code, setCode] = useState("");
+    const [speciesid, setSpeciesid] = useState("");
+    const [projid, setProjid] = useState("");
     
     async function postWant(e) {
         e.preventDefault();
@@ -18,8 +19,8 @@ function Sites() {
             body: JSON.stringify( {
                 table_name: "land_manager_want_list",
                 query_type: "INSERT",
-                columns: ['posted_date','posted_by','notes','wanted_quantity','wanted_species_code'],
-                values: [date, owner, notes, quantity, code],
+                columns: ['posted_date','posted_by','notes','wanted_quantity','want_species_id'],
+                values: [date, owner, notes, quantity, speciesid],
                 has_point: true
             }),
             headers: {
@@ -43,6 +44,15 @@ function Sites() {
                     />
             </div>
             <div>
+            <p>For Project</p>
+                <input
+                    type="number"
+                    placeholder="Project ID"
+                    onChange={e => setProjid(e.target.value)}
+                    value={projid}
+                    />
+            </div>
+            <div>
             <p>Today&apos;s Date (YYYY-MM-DD DO type the dashes)</p>
                 <input
                     type="text"
@@ -54,10 +64,10 @@ function Sites() {
             <div>
             <p>What is the Species Code of the plant you want</p>
                 <input
-                    type="text"
-                    placeholder="Species Code"
-                    onChange={e => setCode(e.target.value)}
-                    value={code}
+                    type="number"
+                    placeholder="Species ID"
+                    onChange={e => setSpeciesid(e.target.value)}
+                    value={speciesid}
                     />
             </div>
             <ul>
