@@ -120,13 +120,12 @@ form {
   margin-left: 2.5%;
   margin-right: 2.5%;
   margin-top: 10px;
-  padding-top: 10px;
 }
 
-
-/* .input-page form {
-  margin-bottom: 20px;
-} */
+form h3 {
+  margin-top: 5px;
+  font-weight: normal;
+}
 
 h1{
   /* margin-left: 13%;
@@ -261,12 +260,20 @@ iframe {
   background-position: 75% 33%;
   /* padding: 30px 0; */
   padding: 30px 0;
+  height: 120px;
+  background-size: 120%;
 }
 
 /* Used to add white background behind welcome message */
 .welcome-text {
   background-color: rgba(255,255,255,0.7);
   height: 100%;
+  font-size: 40px;
+  /* color: #3b2663; */
+  color: #212a17;
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
 }
 
 /*###################################  NAVBAR.JS CSS  #######################################*/
