@@ -99,7 +99,9 @@ function FarmAmp() {
                 table_name: "farm_amplification",
                 query_type: "INSERT",
                 columns: ['farm_name', 'year_sown', 'field_size', 'estimated_harvest_per_year','year_harvested', 'generation_of_seed', 'owner_of_harvest', 'extra_farm_notes','ancestor_col_id', 'cleaned_weight', 'cleaning_effectiveness', 'amp_contact_user', 'amp_species_id'],
-                values: [farmName, yearSown, fieldSize, estHarvest, yearHarvest, seedGen, harvestOwner, notes, ancestorcolid, cleanedweight, cleaningeffectiveness, ampcontactuser, ampspeciesid]
+                values: [farmName, yearSown, fieldSize, estHarvest, yearHarvest, seedGen, harvestOwner, notes, ancestorcolid, cleanedweight, cleaningeffectiveness, ampcontactuser, ampspeciesid],
+                required_level: 1,
+                required_org: org_id
             }),
             headers: {
                 'Content-Type': 'application/json'
