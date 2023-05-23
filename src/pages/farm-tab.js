@@ -8,7 +8,8 @@ export default function Farm() {
 
     return (
         <Layout>
-            <ul className="pagelist">
+            <div className="pagelistContainer">
+                <ul className="pagelist">
                     <li className="pagelist_item">
                         <Link href="/add-farms">
                           <a>Add Farm</a>
@@ -39,7 +40,8 @@ export default function Farm() {
                           <a>See Amplification</a>
                         </Link>
                     </li>
-            </ul>
+                </ul>
+            </div>
         </Layout>
     );
 }

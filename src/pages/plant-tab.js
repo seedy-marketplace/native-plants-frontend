@@ -8,33 +8,35 @@ export default function Farm() {
 
     return (
         <Layout>
-            <ul className="pagelist">
-                <li className="pagelist_item">
-                    <Link href="/add-plant">
-                      <a>Add Plant</a>
-                    </Link>
-                </li>
-                <li className="pagelist_item">
-                    <Link href="/get-plants">
-                      <a>See Plants</a>
-                    </Link>
-                </li>
-                <li className="pagelist_item">
-                    <Link href="/delete-plant">
-                      <a>Delete Plant</a>
-                    </Link>
-                </li>
-                <li className="pagelist_item">
-                    <Link href="/add-seed-col">
-                      <a>Add Seed Collection</a>
-                    </Link>
-                </li>
-                <li className="pagelist_item">
-                    <Link href="/update-seed-col">
-                      <a>Update Seed</a>
-                    </Link>
-                </li>
-            </ul>
+            <div className="pagelistContainer">
+                <ul className="pagelist">
+                    <li className="pagelist_item">
+                        <Link href="/add-plant">
+                          <a>Add Plant</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/get-plants">
+                          <a>See Plants</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/delete-plant">
+                          <a>Delete Plant</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/add-seed-col">
+                          <a>Add Seed Collection</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/update-seed-col">
+                          <a>Update Seed</a>
+                        </Link>
+                    </li>
+                </ul>
+            </div>
         </Layout>
     );
 }

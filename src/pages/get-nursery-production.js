@@ -45,8 +45,8 @@ function NurseProduction() {
                 body: JSON.stringify({
                     query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
                     table_name: 'nursery_production NP', //Any table name here (Field is required)
-                    columns: ['plant.genus', 'plant.species', 'plant.common_name', 'NP.date_started', 'NP.years_in_container', 'NP.container_type', 'NP.quantity_available', 'NP.year_ready', 'NP.extra_nursery_notes', 'nurseries.nursery_name', 'nurseries.contact_email', 'nurseries.contact_phone_number', 'nurseries.nursery_location'],
-                    column_names: ['Genus', 'Species', 'Common Name', 'Date Started', 'Years in Container', 'Container Type', 'Quantity Available', 'Year Ready', 'Notes', 'Nursery Name', 'Email', 'Phone Number', 'Location'],
+                    columns: ['plant.genus', 'plant.species','plant.species_id', 'plant.common_name', 'NP.date_started', 'NP.years_in_container', 'NP.container_type', 'NP.quantity_available', 'NP.year_ready', 'NP.extra_nursery_notes', 'nurseries.nursery_name', 'nurseries.contact_email', 'nurseries.contact_phone_number', 'nurseries.nursery_location'],
+                    column_names: ['Genus', 'Species', 'Species ID','Common Name', 'Date Started', 'Years in Container', 'Container Type', 'Quantity Available', 'Year Ready', 'Notes', 'Nursery Name', 'Email', 'Phone Number', 'Location'],
                     join_string: onVar ? ' INNER JOIN rev2.nurseries ON ' + onVar : null
                 })
             }
