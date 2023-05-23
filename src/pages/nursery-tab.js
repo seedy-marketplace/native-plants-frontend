@@ -9,6 +9,9 @@ export default function Farm() {
     return (
         <Layout>
             <div className="pagelistContainer">
+                <div className="pagelistTitle">
+                    <h2>Navigate to Nursery Page</h2>
+                </div>
                 <ul className="pagelist">
                     <li className="pagelist_item">
                         <Link href="/add-nursery">
