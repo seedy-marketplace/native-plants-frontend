@@ -5,14 +5,20 @@ import * as XLSX from "xlsx";
 
 import useAPIRequest from '../hooks/useAPIRequest';
 
-function Organization() {
-    const [orgname, setOrgname] = useState("");
-    const [biotext, setBiotext] = useState("");
-    const [pocuser, setPocuser] = useState("");
-    async function postOrg(e) {
+function Projects() {
+    //const [orgname, setOrgname] = useState("");
+    const [projectname, setProjectname] = useState("");
+    const [orgid, setOrgid] = useState("");
+    const [lat, setLat] = useState("");
+    const [long, setLong] = useState("");
+    async function postProject(e) {
         e.preventDefault();
-        console.log("== Adding organization with these parameters:", orgname);
-        
+        if(!orgid){
+            console.log("Need to have an organization")
+            return
+        }
+        let point = '('+lat +',' + long+')'
+
         const res = await fetch('/api/accessDatabase',{
             method: 'POST',
             headers: {
@@ -20,10 +26,11 @@ function Organization() {
             },
             body: JSON.stringify({
                 query_type: 'INSERT', //SELECT, INSERT, etc. (Field is required)
-                table_name: 'organization', //Any table name here (Field is required)
-                columns: ['org_name', 'bio_text', 'poc_user'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
-                values: [orgname, biotext, pocuser],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
-                required_level: 1
+                table_name: 'land_project', //Any table name here (Field is required)
+                columns: ['proj_name', 'proj_location', 'proj_org'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
+                values: [projectname, point, orgid],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                required_level: 1,
+                required_org: orgid
             })
         })
         const resBody = await res.json();
@@ -71,33 +78,41 @@ function Organization() {
 
     return (
         <Layout>
-        <form onSubmit={postOrg} className={styles.container}>
+        <form onSubmit={postProject} className={styles.container}>
             <div>
                 <input
-                    type="text"
-                    placeholder="Organization name"
-                    onChange={e => setOrgname(e.target.value)}
-                    value={orgname}
+                    type="number"
+                    placeholder="Organization ID"
+                    onChange={e => setOrgid(e.target.value)}
+                    value={orgid}
                     />
             </div>
             <div>
                 <input
                     type="text"
-                    placeholder="Bio text"
-                    onChange={e => setBiotext(e.target.value)}
-                    value={biotext}
+                    placeholder="Project Name"
+                    onChange={e => setProjectname(e.target.value)}
+                    value={projectname}
                     />
             </div>
             <div>
                 <input
-                    type="text"
-                    placeholder="Poc User"
-                    onChange={e => setPocuser(e.target.value)}
-                    value={pocuser}
+                    type="number"
+                    placeholder="Latitude"
+                    onChange={e => setLat(e.target.value)}
+                    value={lat}
                     />
             </div>
             <div>
-                <button>Add Organization</button>
+                <input
+                    type="number"
+                    placeholder="Longitude"
+                    onChange={e => setLong(e.target.value)}
+                    value={long}
+                    />
+            </div>
+            <div>
+                <button>Add Project</button>
             </div>
         </form>
 
@@ -124,4 +139,4 @@ function Organization() {
     );
 }
 
-export default Organization;
+export default Projects;

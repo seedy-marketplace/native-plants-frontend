@@ -6,25 +6,27 @@ import useAPIRequest from '../hooks/useAPIRequest';
 
 function Sites() {
     const [ownername, setOwnername] = useState("");
+    const [owneremail, setOwneremail] = useState("");
     const [sitename, setSitename] = useState("");
     const [aCode, setACode] = useState("");
     const [lat, setLat] = useState("");
     const [long, setLong] = useState("");
+    const [diam, setDiam] = useState("");
     const [rCode, setRCode] = useState("");
 
     async function postSite(e) {
         e.preventDefault();
         //let point = '(' + lat + ',' + long + ')'
-        let point = lat +'@@' + long 
+        let point = '('+lat +',' + long+')'
     
         const res = await fetch('/api/accessDatabase', {
             method: 'POST',
             body: JSON.stringify( {
                 table_name: "site",
                 query_type: "INSERT",
-                columns: ['owner_username','collection_site_name','accession_code','region_code','collection_site_lat_long'],
-                values: [ownername, sitename,aCode,rCode, point],
-                has_point: true
+                columns: ['owner_name','owner_contact','collection_site_name','accession_code','region_code','collection_site_lat_long','approx_diameter'],
+                values: [ownername,owneremail, sitename,aCode,rCode, point, diam],
+                required_level: 1
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -37,22 +39,32 @@ function Sites() {
     return (
         <Layout>
         <form onSubmit={postSite} className={styles.container}>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Owner user name"
-                    onChange={e => setOwnername(e.target.value)}
-                    value={ownername}
-                    />
-            </div>
+            
             <div>
                 <input
                     type="text"
                     placeholder="Site Name"
                     onChange={e => setSitename(e.target.value)}
                     value={sitename}
+                />
+            </div>
+            <div>
+                <input
+                    type="text"
+                    placeholder="Owner Name"
+                    onChange={e => setOwnername(e.target.value)}
+                    value={ownername}
                     />
             </div>
+            <div>
+                <input 
+                    type="text"
+                    placeholder="Owner Email"
+                    onChange={e=> setOwneremail(e.target.value)}
+                    value={owneremail}
+                />
+            </div>
+            
             <div>
                 <input
                     type="text"
@@ -67,6 +79,15 @@ function Sites() {
                     placeholder="Longitude"
                     onChange={e => setLong(e.target.value)}
                     value={long}
+                    />
+            </div>
+            <div>
+                <input
+                    type="number"
+                    placeholder="Approximate Diameter (miles)"
+                    onChange={e => setDiam(e.target.value)}
+                    value={diam}
+                    step={1}
                     />
             </div>
             <p>What is the accession code</p>
