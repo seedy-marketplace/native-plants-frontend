@@ -13,6 +13,11 @@ function FarmAmp() {
     const [seedGen, setSeedGen] = useState("");
     const [harvestOwner, setHarvestOwner] = useState("");
     const [notes, setNotes] = useState("");
+    const [ancestorcolid, setAncestorcolid] = useState("");
+    const [cleanedweight, setCleanedweight] = useState("");
+    const [cleaningeffectiveness, setCleaningeffectiveness] = useState("");
+    const [ampcontactuser, setAmpcontactuser] = useState("");
+    const [ampspeciesid, setAmpspeciesid] = useState("");
 
 
     async function getData(){
@@ -61,6 +66,30 @@ function FarmAmp() {
     
     async function postFarmAmp(e) {
         e.preventDefault();
+
+        const orgres = await fetch('/api/accessDatabase', {
+            method: 'SEARCH',
+            body: JSON.stringify({
+                query_type: "SELECT",
+                table_name: "farms",
+                columns: ['managing_org_id'],
+                where: `farm_name='${farmName}'`
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        const orgBody = await orgres.json()
+        console.log("Org Body: ", orgBody)
+        let org_id
+        if(!orgBody.data){
+            console.log("error getting org with ID")
+            return
+        }else{
+            org_id = orgBody.data.data[0].proj_org
+        }
+        console.log("org_id: ", org_id)
+
         const data = await getData()
         if ((!data.owner)||(!data.farmData))
             return 
@@ -69,8 +98,8 @@ function FarmAmp() {
             body: JSON.stringify( {
                 table_name: "farm_amplification",
                 query_type: "INSERT",
-                columns: ['farm_name', 'year_sown', 'field_size', 'estimated_harvest_per_year','year_harvested', 'generation_of_seed', 'owner_of_harvest', 'extra_farm_notes'],
-                values: [farmName, yearSown, fieldSize, estHarvest, yearHarvest, seedGen, harvestOwner, notes]
+                columns: ['farm_name', 'year_sown', 'field_size', 'estimated_harvest_per_year','year_harvested', 'generation_of_seed', 'owner_of_harvest', 'extra_farm_notes','ancestor_col_id', 'cleaned_weight', 'cleaning_effectiveness', 'amp_contact_user', 'amp_species_id'],
+                values: [farmName, yearSown, fieldSize, estHarvest, yearHarvest, seedGen, harvestOwner, notes, ancestorcolid, cleanedweight, cleaningeffectiveness, ampcontactuser, ampspeciesid]
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -144,6 +173,53 @@ function FarmAmp() {
                     value={seedGen}
                     />
             </div>
+            <div>
+            <p>Ancestor Collection ID</p>
+                <input
+                    type="number"
+                    placeholder="Ancestor Collection ID"
+                    onChange={e => setAncestorcolid(e.target.value)}
+                    value={ancestorcolid}
+                    />
+            </div>
+            <div>
+            <p>Cleaned Weight (pounds)</p>
+                <input
+                    type="number"
+                    placeholder="Generation"
+                    onChange={e => setCleanedweight(e.target.value)}
+                    value={cleanedweight}
+                    />
+            </div>
+            <div>
+            <p>Cleaning Effectiveness</p>
+                <input
+                    type="text"
+                    maxLength="1"
+                    placeholder="Cleaning Effectiveness"
+                    onChange={e => setCleaningeffectiveness(e.target.value)}
+                    value={cleaningeffectiveness}
+                    />
+            </div>
+            <div>
+            <p>Contact Username (must exist in database)</p>
+                <input
+                    type="text"
+                    placeholder="Contact Username"
+                    onChange={e => setAmpcontactuser(e.target.value)}
+                    value={ampcontactuser}
+                    />
+            </div>
+            <div>
+            <p>Plant Species ID</p>
+                <input
+                    type="number"
+                    placeholder="Species ID"
+                    onChange={e => setAmpspeciesid(e.target.value)}
+                    value={ampspeciesid}
+                    />
+            </div>
+
             <div>
             <p>Username of harvest owner (if a user of that name does not exist in the database this will not work)</p>
             <input

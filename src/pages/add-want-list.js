@@ -4,7 +4,7 @@ import styles from '../components/Navbar.module.css';
 import Link from 'next/link';
 import useAPIRequest from '../hooks/useAPIRequest';
 
-function Sites() {
+function WantLists() {
     const [date, setDate] = useState("");
     const [owner, setOwner] = useState("");
     const [notes, setNotes] = useState("");
@@ -14,14 +14,41 @@ function Sites() {
     
     async function postWant(e) {
         e.preventDefault();
+        
+        const orgres = await fetch('/api/accessDatabase', {
+            method: 'SEARCH',
+            body: JSON.stringify({
+                query_type: "SELECT",
+                table_name: "land_project",
+                columns: ['proj_org'],
+                where: `proj_id='${projid}'`
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        const orgBody = await orgres.json()
+        console.log("Org Body: ", orgBody)
+        let org_id
+        if(!orgBody.data){
+            console.log("error getting org with ID")
+            return
+        }else{
+            org_id = orgBody.data.data[0].proj_org
+        }
+        console.log("org_id: ", org_id)
+
+
         const res = await fetch('/api/accessDatabase', {
             method: 'POST',
             body: JSON.stringify( {
                 table_name: "land_manager_want_list",
                 query_type: "INSERT",
-                columns: ['posted_date','posted_by','notes','wanted_quantity','want_species_id'],
-                values: [date, owner, notes, quantity, speciesid],
-                has_point: true
+                columns: ['posted_date','posted_by','notes','wanted_quantity','want_species_id', 'wanted_for_project'],
+                values: [date, owner, notes, quantity, speciesid, projid],
+                required_level: 1,
+                required_org: org_id
+                
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -30,6 +57,8 @@ function Sites() {
         const resBody = await res.json();
         console.log(resBody);
     }
+
+    
 
     return (
         <Layout>
@@ -103,4 +132,4 @@ function Sites() {
     );
 }
 
-export default Sites;
+export default WantLists;

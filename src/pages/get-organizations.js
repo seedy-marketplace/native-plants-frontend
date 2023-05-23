@@ -22,7 +22,7 @@ function Organization() {
             body: JSON.stringify({
                 query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
                 table_name: 'organization', //Any table name here (Field is required)
-                where: `${orgname ? `farm_name iLIKE '%%${orgname}%%'` : ""}`
+                where: `${orgname ? `org_name iLIKE '%%${orgname}%%'` : ""}`
             })
         })
 

@@ -6,18 +6,28 @@ function AddNursery() {
     const [nurseryname, setNurseryname] = useState("");
     const [email, setEmail] = useState("");
     const [number, setnumber] = useState("");
+    const [lat, setLat] = useState("");
+    const [long, setLong] = useState("");
+    const [orgid, setOrgid] = useState("");
 
     async function postNursery(e) {
         e.preventDefault();
-        console.log("== Adding farm with these parameters:", nurseryname, email);
+        if(!orgid){
+            console.log("Need to have an organization")
+            return
+        }
         
+        let point = '('+lat +',' + long+')'
+
         const res = await fetch('/api/accessDatabase', {
             method: 'POST',
             body: JSON.stringify( {
                 table_name: "nurseries",
                 query_type: "INSERT",
-                columns: ['nursery_name','contact_email','contact_phone_number'],
-                values: [nurseryname, email, number]
+                columns: ['nursery_name','contact_email','contact_phone_number', 'nursery_location', 'managing_org'],
+                values: [nurseryname, email, number, point, orgid],
+                required_level: 1,
+                required_org: orgid
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -40,10 +50,18 @@ function AddNursery() {
                     />
             </div>
             <div>
+                <input
+                    type="number"
+                    placeholder="Organization ID"
+                    onChange={e => setOrgid(e.target.value)}
+                    value={orgid}
+                    />
+            </div>
+            <div>
                 <a>Email</a>
                 <input
                     type="text"
-                    placeholder="lab_email"
+                    placeholder="Nursery Contact Email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     />
@@ -56,6 +74,22 @@ function AddNursery() {
                 pattern="[0-9]{10,11}" 
                 onChange={e => setnumber(e.target.value)}/>
                 <small>Format: 1234567890</small><br/>
+            </div>
+            <div>
+                <input
+                    type="number"
+                    placeholder="Latitude"
+                    onChange={e => setLat(e.target.value)}
+                    value={lat}
+                    />
+            </div>
+            <div>
+                <input
+                    type="number"
+                    placeholder="Longitude"
+                    onChange={e => setLong(e.target.value)}
+                    value={long}
+                    />
             </div>
             <div>
                 <button>Add Nursery</button>

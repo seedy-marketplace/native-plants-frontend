@@ -13,7 +13,10 @@ function Projects() {
     const [long, setLong] = useState("");
     async function postProject(e) {
         e.preventDefault();
-        
+        if(!orgid){
+            console.log("Need to have an organization")
+            return
+        }
         let point = '('+lat +',' + long+')'
 
         const res = await fetch('/api/accessDatabase',{
