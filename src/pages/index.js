@@ -25,6 +25,24 @@ p {
     margin-bottom: 20px;
     
 }
+
+`
+const WelcomeHeader = styled.div`
+
+// /* Used to display the camas flower image behind the welcome message */
+// width: 100%;
+// background-image: url("../components/camas.jpg");
+// /* background-position: center, center; */
+// background-position: 75% 33%;
+// /* padding: 30px 0; */
+// padding: 30px 0;
+
+// /* Used to add white background behind welcome message */
+// .welcome-text {
+//   background-color: rgba(255,255,255,0.7);
+//   height: 100%;
+// }
+
 `
 
 export default function Home() {
@@ -46,11 +64,13 @@ export default function Home() {
 
     return (
         <Layout>
-            <div className="welcome-container">
-                <div className="welcome-text">
-                    <h1>Welcome to Seedy!</h1>
+            <WelcomeHeader>
+                <div className="welcome-container">
+                    <div className="welcome-text">
+                        <h1>Welcome to Seedy!</h1>
+                    </div>
                 </div>
-            </div>
+            </WelcomeHeader>
             <WelcomeMssgStyle>
                 <div className="welcome-mssg-text">
                     <p> 
