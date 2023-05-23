@@ -1,3 +1,4 @@
+//archived file
 import { requireAuth } from '../../lib/auth';
 
 import USER from '../../data/user';
