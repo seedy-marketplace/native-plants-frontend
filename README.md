@@ -59,5 +59,6 @@ List of unrealized features:
 * Implement Lab data interfaces
 * Bulk import seed collection
 * Enable users to update user info
+* Set up organizations
 
 Code used by the previous team and is unused in final product has been marked with a comment saying "archived code". We did not wish to removing it. 
