@@ -23,8 +23,7 @@ function FarmAmps() {
         if (farmName) {
             onVar += ` AND farms.farm_name iLIKE '%%${farmName}%%'`;
         }
-        onVar += ` INNER JOIN rev2.seed_collection ON seed_collection.collection_id = FA.ancestor_col_id`;
-        onVar += ' INNER JOIN rev2.plant on plant.species_id = seed_collection.col_species_id';
+        onVar += ' INNER JOIN rev2.plant on plant.species_id = FA.amp_species_id';
         if (comname) {
             onVar += ` AND plant.common_name iLIKE '%%${comname}%%'`;
         }
@@ -54,9 +53,9 @@ function FarmAmps() {
         const resBody = await res.json();
         console.log(resBody);
         if (res.status >= 200 && res.status < 400) {
-            setFarmAmpList(resBody.data)
+            setFarmAmpList(resBody)
             console.log("farmampdata");
-            console.log(farmAmpList.data);
+            console.log(farmAmpList);
         } else {
             alert("Error: \n" + resBody.error)
         }
