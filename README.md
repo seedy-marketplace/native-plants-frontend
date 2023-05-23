@@ -55,5 +55,6 @@ List of unrealized features:
 * Mapping & Search through Map
 * Interaction tracking
 * Lab involvement
+* bulk import seed collection
 
 Code used by the previous team and is unused in final product has been marked with a comment saying "archived code". We did not wish to removing it. 
