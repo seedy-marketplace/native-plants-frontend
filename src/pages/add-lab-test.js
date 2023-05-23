@@ -1,3 +1,5 @@
+//archived file
+
 //date, method of identifiction (3 types), cofidence of ID 1-3, cleaing effectiveness 1 of 4 types, cleaned weight
 import React, { useState } from 'react';
 import Layout from '../components/Layout';

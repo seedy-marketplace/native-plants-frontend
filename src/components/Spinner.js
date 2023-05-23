@@ -1,7 +1,7 @@
 /*
  * Spinner derived from https://tobiasahlin.com/spinkit/.
  */
-
+//archived file
 import React from 'react'
 
 import './Spinner.css'
