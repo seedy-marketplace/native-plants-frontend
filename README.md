@@ -14,7 +14,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 All Software (can be found in both READMEs)
 * Heroku server (Backend–With PostGIS database added, Frontend)
 * Heroku CLI
-* NodeJS
+* NodeJS (most recent version)
+* NPM (most recent version)
 * Python 3.9 or newer
 List of Steps to Run Project
 Run Locally
