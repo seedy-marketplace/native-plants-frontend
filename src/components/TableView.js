@@ -13,10 +13,7 @@ export default function TableView(props) {
     } 
     const headerList = props.data.headers//Object.keys(props.data[0])
     console.log("Header list", headerList)
-    const firstRow = dataList[0]
-    Object.values(firstRow).map(value => {
-        console.log(value)
-    })
+    const firstRow = dataList[0];
     var bad_key = 0;
     return (
         <div id="responseTable">
