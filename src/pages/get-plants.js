@@ -45,8 +45,8 @@ function Plants() {
             body: JSON.stringify({
                 query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
                 table_name: 'seed_collection', //Any table name here (Field is required)
-                columns: ['plant.genus', 'plant.species', 'plant.common_name', 'seed_collection.col_location', 'seed_collection.collected_date', 'seed_collection.id_method', 'seed_collection.id_confidence', 'seed_collection.cleaned_weight', 'seed_collection.cleaning_effectiveness', 'users.email', 'users.phone_number', 'users.website'],
-                column_names: ['Genus', 'Species', 'Common Name','Location', 'Collected Date', 'ID Method', 'ID Confidence', 'Cleaned Weight', 'Cleaning Effectiveness', 'Email', 'Phone Number', 'Website'],
+                columns: ['plant.genus', 'plant.species','plant.species_id', 'plant.common_name', 'seed_collection.col_location', 'seed_collection.collected_date', 'seed_collection.id_method', 'seed_collection.id_confidence', 'seed_collection.cleaned_weight', 'seed_collection.cleaning_effectiveness', 'users.email', 'users.phone_number', 'users.website'],
+                column_names: ['Genus', 'Species','Species ID', 'Common Name','Location', 'Collected Date', 'ID Method', 'ID Confidence', 'Cleaned Weight', 'Cleaning Effectiveness', 'Email', 'Phone Number', 'Website'],
                 join_string: onVar ? ' INNER JOIN rev2.plant ON ' + onVar : null
             })
         })
