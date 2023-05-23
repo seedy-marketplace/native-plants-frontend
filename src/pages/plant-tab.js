@@ -26,17 +26,12 @@ export default function Farm() {
                 </li>
                 <li className="pagelist_item">
                     <Link href="/add-seed-col">
-                      <a>Add seed Collection</a>
-                    </Link>
-                </li>
-                <li className="pagelist_item">
-                    <Link href="/get-seed-col">
-                      <a>Get seed Collections</a>
+                      <a>Add Seed Collection</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
                     <Link href="/update-seed-col">
-                      <a>Update seed</a>
+                      <a>Update Seed</a>
                     </Link>
                 </li>
             </ul>

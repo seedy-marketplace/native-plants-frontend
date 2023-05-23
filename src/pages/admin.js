@@ -16,17 +16,17 @@ export default function Forms() {
                 </li>
                 <li className="pagelist_item">
                     <Link href="/get-users">
-                      <a>See users</a>
+                      <a>See Users</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
                     <Link href="/delete-user">
-                      <a>Del User</a>
+                      <a>Delete User</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
                     <Link href="/add-site">
-                      <a>Add site</a>
+                      <a>Add Site</a>
                     </Link>
                 </li>
                 <li className="pagelist_item">
