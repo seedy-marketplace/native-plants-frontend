@@ -66,6 +66,10 @@ function Farms() {
                 <input type="radio" name="rate" value="user_role_type" onClick={e => setCol(e.target.value)}/>
                 <span className="checkmark"></span>
             </label>
+            <label className="container">Organization
+                <input type="radio" name="rate" value="related_org_id" onClick={e => setCol(e.target.value)}/>
+                <span className="checkmark"></span>
+            </label>
             </div>
                 <div>
                     <label htmlFor="UserEdit">Enter what to new data will be</label>
