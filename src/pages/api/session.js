@@ -1,3 +1,4 @@
+//archived file
 import { getSession } from "next-auth/react"
 
 const sess = async (req, res) => {

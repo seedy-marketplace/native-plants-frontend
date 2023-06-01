@@ -14,6 +14,12 @@ const ErrMessage = styled.div`
     color:
 `
 
+const InputForm = styled.div`
+h3 {
+    font-weight: normal;
+}
+`
+
 function BulkAdd({isLoading, setIsLoading}) {
     const [file, setFile] = useState();
     const [err, setErr] = useState(false);
@@ -229,43 +235,43 @@ function BulkAdd({isLoading, setIsLoading}) {
 
     return(
         <div className="import-csv">
-                
-            <form>
-                <h1>Bulk Import Plants</h1>
-                <h3>Import plants by selecting an excel file</h3>
-                <input
-                    type={"file"}
-                    id={"csvFileInput"}
-                    accept={".xlsx"}
-                    onChange={handleOnChange}
-                />
-                <button onClick={(e) => {handleOnSubmit(e)}} >
-                    IMPORT CSV
-                </button>
-                { lenErr ? (<ErrMessage>
-                    <p>Error: There are no rows with values in this file. (Hint: 
-                        make first row the description, write data starting in row 2)
-                    </p>
-                    </ErrMessage>) : null }
-                { rowErr ? (
-                    <ErrMessage>
-                        <p>Error: All sheets must have four full columns (in the order of) 
-                            common name, species, species code, and genus</p>
+            <InputForm>
+                <form>
+                    <h3>Bulk import plants by selecting a CSV or excel file</h3>
+                    <input
+                        type={"file"}
+                        id={"csvFileInput"}
+                        accept={".xlsx"}
+                        onChange={handleOnChange}
+                    />
+                    <button onClick={(e) => {handleOnSubmit(e)}} >
+                        IMPORT CSV
+                    </button>
+                    { lenErr ? (<ErrMessage>
+                        <p>Error: There are no rows with values in this file. (Hint: 
+                            make first row the description, write data starting in row 2)
+                        </p>
+                        </ErrMessage>) : null }
+                    { rowErr ? (
+                        <ErrMessage>
+                            <p>Error: All sheets must have four full columns (in the order of) 
+                                common name, species, species code, and genus</p>
+                            </ErrMessage>
+                        ) : null }
+                    { fileErr ? (
+                        <ErrMessage>
+                            <p>Error: Invalid or missing file entry</p>
+                            </ErrMessage>
+                        ) : null }
+                    { contentErr ? (
+                        <ErrMessage>
+                            <p> {errITIS} </p>
                         </ErrMessage>
-                    ) : null }
-                { fileErr ? (
-                    <ErrMessage>
-                        <p>Error: Invalid or missing file entry</p>
-                        </ErrMessage>
-                    ) : null }
-                { contentErr ? (
-                    <ErrMessage>
-                        <p> {errITIS} </p>
-                    </ErrMessage>
-                    ) : null
+                        ) : null
 
-                }
-            </form>
+                    }
+                </form>
+            </InputForm>
         </div>
     )
 }
@@ -408,7 +414,10 @@ function Farms() {
     return (
         <Layout>
         <div className="input-page">
+            <InputForm>
             <form onSubmit={postFarm} className={styles.container}>
+                <h3>Manually enter individual plant data</h3>
+
                 <div>
                     <input
                         type="text"
@@ -445,6 +454,7 @@ function Farms() {
                     <button>Add Plant</button>
                 </div>
             </form>
+            </InputForm>
             
             {/* <div className="import-csv">
                 

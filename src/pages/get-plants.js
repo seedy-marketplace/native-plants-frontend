@@ -45,16 +45,17 @@ function Plants() {
             body: JSON.stringify({
                 query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
                 table_name: 'seed_collection', //Any table name here (Field is required)
-                columns: ['plant.genus', 'plant.species', 'plant.common_name', 'seed_collection.collected_date', 'seed_collection.id_method', 'seed_collection.id_confidence', 'seed_collection.cleaned_weight', 'seed_collection.cleaning_effectiveness', 'users.email', 'users.phone_number', 'users.website'],
+                columns: ['plant.genus', 'plant.species','plant.species_id', 'plant.common_name', 'seed_collection.col_location', 'seed_collection.collected_date', 'seed_collection.id_method', 'seed_collection.id_confidence', 'seed_collection.cleaned_weight', 'seed_collection.cleaning_effectiveness', 'users.email', 'users.phone_number', 'users.website'],
+                column_names: ['Genus', 'Species','Species ID', 'Common Name','Location', 'Collected Date', 'ID Method', 'ID Confidence', 'Cleaned Weight', 'Cleaning Effectiveness', 'Email', 'Phone Number', 'Website'],
                 join_string: onVar ? ' INNER JOIN rev2.plant ON ' + onVar : null
             })
         })
         const resBody = await res.json();
         console.log(resBody);
         if (res.status >= 200 && res.status < 400) {
-            setPlantList(resBody.data)
+            setPlantList(resBody)
             console.log("plantlistdata")
-            console.log(plantList.data)
+            console.log(plantList)
         } else {
             alert("Error: \n" + resBody.error)
         }

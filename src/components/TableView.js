@@ -13,29 +13,28 @@ export default function TableView(props) {
     } 
     const headerList = props.data.headers//Object.keys(props.data[0])
     console.log("Header list", headerList)
-    const firstRow = dataList[0]
-    Object.values(firstRow).map(value => {
-        console.log(value)
-    })
+    const firstRow = dataList[0];
     var bad_key = 0;
     return (
         <div id="responseTable">
-            <table>
-                <thead>
-                    <tr>
-                        {headerList.map(header => <th key={header}>{header}</th>)}
-                    </tr>
-                </thead>
-                <tbody>
-                    {dataList.map(row => {
-                        return (
-                            <tr key={row.id}>
-                                {Object.values(row).map(value => <td key={bad_key++}>{(typeof(value) === "boolean") ? "[" + value.toString() + "]" : value}</td>)}
-                            </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
+            <div className={"table-styling-div"}>
+                <table>
+                    <thead>
+                        <tr>
+                            {headerList.map(header => <th key={header}>{header}</th>)}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {dataList.map(row => {
+                            return (
+                                <tr key={row.id}>
+                                    {Object.values(row).map(value => <td key={bad_key++}>{(typeof(value) === "boolean") ? "[" + value.toString() + "]" : value}</td>)}
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }

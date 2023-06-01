@@ -1,3 +1,5 @@
+//archived file
+
 import { getServerSession } from "next-auth/next";
 //const urlStart = "https://native-plants-backend.herokuapp.com"
 const urlStart = "http://localhost:8080";
