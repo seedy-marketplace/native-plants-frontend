@@ -13,7 +13,7 @@ function AddNursery() {
     async function postNursery(e) {
         e.preventDefault();
         if(!orgid){
-            console.log("Need to have an organization")
+            alert("Need to have an organization")
             return
         }
         
@@ -35,6 +35,9 @@ function AddNursery() {
         })
         const resBody = await res.json();
         console.log(resBody);
+        if (res.status < 200 && res.status >= 400) {
+            alert("Error: \n" + resBody.error)
+        }
     }
 
     return (
