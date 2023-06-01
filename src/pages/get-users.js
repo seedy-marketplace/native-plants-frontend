@@ -24,16 +24,18 @@ function Farms() {
             },
             body: JSON.stringify({
                 query_type: 'SELECT',
-                table_name: 'users'//,
-                //columns: ['name', 'email', 'user_name', 'phone_number', 'website', 'user_role_type'],
-                //column_names: ['Name', 'Email', 'Username', 'Phone Number', 'Website', 'Access Level']
+                table_name: 'users',
+                required_level: 2,
+                columns: ['name', 'email', 'user_name','related_org_id', 'phone_number', 'website', 'user_role_type'],
+                column_names: ['Name', 'Email', 'Username', 'Org ID','Phone Number', 'Website', 'Access Level'],
+                where: `${email ? `email iLIKE '%%${email}%%'` : ""}`
             })
         })
         console.log("made it past request")
         const resBody = await res.json();
         console.log(resBody);
         if (res.status >= 200 && res.status < 400) {
-            setUserList(resBody.data)
+            setUserList(resBody)
         } else {
             alert("Error: \n" + resBody.error)
         }
@@ -45,17 +47,9 @@ function Farms() {
                 <div>
                     <input
                         type="text"
-                        placeholder="User name"
-                        onChange={e => setUsername(e.target.value)}
-                        value={username}
-                    />
-                </div>
-                <div>
-                    <input
-                        type="text"
                         placeholder="Email"
-                    // value={email}
-                    // onChange={e => setEmail(e.target.value)}
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
                     />
                 </div>
                 <div>
