@@ -9,7 +9,7 @@ function Farms() {
     const [username, setUsername] = useState("");
     const [usertype, setUsertype] = useState("");
     const [userList, setUserList] = useState([]);
-    const [collum, setCol] = useState("");
+    const [column, setCol] = useState("");
     const [newdata, setNew] = useState("");
 
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /${farmname_to_send}`, "POST");
@@ -18,13 +18,15 @@ function Farms() {
         e.preventDefault();
         //const res3 = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /'+farmname,{
 
-        const res2 = await fetch('/api/accessBackend', {
+        const res2 = await fetch('/api/accessDatabase', {
             method: 'PATCH',
             body: JSON.stringify( {
                 table_name: "users",
                 query_type: "UPDATE",
-                query_fields: [collum,'user_name'],
-                query_values: [newdata,username]
+                columns: [column],
+                values: [newdata],
+                where: `${username ? `user_name='${username}'` : ""}`,
+                required_level: 2
             }),
             headers: {
                 'Content-Type': 'application/json'

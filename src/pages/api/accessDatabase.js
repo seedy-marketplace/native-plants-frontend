@@ -274,12 +274,7 @@ async function accessDatabase(req, res) {
                       data: resBody
                   });
               })
-              .catch((err) => {
-                  console.log("== err:", err);
-                  res.status(500).send({
-                      err: err
-                  });
-              });
+              
       }
 
       //handles INSERT queries (Can not have any parameters in URL)
@@ -313,12 +308,7 @@ async function accessDatabase(req, res) {
                       data: resBody
                   });
               })
-              .catch((err) => {
-                  console.log("== err:", err);
-                  res.status(500).send({
-                      err: err
-                  });
-              });
+              
       }
 
       //Handles DELETE queries
@@ -347,12 +337,7 @@ async function accessDatabase(req, res) {
                       msg: "Got response from DB",
                       data: resBody
                   })
-                  .catch((err) => {
-                      console.log("== err:", err);
-                      res.status(500).send({
-                          err: err
-                      });
-                  });
+                  
           });
       } else if (query_type === "UPDATE") {
           //Coming soon
@@ -391,12 +376,7 @@ async function accessDatabase(req, res) {
                       msg: "Got response from DB",
                       data: resBody
                   })
-                  .catch((err) => {
-                      console.log("== err:", err);
-                      res.status(500).send({
-                          err: err
-                      });
-                  });
+                  
           });
     } 
 

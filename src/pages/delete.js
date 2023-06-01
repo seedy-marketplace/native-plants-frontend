@@ -15,7 +15,8 @@ function AddLab() {
             body: JSON.stringify( {
                 table_name: [tablename],
                 query_type: "DELETE",
-                where: `${column}='${field}'`
+                where: `${column}='${field}'`,
+                required_level: 2
             }),
             headers: {
                 'Content-Type': 'application/json'

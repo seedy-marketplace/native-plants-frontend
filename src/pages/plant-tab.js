@@ -38,6 +38,16 @@ export default function Farm() {
                           <a>Update Seed</a>
                         </Link>
                     </li>
+                    <li className="pagelist_item">
+                        <Link href="/add-site">
+                          <a>Add Collection Site</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/get-sites">
+                          <a>See Sites</a>
+                        </Link>
+                    </li>
                 </ul>
             </div>
         </Layout>
