@@ -27,7 +27,8 @@ Environment Information
 
 List of Steps to Run Project
 Run Locally
-* Front-end
+
+Front-end
 * Clone repo
 * Run “npm i”
 * Set environment variables for (easy to set from a untracked .env.local file):
@@ -35,7 +36,7 @@ Run Locally
    * NEXTAUTH_SECRET
 * Run “npm run dev”
 
-* Back-end 
+Back-end 
 * Clone repo
 * Install dependencies listed in requirements.txt
 * Set environment variables for:
