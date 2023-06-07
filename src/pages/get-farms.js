@@ -34,7 +34,7 @@ function Farms() {
         //resBody.data.headers = orderNames
         // console.log("data.headers", resBody.data.headers)
         // console.log("resBody", resBody);
-
+        
         if(res.status >= 200 && res.status < 400) {
             setFarmList(resBody)
             console.log(farmList)
