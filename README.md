@@ -12,23 +12,31 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+Link To Running Website
+* https://native-plants-fe.herokuapp.com/
+Link to Repos:
+* https://github.com/seedy-marketplace/native-plants-backend
+* https://github.com/seedy-marketplace/native-plants-frontend
 
-All Software (can be found in both READMEs)
+Environment Information
 * Heroku server (Backend–With PostGIS database added, Frontend)
 * Heroku CLI
 * NodeJS (most recent version)
 * NPM (most recent version)
 * Python 3.9 or newer
+
 List of Steps to Run Project
 Run Locally
-* Front-end
+
+Front-end
 * Clone repo
 * Run “npm i”
 * Set environment variables for (easy to set from a untracked .env.local file):
    * DATABASE_KEY
    * NEXTAUTH_SECRET
 * Run “npm run dev”
-* Back-end
+
+Back-end 
 * Clone repo
 * Install dependencies listed in requirements.txt
 * Set environment variables for:
@@ -46,20 +54,12 @@ Push Updates to Heroku
 * Commit
 * Run “git push heroku master”
    * Sign into Heroku CLI if needed
-Link To Running Website
-* https://native-plants-fe.herokuapp.com/
-Link to Repos:
-* https://github.com/seedy-marketplace/native-plants-backend
-* https://github.com/seedy-marketplace/native-plants-frontend
+
 
 List of unrealized features:
-* User edditing of organizations and their properties
 * Mapping & Search through Map
 * Interaction tracking
 * Implement Lab data interfaces
 * Bulk import seed collection
-* Enable users to update user info
-* Set up organizations
-* Nursery search
 
 Code used by the previous team and is unused in final product has been marked with a comment saying "archived code". We did not wish to removing it. 
