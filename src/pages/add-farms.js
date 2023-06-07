@@ -9,11 +9,15 @@ function Farms() {
     const [farmname, setFarmname] = useState("");
     const [farmemail, setFarmemail] = useState("");
     const [farmnumber, setFarmnumber] = useState("");
+    const [orgid, setOrgid] = useState("");
     const [farmlocation, setFarmlocation] = useState("");
     async function postFarm(e) {
         e.preventDefault();
         console.log("== Adding farm with these parameters:", farmname, farmemail);
-        
+        if(!orgid){
+            alert("Need to have an organization")
+            return
+        }
         const res = await fetch('/api/accessDatabase',{
             method: 'POST',
             headers: {
@@ -23,7 +27,9 @@ function Farms() {
                 query_type: 'INSERT', //SELECT, INSERT, etc. (Field is required)
                 table_name: 'farms', //Any table name here (Field is required)
                 columns: ['contact_email', 'contact_phone_number', 'farm_location', 'farm_name'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
-                values: [farmemail, farmnumber, null, farmname]//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                values: [farmemail, farmnumber, null, farmname],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                required_level: 1,
+                required_org: orgid
             })
         })
         const resBody = await res.json();
@@ -79,6 +85,14 @@ function Farms() {
                     placeholder="Farm name"
                     onChange={e => setFarmname(e.target.value)}
                     value={farmname}
+                    />
+            </div>
+            <div>
+                <input
+                    type="number"
+                    placeholder="Organization ID"
+                    onChange={e => setOrgid(e.target.value)}
+                    value={orgid}
                     />
             </div>
             <div>
