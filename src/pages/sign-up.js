@@ -33,7 +33,7 @@ function Signup() {
                     bio: bio,
                     phone_number: number,
                     website: website,
-                    related_org_id: organizationID
+                    related_org_id: organizationID ? organizationID : null
                 }),
                 headers: {
                     'Content-Type': 'application/json'
