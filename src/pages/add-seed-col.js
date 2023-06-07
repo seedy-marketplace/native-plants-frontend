@@ -3,6 +3,208 @@ import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import styles from '../components/Navbar.module.css'
 import Link from 'next/link';
+import styled from '@emotion/styled'
+import * as XLSX from "xlsx";
+
+const ErrMessage = styled.div`
+    margin-top: 5px;
+    padding: 5px;
+    background: #ff7c7c;
+    color:
+`
+
+const InputForm = styled.div`
+h3 {
+    font-weight: normal;
+}
+`
+
+async function GetTSN(species_name){
+    query_url = "https://services.itis.gov/?q=searchByScientificName?searchKey=" + species_name;
+    const res = await fetch(query_url)
+    var data = await res.json();
+    console.log(data)
+    return data;
+}
+
+function BulkSeedCol({isLoading, setIsLoading}) {
+    const [file, setFile] = useState();
+    const [err, setErr] = useState(false);
+    const [lenErr, setLenErr] = useState(false);
+    const [rowErr, setRowErr] = useState(false);
+    const [fileErr, setFileErr] = useState(false);
+    const [errITIS, setErrITIS] = useState([]);
+    const [contentErr, setContentErr] = useState(false);
+    // var errItis = ""
+
+    const handleOnChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const handleOnSubmit = (e) => {
+        var type = file
+        const fileReader = new FileReader();
+
+        e.preventDefault();
+        
+        // Check for file
+        if (file) {
+            fileReader.readAsBinaryString(file)
+            setFileErr(false);
+            setLenErr(false);
+            setRowErr(false);
+
+            type = file.name.split('.').pop();
+            if (type !== 'xlsx' && type !== 'csv') {
+                setFileErr(true);
+                setLenErr(false);
+                setRowErr(false);
+                return;
+            }
+        } else {
+            setFileErr(true);
+            setLenErr(false);
+            setRowErr(false);
+            return;
+        }
+        
+        fileReader.onload = function (e) {
+            setIsLoading(true);
+            var data;
+            if(type == "xlsx"){
+                const bstr = e.target.result;
+                const wb = XLSX.read(bstr, {type: 'binary'});
+
+                /* Get first worksheet */
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+
+                /* Convert array of jsons*/
+                data = XLSX.utils.sheet_to_json(ws);
+            }
+            else{
+                // Use reader.result
+                var csv = fileReader.result;
+                var lines = csv.split(/[\n\r]+/);
+                var data = [];
+                var headers=lines[0].split(",");
+                for(var i=1;i<lines.length;i++){
+                    var obj = {};
+                    var currentline=lines[i].split(",");
+                    for(var j=0;j<headers.length;j++){
+                        if (currentline[j] !== "")
+                            obj[headers[j]] = currentline[j];
+                    }
+                    data.push(obj);
+                }  
+                //return result; //JavaScript object
+            }
+            if (data.length < 1) {
+                setErr(true);
+                setLenErr(true);
+                setRowErr(false)
+                console.log("Setting length err")
+                return;
+            }
+            console.log(data);
+            setErr(false);
+            
+            data.forEach(async(entry, index) => {
+                if (err == true) {
+                    return;
+                }
+                if (entry.length < 1) {
+                    return;
+                }
+                // return;
+                // console.log("Sending data to backend at ", ("https://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey="+"procera"))
+
+                const speccode_res = await fetch("./api/accessDatabase", {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method:"SEARCH",
+                    body: JSON.stringify({
+                        query_type:"SELECT",
+                        table_name:'plant',
+                        columns:['species_id'],
+                        where:`species='${entry.species}' and genus = '${entry.genus}'`
+                    })
+                })
+                const spec_resBody = await speccode_res.json();
+                if(spec_resBody.data.data[0] === undefined)
+                {    
+                    console.log(`failed to insert row ${index + 1}. no species code found for scientific name ${entry.genus} ${entry.species}.`);
+                    return;
+                }
+                entry.col_species_id=spec_resBody.data.data[0].species_id;
+                delete(entry.species);
+                delete(entry.genus);
+                if(entry.lat !== undefined && entry.long !== undefined)
+                    entry.col_location = `(${entry.lat},${entry.long})`;
+                delete(entry.lat);
+                delete(entry.long);
+                const res = await fetch('/api/accessDatabase',{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query_type: 'INSERT', //SELECT, INSERT, etc. (Field is required)
+                        table_name: 'seed_collection', //Any table name here (Field is required)
+                        columns: Object.keys(entry), //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
+                        values: Object.values(entry)//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                    })
+                })
+                const resBody = await res.json();
+                console.log(resBody);
+            })
+            return;
+        }
+    };
+
+    return(
+        <div className="import-csv">
+            <InputForm>
+                <form>
+                    <h3>Bulk import plants by selecting a CSV or excel file</h3>
+                    <input
+                        type={"file"}
+                        id={"csvFileInput"}
+                        accept={".xlsx, .csv"}
+                        onChange={handleOnChange}
+                    />
+                    <button onClick={(e) => {handleOnSubmit(e)}} >
+                        IMPORT CSV
+                    </button>
+                    { lenErr ? (<ErrMessage>
+                        <p>Error: There are no rows with values in this file. (Hint: 
+                            make first row the description, write data starting in row 2)
+                        </p>
+                        </ErrMessage>) : null }
+                    { rowErr ? (
+                        <ErrMessage>
+                            <p>Error: All sheets must have four full columns (in the order of) 
+                                common name, species, species code, and genus</p>
+                            </ErrMessage>
+                        ) : null }
+                    { fileErr ? (
+                        <ErrMessage>
+                            <p>Error: Invalid or missing file entry</p>
+                            </ErrMessage>
+                        ) : null }
+                    { contentErr ? (
+                        <ErrMessage>
+                            <p> {errITIS} </p>
+                        </ErrMessage>
+                        ) : null
+
+                    }
+                </form>
+            </InputForm>
+        </div>
+    )
+}
 
 function SeedCol() {
     // const [cleanWeight, setCleanWeight] = useState("");
@@ -28,6 +230,7 @@ function SeedCol() {
     const [lat, setLat] = useState("");
     const [long, setLong] = useState("");
     const [colcontactuser, setColcontactuser] = useState("");
+    const [isLoading, setIsLoading] = useState("");
 
     async function getData(){
         const reqData = {}
@@ -229,6 +432,7 @@ function SeedCol() {
                 <button type="submit">Add Seed Collection</button>
             </div>
         </form>
+        <BulkSeedCol isLoading={isLoading} setIsLoading={setIsLoading}/>
         </Layout>
     );
 }
