@@ -67,7 +67,7 @@ function BulkSeedCol({isLoading, setIsLoading}) {
             setRowErr(false);
             return;
         }
-        
+
         fileReader.onload = function (e) {
             setIsLoading(true);
             var data;
@@ -106,9 +106,15 @@ function BulkSeedCol({isLoading, setIsLoading}) {
                 console.log("Setting length err")
                 return;
             }
-            console.log(data);
+            // console.log(data);
             setErr(false);
-            
+
+            let insert_messages = {
+                successes:[],
+                failures:[],
+                warnings:[]
+            }
+
             data.forEach(async(entry, index) => {
                 if (err == true) {
                     return;
@@ -126,18 +132,22 @@ function BulkSeedCol({isLoading, setIsLoading}) {
                     method:"SEARCH",
                     body: JSON.stringify({
                         query_type:"SELECT",
-                        table_name:'plant',
-                        columns:['species_id'],
-                        where:`species='${entry.species}' and genus = '${entry.genus}'`
+                        table_name:'plant full outer join rev2.plant_species_pseudonym using(species_id)',
+                        columns:['genus', 'species', 'species_id'],
+                        where:`(species='${entry.species}' and genus='${entry.genus}') or (candidate_species_name='${entry.species}' and candidate_genus_name='${entry.genus}')`
                     })
                 })
                 const spec_resBody = await speccode_res.json();
-                if(spec_resBody.data.data[0] === undefined)
-                {    
-                    console.log(`failed to insert row ${index + 1}. no species code found for scientific name ${entry.genus} ${entry.species}.`);
+                let queryResult = spec_resBody.data.data[0]
+                if(queryResult === undefined)
+                {
+                    insert_messages.failures.push({line:index, message:`species ${entry.genus} ${entry.species} not found in database.`})
                     return;
                 }
-                entry.col_species_id=spec_resBody.data.data[0].species_id;
+                else if(queryResult.species != entry.species || queryResult.genus != entry.genus){
+                    insert_messages.warnings.push({line:index, message:`provided scientific name "${entry.genus} ${entry.species}" is deprecated. updated to ${queryResult.genus} ${queryResult.species}`})
+                }
+                entry.col_species_id=queryResult.species_id;
                 delete(entry.species);
                 delete(entry.genus);
                 if(entry.lat !== undefined && entry.long !== undefined)
@@ -157,8 +167,15 @@ function BulkSeedCol({isLoading, setIsLoading}) {
                     })
                 })
                 const resBody = await res.json();
-                console.log(resBody);
+                if(resBody.data.result === 'success'){
+                    insert_messages.successes.push({line:index, data:entry});
+                }
+                else{
+                    insert_messages.failures.push({line:index, message:`failed to insert line ${index} of ${file.name}. please check each field to ensure that it they are valid.` })
+                }
+
             })
+            console.log(insert_messages)
             return;
         }
     };
