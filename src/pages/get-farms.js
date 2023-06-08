@@ -15,6 +15,7 @@ function Farms() {
     async function getFarm(e) {
         e.preventDefault();
         
+        
         const res = await fetch("/api/accessDatabase",{
             method: 'SEARCH', //SEARCH, POST, DELETE, UPDATE  (NOT GET)
             headers: {
@@ -23,8 +24,9 @@ function Farms() {
             body: JSON.stringify({
                 query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
                 table_name: 'farms', //Any table name here (Field is required),
-                columns: ['farm_name', 'contact_email', 'farm_website'],
-                where: `${farmname ? `farm_name iLIKE '%%${farmname}%%'` : ""}`
+                columns: ['farm_name', 'contact_email', 'managing_org_id', 'farm_website', 'contact_phone_number'],
+                column_names: ['Farm Name', 'Email', 'Organization ID', 'Website', 'Phone Number'],
+                where: `${farmname ? `farm_name iLIKE '%%${farmname.replaceAll("'", "''")}%%'` : ""}`
             })
         })
 
