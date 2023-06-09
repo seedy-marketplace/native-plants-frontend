@@ -33,7 +33,7 @@ function FarmAmp() {
             }
 
         }
-
+//             columns: ['farm_name', 'year_sown', 'field_size', 'estimated_harvest_per_year','year_harvested', 'generation_of_seed', 'owner_of_harvest', 'extra_farm_notes','ancestor_col_id', 'cleaned_weight', 'cleaning_effectiveness', 'amp_contact_user', 'amp_species_id']
         let res = await fetch('/api/accessDatabase',{
             method: 'POST',
             headers: {
@@ -42,8 +42,8 @@ function FarmAmp() {
             body: JSON.stringify({
                 query_type: 'INSERT', //SELECT, INSERT, etc. (Field is required)
                 table_name: 'farm_amplification', //Any table name here (Field is required)
-                columns: ['farm_name', 'amp_species_id'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
-                values: [farmName, ampspeciesid],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                columns: ['farm_name', 'amp_species_id', 'year_sown', 'year_harvested','estimated_harvest_per_year', 'field_size', 'generation_of_seed', 'cleaned_weight', 'cleaning_effectiveness', 'ancestor_col_id', 'extra_farm_notes'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
+                values: [farmName, ampspeciesid, yearSown ? yearSown : null, yearHarvest ? yearHarvest : null, estHarvest ? estHarvest : null, fieldSize ? fieldSize : null, seedGen ? seedGen : null, cleanedweight ? cleanedweight : null, cleaningeffectiveness ? cleaningeffectiveness : null, ancestorcolid ? ancestorcolid : null, notes],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
                 required_level: 1,
                 required_org: session.user.related_org_id
             })
