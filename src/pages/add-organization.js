@@ -28,6 +28,11 @@ function Organization() {
         })
         const resBody = await res.json();
         console.log(resBody);
+        if (res.status < 200 || res.status >= 400) {
+            alert("Error: \n" + resBody.error)
+        }else{
+            alert("Message from database: " + resBody.data.result)
+        }
     }
 
     const [file, setFile] = useState();

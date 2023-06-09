@@ -9,11 +9,16 @@ function Farms() {
     const [farmname, setFarmname] = useState("");
     const [farmemail, setFarmemail] = useState("");
     const [farmnumber, setFarmnumber] = useState("");
+    const [website, setWebsite] = useState("");
+    const [orgid, setOrgid] = useState("");
     const [farmlocation, setFarmlocation] = useState("");
     async function postFarm(e) {
         e.preventDefault();
         console.log("== Adding farm with these parameters:", farmname, farmemail);
-        
+        if(!orgid || !farmemail || !farmname){
+            alert("Error: Fill in all required fields")
+            return
+        }
         const res = await fetch('/api/accessDatabase',{
             method: 'POST',
             headers: {
@@ -22,12 +27,19 @@ function Farms() {
             body: JSON.stringify({
                 query_type: 'INSERT', //SELECT, INSERT, etc. (Field is required)
                 table_name: 'farms', //Any table name here (Field is required)
-                columns: ['contact_email', 'contact_phone_number', 'farm_location', 'farm_name'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
-                values: [farmemail, farmnumber, null, farmname]//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                columns: ['contact_email', 'contact_phone_number', 'farm_location', 'farm_name', 'managing_org_id', 'farm_website'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
+                values: [farmemail, farmnumber, null, farmname, orgid, website],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                required_level: 1,
+                required_org: orgid
             })
         })
         const resBody = await res.json();
         console.log(resBody);
+        if (res.status < 200 || res.status >= 400) {
+            alert("Error: \n" + resBody.error)
+        }else{
+            alert("Message from database: " + resBody.data.result)
+        }
     }
 
     const [file, setFile] = useState();
@@ -72,38 +84,70 @@ function Farms() {
     return (
         <Layout>
         <form onSubmit={postFarm} className={styles.container}>
-            <h3>Manually enter individual farm data</h3>
+            <h3>Add a New Farm</h3>
             <div>
+            <label>Farm name <span style={{color:"#dd0000"}}>*</span></label>
                 <input
                     type="text"
                     placeholder="Farm name"
                     onChange={e => setFarmname(e.target.value)}
                     value={farmname}
+                    required
                     />
             </div>
             <div>
+                <label>Organization ID <span style={{color:"#dd0000"}}>*</span></label>
+                <input
+                    type="number"
+                    placeholder="Organization ID"
+                    onChange={e => setOrgid(e.target.value)}
+                    value={orgid}
+                    required
+                    />
+            </div>
+            <div>
+                <label>Farm Email <span style={{color:"#dd0000"}}>*</span></label>
                 <input
                     type="text"
                     placeholder="Email"
                     onChange={e => setFarmemail(e.target.value)}
                     value={farmemail}
+                    required
                     />
             </div>
             <div>
-                <label htmlFor="phone">Enter Farm phone number:</label>
+                <label>Website</label>
+                <input type="text" 
+                placeholder="Website Link"
+                onChange={e => setWebsite(e.target.value)}
+                value={website}/>
+            </div>
+            <div>
+                <label htmlFor="phone">Phone Number</label>
                 <input type="tel" 
                 id="phone" 
                 name="phone" 
-                pattern="[0-9]{10,11}" 
+                pattern="[0-9]{10,11}"
+                placeholder="1234567890"
                 onChange={e => setFarmnumber(e.target.value)}/>
-                <small>Format: 1234567890</small><br/>
             </div>
             <div>
                 <button>Add Farm</button>
             </div>
         </form>
 
-        <div className="import-csv">
+        
+
+        </Layout>
+    );
+}
+
+export default Farms;
+
+
+//Dont think we need bulk import for farms
+/*
+<div className="import-csv">
             <form>
                 <h3>Bulk import farms by selecting a CSV or excel file</h3>
 
@@ -122,9 +166,4 @@ function Farms() {
                 </button>
             </form>
         </div>
-
-        </Layout>
-    );
-}
-
-export default Farms;
+*/
