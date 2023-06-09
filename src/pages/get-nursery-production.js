@@ -14,6 +14,7 @@ function NurseProduction() {
     const [species, setSpecies] = useState("");
     const [email, setEmail] = useState("");
     const [nurseProList, setNurseProList] = useState([]);
+    const [loaded, setLoaded] = useState(0);
 
 
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /${farmname_to_send}`, "POST");
@@ -62,7 +63,10 @@ function NurseProduction() {
         }
     }
 
-    useEffect(() => { getNurseProduction() });
+    if (loaded) {
+        useEffect(() => { getNurseProduction() })
+        setLoaded(1);
+    }
 
     return (
         <Layout>
