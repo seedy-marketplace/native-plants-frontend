@@ -42,7 +42,7 @@ async function accessDatabase(req, res) {
   //Check the session details to determine if a user is logged in and what level of security access their account has
   if (!session) {
     //If no session the user isn't logged in at all
-    res.status(401).send({ error: "You are not logged in!" });
+    res.status(401).json({ error: "You are not logged in!" });
     return;
   }
   // } else if (session.user.user_level < 1) {
@@ -73,7 +73,8 @@ async function accessDatabase(req, res) {
       console.log(
         "== Logged in with these credentials:",
         session.user.username,
-        session.user.user_level
+        session.user.user_level,
+        session.user.related_org_id
       );
   }
 
@@ -193,36 +194,40 @@ async function accessDatabase(req, res) {
     //if missing required fields return error
     res
       .status(405)
-      .send({ err: "Expecting method, query_type, and table_name fields" });
+      .json({ err: "Expecting method, query_type, and table_name fields" });
+      return
   } else {
     const required_org = req.body.required_org ? req.body.required_org : null
     const required_level = req.body.required_level ? req.body.required_level : null
-    var userOrgID = 0
-
-    //Fetch request to get the data of the logged in user
-    const userFetch = await fetchGetRes(`${urlStart}/q`, {
-      query: `SELECT related_org_id FROM rev2.users WHERE user_name='${session.user.username}'`
-    })
-    const userOrgJson = await userFetch.data[0]
     
-  if (userOrgJson) {
-      userOrgID = userOrgJson.related_org_id
-      console.log("User Org: ", userOrgID)
-  } else {
-      res.status(500).send({error: "Couldn't find logged in user in database"})
-      return
-  }
 
     if(required_org){
-      if(userOrgID != required_org && session.user.user_level != 2){
-        res.status(401).send({error: "User is not part of the required organization"})
+      const orgCheckBody = {
+        query: `SELECT * FROM rev2.organization WHERE organization_id=${required_org}`
+      }
+      const orgUrl = urlStart + '/q'
+      const orgRes = await fetchGetRes(orgUrl, orgCheckBody)
+      const orgResBody = await orgRes
+      if(!orgResBody){
+        res.status(500).json({error: "Server Error: Can't access the Database... try again later"})
+        return
+      }else if(orgResBody.data.length == 0){
+        //console.log("Printing orgbody", orgResBody)
+        
+        res.status(404).json({error: "Organization doesn't exist"})
+        return
+      }
+    
+
+      if(session.user.related_org_id != required_org && session.user.user_level != 2){
+        res.status(401).json({error: "User is not part of the required organization"})
         return
       }
     }
 
     if(required_level){
       if(session.user.user_level != required_level && session.user.user_level != 2){
-        res.status(401).send({error: "This action requires a higher access level"})
+        res.status(401).json({error: "This action requires a higher access level"})
         return
       }
     }
@@ -279,20 +284,16 @@ async function accessDatabase(req, res) {
                     console.log("Changing headers")
                     resBody.headers = column_names
                   }else{
-                    resBody.headers = Object.keys(resBody.data[0])
+                    resBody.headers = [];
+                    if(resBody.data.length > 0)
+                      resBody.headers = Object.keys(resBody.data[0])
                   }
-                 
                   res.status(200).send({
                       msg: "Got response from DB",
                       data: resBody
                   });
               })
-              .catch((err) => {
-                  console.log("== err:", err);
-                  res.status(500).send({
-                      err: err
-                  });
-              });
+              
       }
 
       //handles INSERT queries (Can not have any parameters in URL)
@@ -326,12 +327,7 @@ async function accessDatabase(req, res) {
                       data: resBody
                   });
               })
-              .catch((err) => {
-                  console.log("== err:", err);
-                  res.status(500).send({
-                      err: err
-                  });
-              });
+              
       }
 
       //Handles DELETE queries
@@ -360,12 +356,7 @@ async function accessDatabase(req, res) {
                       msg: "Got response from DB",
                       data: resBody
                   })
-                  .catch((err) => {
-                      console.log("== err:", err);
-                      res.status(500).send({
-                          err: err
-                      });
-                  });
+                  
           });
       } else if (query_type === "UPDATE") {
           //Coming soon
@@ -404,12 +395,7 @@ async function accessDatabase(req, res) {
                       msg: "Got response from DB",
                       data: resBody
                   })
-                  .catch((err) => {
-                      console.log("== err:", err);
-                      res.status(500).send({
-                          err: err
-                      });
-                  });
+                  
           });
     } 
 

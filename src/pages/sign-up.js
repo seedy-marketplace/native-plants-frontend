@@ -33,7 +33,7 @@ function Signup() {
                     bio: bio,
                     phone_number: number,
                     website: website,
-                    related_org_id: organizationID
+                    related_org_id: organizationID ? organizationID : null
                 }),
                 headers: {
                     'Content-Type': 'application/json'
@@ -41,8 +41,12 @@ function Signup() {
             })
             const resBody = await res.json();
             console.log(resBody);
+            if (res.status < 200 || res.status >= 400) {
+                alert("Error: \n" + resBody.error)
+            }
             console.log("== document.cookie:", document.cookie);
             location.replace("/");
+            
         } else {
             setValid(false);
         }

@@ -4,7 +4,7 @@ export default async function (req, res) {
 
     console.log("Inside accessItis.js")
     if (req.method === 'SEARCH') {
-        var ret = await accessItis(req.body["species_name"], req.body["tsn"], err)
+        var ret = await accessItis(req.body["species_name"], req.body["genus"], req.body["tsn"], err)
         console.log("Inside top itis access, ret is", ret)
         if (err.length > 0) {
             res.status(403).send({ error: err[0] });
@@ -18,21 +18,28 @@ export default async function (req, res) {
     }
 }
 
-async function accessItis(species_name, tsn, errList){
+async function accessItis(species_name, genus, tsn, errList){
     var test = false;
+
 
     if (test) {
         // tsn = 0
-        tsn = 18
-        species_name = "Agave americana americana expansa"
+        tsn = 123
+        // species_name = "Agave americana americana expansa"
+        species_name = "Azotobacter indicus"
         // species_name = "no"
     }
+
+    var species_genus = species_name + " " + genus;
+
+
+    console.log("Searching for ", species_genus, " at tsn ", tsn);
 
     var tsnUrl = "https://services.itis.gov/?q=tsn:" + tsn
 
     console.log("TSN URL:", tsnUrl)
 
-    var nameUrl = "https://services.itis.gov/?q=nameWOInd:" + species_name
+    var nameUrl = "https://services.itis.gov/?q=nameWOInd:" + species_genus
     nameUrl = nameUrl.replaceAll(" ", "\\\%20")
 
 
@@ -54,8 +61,9 @@ async function accessItis(species_name, tsn, errList){
     if (jsonData.response.numFound > 0) {
         // if (jsonData.response.docs[0].nameWOInd) {
         console.log("There is a name: ", jsonData.response.docs[0].nameWInd)
-        if (jsonData.response.docs[0].nameWOInd == species_name) {
+        if (jsonData.response.docs[0].nameWOInd == species_genus) {
             console.log(species_name, "matches", jsonData.response.docs[0].nameWInd);
+            return jsonData;
         } else {
             errList.push("Name of species is invalid and doesn't match TSN")
             console.log ("Error: name of species is invalid and doesn't match TSN")

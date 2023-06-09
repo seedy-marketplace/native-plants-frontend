@@ -24,6 +24,16 @@ export default function Forms() {
                         </Link>
                     </li>
                     <li className="pagelist_item">
+                        <Link href="/add-organization">
+                          <a>Add Organization</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
+                        <Link href="/get-organizations">
+                          <a>See Organizations</a>
+                        </Link>
+                    </li>
+                    <li className="pagelist_item">
                         <Link href="/delete-user">
                           <a>Delete User</a>
                         </Link>

@@ -21,11 +21,11 @@ function Farms() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: {
+                body: JSON.stringify({
                     query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
                     table_name: 'land_manager_want_list', //Any table name here (Field is required)
-                    where: `${farmname ? `wanted_species_code LIKE '%%${farmname}%%'` : ""}`
-                }
+                    //where: `${farmname ? `wanted_species_code LIKE '%%${farmname}%%'` : ""}`
+                })
             }
         )
         const resBody = await res.json();

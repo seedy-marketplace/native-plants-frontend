@@ -14,7 +14,8 @@ function AddLab() {
                 body: JSON.stringify( {
                     table_name: "land_manager_want_list",
                     query_type: "DELETE",
-                    where: `wanted_list_id='${id}'`
+                    where: `wanted_list_id='${id}'`,
+                    required_level: 2
                 }),
                 headers: {
                     'Content-Type': 'application/json'

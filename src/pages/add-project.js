@@ -5,20 +5,20 @@ import * as XLSX from "xlsx";
 
 import useAPIRequest from '../hooks/useAPIRequest';
 
-function Farms() {
-    const [farmname, setFarmname] = useState("");
-    const [farmemail, setFarmemail] = useState("");
-    const [farmnumber, setFarmnumber] = useState("");
-    const [website, setWebsite] = useState("");
+function Projects() {
+    //const [orgname, setOrgname] = useState("");
+    const [projectname, setProjectname] = useState("");
     const [orgid, setOrgid] = useState("");
-    const [farmlocation, setFarmlocation] = useState("");
-    async function postFarm(e) {
+    const [lat, setLat] = useState("");
+    const [long, setLong] = useState("");
+    async function postProject(e) {
         e.preventDefault();
-        console.log("== Adding farm with these parameters:", farmname, farmemail);
-        if(!orgid || !farmemail || !farmname){
-            alert("Error: Fill in all required fields")
+        if(!orgid){
+            console.log("Need to have an organization")
             return
         }
+        let point = '('+lat +',' + long+')'
+
         const res = await fetch('/api/accessDatabase',{
             method: 'POST',
             headers: {
@@ -26,9 +26,9 @@ function Farms() {
             },
             body: JSON.stringify({
                 query_type: 'INSERT', //SELECT, INSERT, etc. (Field is required)
-                table_name: 'farms', //Any table name here (Field is required)
-                columns: ['contact_email', 'contact_phone_number', 'farm_location', 'farm_name', 'managing_org_id', 'farm_website'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
-                values: [farmemail, farmnumber, null, farmname, orgid, website],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                table_name: 'land_project', //Any table name here (Field is required)
+                columns: ['proj_name', 'proj_location', 'proj_org'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
+                values: [projectname, point, orgid],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
                 required_level: 1,
                 required_org: orgid
             })
@@ -83,74 +83,47 @@ function Farms() {
 
     return (
         <Layout>
-        <form onSubmit={postFarm} className={styles.container}>
-            <h3>Add a New Farm</h3>
+        <form onSubmit={postProject} className={styles.container}>
             <div>
-            <label>Farm name <span style={{color:"#dd0000"}}>*</span></label>
-                <input
-                    type="text"
-                    placeholder="Farm name"
-                    onChange={e => setFarmname(e.target.value)}
-                    value={farmname}
-                    required
-                    />
-            </div>
-            <div>
-                <label>Organization ID <span style={{color:"#dd0000"}}>*</span></label>
                 <input
                     type="number"
                     placeholder="Organization ID"
                     onChange={e => setOrgid(e.target.value)}
                     value={orgid}
-                    required
                     />
             </div>
             <div>
-                <label>Farm Email <span style={{color:"#dd0000"}}>*</span></label>
                 <input
                     type="text"
-                    placeholder="Email"
-                    onChange={e => setFarmemail(e.target.value)}
-                    value={farmemail}
-                    required
+                    placeholder="Project Name"
+                    onChange={e => setProjectname(e.target.value)}
+                    value={projectname}
                     />
             </div>
             <div>
-                <label>Website</label>
-                <input type="text" 
-                placeholder="Website Link"
-                onChange={e => setWebsite(e.target.value)}
-                value={website}/>
+                <input
+                    type="number"
+                    placeholder="Latitude"
+                    onChange={e => setLat(e.target.value)}
+                    value={lat}
+                    />
             </div>
             <div>
-                <label htmlFor="phone">Phone Number</label>
-                <input type="tel" 
-                id="phone" 
-                name="phone" 
-                pattern="[0-9]{10,11}"
-                placeholder="1234567890"
-                onChange={e => setFarmnumber(e.target.value)}/>
+                <input
+                    type="number"
+                    placeholder="Longitude"
+                    onChange={e => setLong(e.target.value)}
+                    value={long}
+                    />
             </div>
             <div>
-                <button>Add Farm</button>
+                <button>Add Project</button>
             </div>
         </form>
 
-        
-
-        </Layout>
-    );
-}
-
-export default Farms;
-
-
-//Dont think we need bulk import for farms
-/*
-<div className="import-csv">
+        <div className="import-csv">
+            <h1>REACTJS CSV IMPORT EXAMPLE</h1>
             <form>
-                <h3>Bulk import farms by selecting a CSV or excel file</h3>
-
                 <input
                     type={"file"}
                     id={"csvFileInput"}
@@ -166,4 +139,9 @@ export default Farms;
                 </button>
             </form>
         </div>
-*/
+
+        </Layout>
+    );
+}
+
+export default Projects;

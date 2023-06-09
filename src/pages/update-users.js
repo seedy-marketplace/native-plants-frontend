@@ -9,7 +9,7 @@ function Farms() {
     const [username, setUsername] = useState("");
     const [usertype, setUsertype] = useState("");
     const [userList, setUserList] = useState([]);
-    const [collum, setCol] = useState("");
+    const [column, setCol] = useState("");
     const [newdata, setNew] = useState("");
 
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /${farmname_to_send}`, "POST");
@@ -18,13 +18,15 @@ function Farms() {
         e.preventDefault();
         //const res3 = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /'+farmname,{
 
-        const res2 = await fetch('/api/accessBackend', {
+        const res2 = await fetch('/api/accessDatabase', {
             method: 'PATCH',
             body: JSON.stringify( {
                 table_name: "users",
                 query_type: "UPDATE",
-                query_fields: [collum,'user_name'],
-                query_values: [newdata,username]
+                columns: [column],
+                values: [newdata],
+                where: `${username ? `user_name='${username}'` : ""}`,
+                required_level: 2
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -32,10 +34,10 @@ function Farms() {
         })
         const res2Body = await res2.json();
         console.log(res2Body);
-        if (res2.status >= 200 && res2.status < 400) {
-            setUserList(res2Body.data)
-        } else {
-            alert("Error: \n" + resBody.error)
+        if (res2.status < 200 || res2.status >= 400) {
+            alert("Error: \n" + res2Body.error)
+        }else{
+            alert("Message from database: " + res2Body.data.result)
         }
     }
 
@@ -62,6 +64,10 @@ function Farms() {
             </label>
             <label className="container">Role Type
                 <input type="radio" name="rate" value="user_role_type" onClick={e => setCol(e.target.value)}/>
+                <span className="checkmark"></span>
+            </label>
+            <label className="container">Organization
+                <input type="radio" name="rate" value="related_org_id" onClick={e => setCol(e.target.value)}/>
                 <span className="checkmark"></span>
             </label>
             </div>

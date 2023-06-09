@@ -92,9 +92,9 @@ function BulkAdd({isLoading, setIsLoading}) {
             setErr(false);
 
             tempData.forEach(async(entry, index) => {
-                if (err == true) {
-                    return;
-                }
+                // if (err == true) {
+                //     return;
+                // }
                 rowData = entry.split(",");
                 console.log("Data: ", rowData)
 
@@ -109,7 +109,7 @@ function BulkAdd({isLoading, setIsLoading}) {
                 }
 
                 // return;
-                console.log("Sending data to backend at ", ("https://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey="+"procera"))
+                // console.log("Sending data to backend at ", ("https://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey="+"procera"))
 
                 // const check = await fetch(("https://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey="+rowData[1]),
                 //     {
@@ -160,8 +160,12 @@ function BulkAdd({isLoading, setIsLoading}) {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            "species_name": "procera",
-                            "tsn": 123,
+                            // "species_name": "Azotobacter",
+                            "species_name": rowData[1],
+                            "genus": rowData[3],
+                            // "genus": "indicus",
+                            "tsn": rowData[2],
+                            // "tsn": 123,
                         })
                     }
                 )
@@ -169,7 +173,7 @@ function BulkAdd({isLoading, setIsLoading}) {
                 const resBody = await res.json();
                 console.log("Found:", resBody)
                 // if (resBody.response.numFound > 0) {
-                if (resBody.res) {
+                if (resBody.ret) {
                     if (resBody.ret.response.numFound > 0) {
 
                         console.log("Enough found", resBody.ret.response)
@@ -180,7 +184,7 @@ function BulkAdd({isLoading, setIsLoading}) {
                     if (index > 0) {
                         setErrITIS(errITIS.concat("\n"))
                     }
-                    setErrITIS(errITIS.concat("Error on row ", index, ": ", resBody.error))
+                    setErrITIS(errITIS.concat("Error on row ", index + 1, ": ", resBody.error))
                     // errItis.concat(": ", resBody.error)
                     console.log("Error: ", errITIS)
                     console.log("Error is: ", resBody)
@@ -305,6 +309,11 @@ function Farms() {
         })
         const resBody = await res.json();
         console.log(resBody);
+        if (res.status < 200 || res.status >= 400) {
+            alert("Error: \n" + resBody.error)
+        }else{
+            alert("Message from database: " + resBody.data.result)
+        }
 
     }
 
@@ -395,7 +404,7 @@ function Farms() {
                             query_type: 'INSERT', //SQL Query type: SELECT, INSERT, UPDATE, DELETE. (Field is required)
                             table_name: 'plant', //Any table name here (Field is required)
                             columns: ['genus', 'species', 'common_name', 'species_code'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
-                            values: [rowData[0], rowData[1], rowData[2], rowData[3]],
+                            values: [rowData[3], rowData[1], rowData[0], rowData[2]],
                             
                         })
                     }

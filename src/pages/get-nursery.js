@@ -23,17 +23,17 @@ function Nurses() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: {
+                body: JSON.stringify({
                     query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
                     table_name: 'nurseries', //Any table name here (Field is required)
-                    where: `${nursename ? `nursery_name LIKE '%%${nursename}%%'` : ""}`
-                }
+                    where: `${nursename ? `nursery_name iLIKE '%%${nursename}%%'` : ""}`
+                })
             }
         )
         const resBody = await res.json();
         console.log(resBody);
         if (res.status >= 200 && res.status < 400) {
-            setNurseList(resBody.data)
+            setNurseList(resBody)
         } else {
             alert("Error: \n" + resBody.error)
         }

@@ -5,13 +5,14 @@ import useAPIRequest from '../hooks/useAPIRequest';
 
 import TableView from '../components/TableView';
 
-function Organization() {
-    const [orgname, setOrgname] = useState("");
-    const [orgList, setOrgList] = useState([]);
+function Farms() {
+    const [farmname, setFarmname] = useState("");
+    const [email, setEmail] = useState("");
+    const [farmList, setFarmList] = useState([]);
 
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /${farmname_to_send}`, "POST");
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/q/SELECT * FROM rev2.farms`, "GET");
-    async function getOrg(e) {
+    async function getFarm(e) {
         e.preventDefault();
         
         const res = await fetch("/api/accessDatabase",{
@@ -21,17 +22,20 @@ function Organization() {
             },
             body: JSON.stringify({
                 query_type: 'SELECT', //SELECT, INSERT, etc. (Field is required)
-                table_name: 'organization', //Any table name here (Field is required)
-                columns: ['organization_id', 'org_name','poc_user', 'bio_text'],
-                column_names: ['Org ID', 'Name', 'Admin User', 'Bio'],
-                where: `${orgname ? `org_name iLIKE '%%${orgname}%%'` : ""}`
+                table_name: 'site', //Any table name here (Field is required),
             })
         })
 
         const resBody = await res.json();
-        console.log(resBody);
+        // console.log("resBody", resBody);
+        // console.log("data.headers", resBody.data.headers)
+        //resBody.data.headers = orderNames
+        // console.log("data.headers", resBody.data.headers)
+        // console.log("resBody", resBody);
+
         if(res.status >= 200 && res.status < 400) {
-            setOrgList(resBody)
+            setFarmList(resBody)
+            console.log(farmList)
         }else {
             alert("Error: \n" + resBody.error)
         }
@@ -39,25 +43,25 @@ function Organization() {
 
     return (
         <Layout>
-            <form onSubmit={getOrg}>
+            <form onSubmit={getFarm}>
                 <div>
                     <a>Type here to filter, leave blank for no filter</a>
                 </div>
                 <div>
                     <input
                         type="text"
-                        placeholder="Search by Organization name"
-                        onChange={e => setOrgname(e.target.value)}
-                        value={orgname}
+                        placeholder="Search by Farm name"
+                        onChange={e => setFarmname(e.target.value)}
+                        value={farmname}
                     />
                 </div>
                 <div>
-                    <button>Get Organizations</button>
+                    <button>Get farms</button>
                 </div>
             </form>
-            {(orgList && orgList.data )? <TableView data={orgList.data} /> : <TableView data={[{"Notice":"no data to display"}]} />}
+            {(farmList && farmList.data )? <TableView data={farmList.data} /> : <TableView data={[{"Notice":"no data to display"}]} />}
         </Layout>
     );
 }
 
-export default Organization;
+export default Farms;

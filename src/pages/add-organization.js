@@ -22,11 +22,17 @@ function Organization() {
                 query_type: 'INSERT', //SELECT, INSERT, etc. (Field is required)
                 table_name: 'organization', //Any table name here (Field is required)
                 columns: ['org_name', 'bio_text', 'poc_user'], //array of specific columns to use (Required by INSERT and UPDATE, defaults to * if missing)
-                values: [orgname, biotext, pocuser]//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                values: [orgname, biotext, pocuser],//array of values for INSERT and UPDATE requests (Required by INSERT and UPDATE)
+                required_level: 1
             })
         })
         const resBody = await res.json();
         console.log(resBody);
+        if (res.status < 200 || res.status >= 400) {
+            alert("Error: \n" + resBody.error)
+        }else{
+            alert("Message from database: " + resBody.data.result)
+        }
     }
 
     const [file, setFile] = useState();
