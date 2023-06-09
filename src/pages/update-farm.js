@@ -17,7 +17,7 @@ function Farms() {
         e.preventDefault();
         //const res3 = await fetch('/api/accessBackend/https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /'+farmname,{
 
-        const res2 = await fetch('/api/accessBackend', {
+        const res = await fetch('/api/accessBackend', {
             method: 'PATCH',
             body: JSON.stringify( {
                 table_name: "farms",
@@ -29,12 +29,12 @@ function Farms() {
                 'Content-Type': 'application/json'
             }
         })
-        const res2Body = await res2.json();
+        const res2Body = await res.json();
         console.log(res2Body);
-        if (res2.status >= 200 && res2.status < 400) {
-            setUserList(res2Body.data)
-        } else {
+        if (res.status < 200 || res.status >= 400) {
             alert("Error: \n" + resBody.error)
+        }else{
+            alert("Message from database: " + resBody.data.result)
         }
     }
 

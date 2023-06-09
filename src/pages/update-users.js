@@ -34,10 +34,10 @@ function Farms() {
         })
         const res2Body = await res2.json();
         console.log(res2Body);
-        if (res2.status >= 200 && res2.status < 400) {
-            setUserList(res2Body.data)
-        } else {
-            alert("Error: \n" + resBody.error)
+        if (res2.status < 200 || res2.status >= 400) {
+            alert("Error: \n" + res2Body.error)
+        }else{
+            alert("Message from database: " + res2Body.data.result)
         }
     }
 

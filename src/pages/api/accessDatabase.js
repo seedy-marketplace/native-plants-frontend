@@ -195,12 +195,30 @@ async function accessDatabase(req, res) {
     res
       .status(405)
       .json({ err: "Expecting method, query_type, and table_name fields" });
+      return
   } else {
     const required_org = req.body.required_org ? req.body.required_org : null
     const required_level = req.body.required_level ? req.body.required_level : null
     
 
     if(required_org){
+      const orgCheckBody = {
+        query: `SELECT * FROM rev2.organization WHERE organization_id=${required_org}`
+      }
+      const orgUrl = urlStart + '/q'
+      const orgRes = await fetchGetRes(orgUrl, orgCheckBody)
+      const orgResBody = await orgRes
+      if(!orgResBody){
+        res.status(500).json({error: "Server Error: Can't access the Database... try again later"})
+        return
+      }else if(orgResBody.data.length == 0){
+        //console.log("Printing orgbody", orgResBody)
+        
+        res.status(404).json({error: "Organization doesn't exist"})
+        return
+      }
+    
+
       if(session.user.related_org_id != required_org && session.user.user_level != 2){
         res.status(401).json({error: "User is not part of the required organization"})
         return
