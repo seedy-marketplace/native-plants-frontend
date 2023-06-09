@@ -13,6 +13,7 @@ function Plants() {
     const [species, setSpecies] = useState("")
     const [email, setEmail] = useState("");
     const [plantList, setPlantList] = useState([]);
+    const [loaded, setLoaded] = useState(0);
 
 
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /${farmname_to_send}`, "POST");
@@ -60,10 +61,11 @@ function Plants() {
             alert("Error: \n" + resBody.error)
         }
     }
-
-    useEffect(() => {
-        getPlants()
-    })
+    if (loaded) {
+        useEffect(() => { getPlants() })
+        setLoaded(1);
+    }
+    
 
     return (
         <Layout>

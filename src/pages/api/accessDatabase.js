@@ -284,9 +284,10 @@ async function accessDatabase(req, res) {
                     console.log("Changing headers")
                     resBody.headers = column_names
                   }else{
-                    resBody.headers = Object.keys(resBody.data[0])
+                    resBody.headers = [];
+                    if(resBody.data.length > 0)
+                      resBody.headers = Object.keys(resBody.data[0])
                   }
-                 
                   res.status(200).send({
                       msg: "Got response from DB",
                       data: resBody

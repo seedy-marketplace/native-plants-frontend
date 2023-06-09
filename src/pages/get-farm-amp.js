@@ -13,6 +13,7 @@ function FarmAmps() {
     const [species, setSpecies] = useState("")
     const [email, setEmail] = useState("");
     const [farmAmpList, setFarmAmpList] = useState([]);
+    const [loaded, setLoaded] = useState(0);
 
 
     // const [res, loading, error] = useAPIRequest(`https://native-plants-backend.herokuapp.com/i/INSERT INTO rev2.farms(farm_name) VALUES (%s) /${farmname_to_send}`, "POST");
@@ -60,8 +61,10 @@ function FarmAmps() {
             alert("Error: \n" + resBody.error)
         }
     }
-
-    useEffect(() => {getFarmAmp()})
+    if (loaded) {
+        useEffect(() => { getFarmAmp() })
+       setLoaded(1);
+ }
 
     return (
         <Layout>
